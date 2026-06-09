@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    container_name: erp-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_VERSION=v1
+      - NEXT_PUBLIC_APP_NAME=ERP Sistema
+      - NEXT_PUBLIC_APP_ENV=development
+    command: npm run dev
