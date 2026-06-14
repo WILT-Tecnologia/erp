@@ -5,7 +5,7 @@ namespace App\Enums;
 enum AdminStatus: string
 {
     case Active = 'active';
-    case Incative = 'inactive';
+    case Inactive = 'inactive';
 
     public static function enum(): array
     {

@@ -26,7 +26,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if(! $admin->status->value !== 'active') {
+        if($admin->status->value !== 'active') {
             throw ValidationException::withMessages([
                 'email' => ['Administrador inativo.'],
             ]);

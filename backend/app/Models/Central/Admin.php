@@ -20,6 +20,7 @@ class Admin extends Authenticatable
     protected $table = 'admins';
 
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
@@ -45,5 +46,10 @@ class Admin extends Authenticatable
             'settings' => 'array',
             'status' => AdminStatus::class,
         ];
+    }
+
+    protected static function newFactory(): \Database\Factories\Central\AdminFactory
+    {
+        return \Database\Factories\Central\AdminFactory::new();
     }
 }
