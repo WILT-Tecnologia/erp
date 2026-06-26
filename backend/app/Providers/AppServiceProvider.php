@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
         // Spec da API admin (segundo endpoint)
         Scramble::registerApi('admin', [
             'info' => ['title' => 'API Admin (Central)', 'version' => '1.0.0'],
-        ])->routes(fn ($route) => str_starts_with($route->uri, 'api/admin'));
+        ])->routes(fn ($route) => str_starts_with($route->uri, 'api/admin') || str_starts_with($route->uri, 'api/plans'));
 
         // Proteger /docs em produção
         Gate::define('viewApiDocs', fn ($user = null) => app()->environment('local'));

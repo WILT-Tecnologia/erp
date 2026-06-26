@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             \Database\Seeders\Central\AdminSeeder::class,
+            \Database\Seeders\Central\PlanSeeder::class,
         ]);
     }
 }
