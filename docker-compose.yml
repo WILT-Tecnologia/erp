@@ -1,0 +1,117 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: deps
+    container_name: erp-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8989
+      - NEXT_PUBLIC_API_VERSION=v1
+      - NEXT_PUBLIC_APP_NAME=ERP Sistema
+      - NEXT_PUBLIC_APP_ENV=development
+    command: npm run dev
+    depends_on:
+      - app
+    networks:
+      - erp
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile.dev
+    container_name: erp-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-holy}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-holy}
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=null
+      - REDIS_PORT=6379
+      - CACHE_STORE=database
+      - QUEUE_CONNECTION=database
+      - SESSION_DRIVER=database
+    depends_on:
+      redis:
+        condition: service_started
+      db:
+        condition: service_healthy
+    networks:
+      - erp
+
+  nginx:
+    image: nginx:alpine
+    container_name: erp-nginx
+    restart: unless-stopped
+    ports:
+      - "8989:80"
+    volumes:
+      - ./backend:/var/www
+      - ./backend/docker/nginx/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+    networks:
+      - erp
+
+  db:
+    image: postgres:15
+    container_name: erp-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-holy}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-holy}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-holy}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - erp
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: erp-pgadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@wilt.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-wilt}
+      PGADMIN_LISTEN_PORT: 80
+    networks:
+      - erp
+
+  redis:
+    image: redis:latest
+    container_name: erp-redis
+    networks:
+      - erp
+
+volumes:
+  postgres_data:
+
+networks:
+  erp:
+    driver: bridge

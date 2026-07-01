@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package-lock.json package.json ./
-RUN npm ci
+RUN npm install --ignore-scripts
 
 FROM base AS builder
 WORKDIR /app
