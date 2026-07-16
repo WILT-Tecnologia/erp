@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Central\AdminController;
 use App\Http\Controllers\Central\AuthController;
+use App\Http\Controllers\Central\OrganizationController;
 use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\PublicPlanController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,10 @@ Route::prefix('admin')->group(function () {
 
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('plans', PlanController::class);
+
+        Route::apiResource('organizations', OrganizationController::class);
+        Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
+        Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
+        Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
     });
 });

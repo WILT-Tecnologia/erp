@@ -16,6 +16,9 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrganizationController extends Controller
 {
+    /**
+     * Lista paginada de organizações.
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $perPage = min((int) $request->query('per_page', 15), 100);
@@ -36,8 +39,13 @@ class OrganizationController extends Controller
         return OrganizationResource::collection($organizations);
     }
 
-    public function store(StoreOrganizationRequest $request, CreateOrganizationAction $action): JsonResponse
-    {
+    /**
+     * Cria uma nova organização e provisiona seu schema.
+     */
+    public function store(
+        StoreOrganizationRequest $request,
+        CreateOrganizationAction $action,
+    ): JsonResponse {
         $data = $request->validated();
 
         // Domínio é gerenciado pela tabela domains do stancl, separado
@@ -55,25 +63,46 @@ class OrganizationController extends Controller
         ))->response()->setStatusCode(201);
     }
 
+    /**
+     * Exibe uma organização específica.
+     */
     public function show(Organization $organization): OrganizationResource
     {
-        return new OrganizationResource($organization->load(['plan', 'ownerAdmin', 'domains']));
+        return new OrganizationResource(
+            $organization->load(['plan', 'ownerAdmin', 'domains'])
+        );
     }
 
-    public function update(UpdateOrganizationRequest $request, Organization $organization): OrganizationResource
-    {
+    /**
+     * Atualiza uma organização.
+     */
+    public function update(
+        UpdateOrganizationRequest $request,
+        Organization $organization,
+    ): OrganizationResource {
         $organization->update($request->validated());
 
-        return new OrganizationResource($organization->fresh()->load(['plan', 'ownerAdmin', 'domains']));
+        return new OrganizationResource(
+            $organization->fresh()->load(['plan', 'ownerAdmin', 'domains'])
+        );
     }
 
-    public function destroy(Organization $organization, DeleteOrganizationAction $action): JsonResponse
-    {
+    /**
+     * Soft delete: suspende e marca como deletada.
+     * O schema permanece no banco para auditoria.
+     */
+    public function destroy(
+        Organization $organization,
+        DeleteOrganizationAction $action,
+    ): JsonResponse {
         $action->softDelete($organization);
 
         return response()->json(null, 204);
     }
 
+    /**
+     * Suspende uma organização (ainda existe, mas bloqueada).
+     */
     public function suspend(Organization $organization): OrganizationResource
     {
         $organization->update(['status' => OrganizationStatus::Suspended]);
@@ -81,6 +110,9 @@ class OrganizationController extends Controller
         return new OrganizationResource($organization->fresh());
     }
 
+    /**
+     * Reativa uma organização suspensa.
+     */
     public function activate(Organization $organization): OrganizationResource
     {
         $organization->update(['status' => OrganizationStatus::Active]);
@@ -88,9 +120,18 @@ class OrganizationController extends Controller
         return new OrganizationResource($organization->fresh());
     }
 
-    public function forceDelete(Request $request, Organization $organization, DeleteOrganizationAction $action): JsonResponse
-    {
-        $request->validate(['confirmation' => ['required', 'string', 'in:' . $organization->slug],]);
+    /**
+     * Drop definitivo: remove o schema do Postgres.
+     * Endpoint perigoso — exige confirmação explícita.
+     */
+    public function forceDelete(
+        Request $request,
+        Organization $organization,
+        DeleteOrganizationAction $action,
+    ): JsonResponse {
+        $request->validate([
+            'confirmation' => ['required', 'string', 'in:' . $organization->slug],
+        ]);
 
         $action->forceDelete($organization);
 
