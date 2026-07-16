@@ -38,5 +38,7 @@ RUN useradd -m -u $uid -G www-data,root -s /bin/bash $user \
 
 WORKDIR /var/www
 
+USER $user
+
 ENTRYPOINT ["entrypoint.dev.sh"]
 CMD ["php-fpm"]

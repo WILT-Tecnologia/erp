@@ -21,9 +21,19 @@ if ! grep -q "APP_KEY=" .env || [ -z "$(grep 'APP_KEY=' .env | cut -d= -f2)" ]; 
     php artisan key:generate --force
 fi
 
-chown -R myuser:myuser /var/www/vendor /var/www/node_modules 2>/dev/null || true
+echo "Checking for pending migrations..."
+if php artisan migrate:status >/dev/null 2>&1; then
+    PENDING=$(php artisan migrate:status | grep -c "Pending" || true)
+else
+    # migrations table doesn't exist yet, so everything is pending
+    PENDING=1
+fi
 
-echo "Running migrations..."
-php artisan migrate --force
+if [ "$PENDING" -gt 0 ]; then
+    echo "Running $PENDING pending migration(s)..."
+    php artisan migrate --force
+else
+    echo "No pending migrations, skipping."
+fi
 
 exec "$@"
