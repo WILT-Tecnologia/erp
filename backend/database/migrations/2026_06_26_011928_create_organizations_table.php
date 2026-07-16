@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('language', 10)->default('pt-BR');
 
             $table->foreignUuid('plan_id')->nullable()->constrained('plans')->nullOnDelete();
-            $table->foreignUuid('ower_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->foreignUuid('owner_admin_id')->nullable()->constrained('admins')->nullOnDelete();
 
             $table->jsonb('settings')->nullable();
 
