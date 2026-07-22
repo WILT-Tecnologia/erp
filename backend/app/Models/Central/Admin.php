@@ -4,6 +4,7 @@ namespace App\Models\Central;
 use App\Enums\AdminStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,5 +52,10 @@ class Admin extends Authenticatable
     protected static function newFactory(): \Database\Factories\Central\AdminFactory
     {
         return \Database\Factories\Central\AdminFactory::new();
+    }
+
+    public function ownedOrganizations(): HasMany
+    {
+        return $this->hasMany(Organization::class, 'owner_admin_id');
     }
 }
