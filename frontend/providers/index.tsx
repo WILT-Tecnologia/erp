@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { ThemeProvider } from "./theme-provider"
+import { MuiProvider } from "./mui-theme-provider"
 import { AuthProvider } from "./auth-provider"
 import { SWRProvider } from "./swr-provider"
 import { ToastProvider } from "./toast-provider"
@@ -13,12 +14,14 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider>
-      <SWRProvider>
-        <AuthProvider>
-          {children}
-          <ToastProvider />
-        </AuthProvider>
-      </SWRProvider>
+      <MuiProvider>
+        <SWRProvider>
+          <AuthProvider>
+            {children}
+            <ToastProvider />
+          </AuthProvider>
+        </SWRProvider>
+      </MuiProvider>
     </ThemeProvider>
   )
 }
