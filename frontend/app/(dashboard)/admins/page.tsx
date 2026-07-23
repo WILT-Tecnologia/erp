@@ -8,14 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Plus } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import type { User } from "@/types"
-import { useUsers } from "@/features/users/hooks/useUsers"
+import type { Admin } from "@/types"
+import { useAdmins } from "@/features/admins/hooks/useAdmins"
 
-const columns: ColumnDef<User>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
+const columns: ColumnDef<Admin>[] = [
   {
     accessorKey: "name",
     header: "Nome",
@@ -25,21 +21,14 @@ const columns: ColumnDef<User>[] = [
     header: "E-mail",
   },
   {
-    accessorKey: "roles",
-    header: "Perfis",
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => {
-      const roles = row.original.roles ?? []
+      const status = row.original.status
       return (
-        <div className="flex gap-1">
-          {roles.length === 0 && (
-            <Badge variant="secondary">Sem perfil</Badge>
-          )}
-          {roles.map((role) => (
-            <Badge key={role} variant="outline">
-              {role}
-            </Badge>
-          ))}
-        </div>
+        <Badge variant={status === "active" ? "default" : "secondary"}>
+          {status === "active" ? "Ativo" : "Inativo"}
+        </Badge>
       )
     },
   },
@@ -52,31 +41,33 @@ const columns: ColumnDef<User>[] = [
   },
 ]
 
-export default function UsersPage() {
-  const { users, isLoading, setSearch } = useUsers()
+export default function AdminsPage() {
+  const { admins, isLoading, setSearch } = useAdmins()
 
   return (
     <AppLayout>
       <PageTransition>
         <div className="space-y-6">
-          <Breadcrumb items={[{ label: "Usuários" }]} />
+          <Breadcrumb items={[{ label: "Administradores" }]} />
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Usuários</h1>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Administradores
+              </h1>
               <p className="mt-1 text-muted-foreground">
-                Gerencie os usuários do sistema
+                Gerencie os administradores do sistema
               </p>
             </div>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Novo Usuário
+              Novo Administrador
             </Button>
           </div>
 
           <DataTable
             columns={columns}
-            data={users}
+            data={admins}
             searchKey="name"
             searchPlaceholder="Buscar por nome..."
             loading={isLoading}

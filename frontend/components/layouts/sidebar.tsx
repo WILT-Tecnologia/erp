@@ -31,8 +31,8 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
   },
   {
-    label: "Usuários",
-    href: "/users",
+    label: "Administradores",
+    href: "/admins",
     icon: Users,
   },
   {
@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
 export function Sidebar() {
   const pathname = usePathname()
   const { sidebarCollapsed, setSidebarCollapsed } = useAppStore()
-  const { logout, user } = useAuth()
+  const { logout, admin } = useAuth()
 
   return (
     <aside
@@ -104,11 +104,11 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t p-2">
-        {!sidebarCollapsed && user && (
+        {!sidebarCollapsed && admin && (
           <div className="mb-2 px-3 py-2">
-            <p className="truncate text-sm font-medium">{user.name}</p>
+            <p className="truncate text-sm font-medium">{admin.name}</p>
             <p className="truncate text-xs text-muted-foreground">
-              {user.email}
+              {admin.email}
             </p>
           </div>
         )}

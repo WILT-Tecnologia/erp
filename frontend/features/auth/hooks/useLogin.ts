@@ -16,7 +16,7 @@ export function useLogin() {
     setIsLoading(true)
     try {
       const response = await authService.login(data)
-      login(response.user, response.tokens)
+      login(response.admin, response.token)
       toast.success("Login realizado com sucesso!")
       router.push("/dashboard")
     } catch (error) {

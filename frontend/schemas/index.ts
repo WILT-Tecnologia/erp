@@ -1,5 +1,5 @@
 export { loginSchema } from "./login.schema"
 export type { LoginFormData } from "./login.schema"
 
-export { userSchema } from "./user.schema"
-export type { UserFormData } from "./user.schema"
+export { adminSchema } from "./admin.schema"
+export type { AdminFormData } from "./admin.schema"

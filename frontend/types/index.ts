@@ -24,28 +24,33 @@ export interface ApiError {
   status: number
 }
 
-export interface User {
-  id: number
+export type AdminStatus = "active" | "inactive"
+
+export interface Admin {
+  id: string
   name: string
   email: string
-  email_verified_at: string | null
+  avatar: string | null
+  phone: string | null
+  locale: string | null
+  timezone: string | null
+  status: AdminStatus
+  settings: Record<string, unknown> | null
+  last_login_at: string | null
   created_at: string
   updated_at: string
-  roles?: string[]
-  permissions?: string[]
-}
-
-export interface AuthTokens {
-  access_token: string
-  token_type: string
-  expires_in?: number
-  refresh_token?: string
 }
 
 export interface LoginCredentials {
   email: string
   password: string
   remember?: boolean
+  device_name?: string
+}
+
+export interface LoginResponse {
+  token: string
+  admin: Admin
 }
 
 export interface RegisterData {

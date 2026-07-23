@@ -3,7 +3,7 @@
 BACKEND_SERVICES := db redis app nginx pgadmin
 FRONTEND_SERVICES := frontend
 
-.PHONY: help up up-backend up-frontend down down-backend down-frontend stop logs logs-backend logs-frontend ps build
+.PHONY: help up up-backend up-frontend down down-backend down-frontend stop logs logs-backend logs-frontend ps build seed seed-class
 
 help: ## Lista os comandos disponíveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -45,3 +45,9 @@ ps: ## Lista os containers do projeto
 
 build: ## Builda as imagens de backend e frontend
 	docker compose build
+
+seed: ## Roda todos os seeders do backend (DatabaseSeeder)
+	docker compose exec app php artisan db:seed --force
+
+seed-class: ## Roda um seeder específico (uso: make seed-class class=Central/AdminSeeder)
+	docker compose exec app php artisan db:seed --class=Database\\Seeders\\$(subst /,\\,$(class)) --force

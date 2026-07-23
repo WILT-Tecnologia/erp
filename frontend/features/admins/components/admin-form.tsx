@@ -2,8 +2,8 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { userSchema, type UserFormData } from "@/schemas/user.schema"
-import type { User } from "@/types"
+import { adminSchema, type AdminFormData } from "@/schemas/admin.schema"
+import type { Admin } from "@/types"
 import {
   Form,
   FormControl,
@@ -16,18 +16,18 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
-interface UserFormProps {
-  user?: User | null
-  onSubmit: (data: UserFormData) => Promise<void>
+interface AdminFormProps {
+  admin?: Admin | null
+  onSubmit: (data: AdminFormData) => Promise<void>
   isPending?: boolean
 }
 
-export function UserForm({ user, onSubmit, isPending }: UserFormProps) {
-  const form = useForm<UserFormData>({
-    resolver: zodResolver(userSchema),
+export function AdminForm({ admin, onSubmit, isPending }: AdminFormProps) {
+  const form = useForm<AdminFormData>({
+    resolver: zodResolver(adminSchema),
     defaultValues: {
-      name: user?.name ?? "",
-      email: user?.email ?? "",
+      name: admin?.name ?? "",
+      email: admin?.email ?? "",
       password: "",
       password_confirmation: "",
     },
@@ -74,14 +74,14 @@ export function UserForm({ user, onSubmit, isPending }: UserFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {user ? "Nova senha (deixe em branco para manter)" : "Senha"}
+                {admin ? "Nova senha (deixe em branco para manter)" : "Senha"}
               </FormLabel>
               <FormControl>
                 <Input
                   placeholder="******"
                   type="password"
                   autoComplete={
-                    user ? "new-password" : "current-password"
+                    admin ? "new-password" : "current-password"
                   }
                   {...field}
                 />
@@ -116,7 +116,7 @@ export function UserForm({ user, onSubmit, isPending }: UserFormProps) {
               Salvando...
             </>
           ) : (
-            user ? "Atualizar" : "Criar Usuário"
+            admin ? "Atualizar" : "Criar Administrador"
           )}
         </Button>
       </form>

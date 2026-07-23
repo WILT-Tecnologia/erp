@@ -78,7 +78,10 @@ class ApiClient {
       throw error
     }
 
-    const result = await response.json()
+    const result =
+      response.status === 204 || response.headers.get("content-length") === "0"
+        ? null
+        : await response.json()
 
     for (const interceptor of this.interceptors) {
       if (interceptor.onResponse) {

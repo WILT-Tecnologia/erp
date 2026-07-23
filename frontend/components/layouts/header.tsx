@@ -21,10 +21,10 @@ const emptySubscribe = () => () => {}
 export function Header() {
   const { theme, setTheme } = useTheme()
   const { toggleSidebar } = useAppStore()
-  const { user, logout } = useAuth()
+  const { admin, logout } = useAuth()
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
-  const initials = user?.name
+  const initials = admin?.name
     ?.split(" ")
     .map((n) => n[0])
     .join("")
@@ -64,9 +64,9 @@ export function Header() {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{user?.name}</p>
+              <p className="text-sm font-medium leading-none">{admin?.name}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user?.email}
+                {admin?.email}
               </p>
             </div>
           </DropdownMenuLabel>

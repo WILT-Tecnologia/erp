@@ -22,8 +22,9 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        // Em ambientes não-produção, semeia mais admins
-        if (! app()->environment('production')) {
+        // Em ambientes não-produção, semeia mais admins (só na primeira vez,
+        // pra não empilhar registros novos a cada re-execução do seeder)
+        if (! app()->environment('production') && Admin::count() <= 1) {
             Admin::factory()->count(5)->create();
         }
     }

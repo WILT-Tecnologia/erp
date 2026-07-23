@@ -14,7 +14,7 @@ services:
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:8989
-      - NEXT_PUBLIC_API_VERSION=v1
+      - NEXT_PUBLIC_API_VERSION=
       - NEXT_PUBLIC_APP_NAME=ERP Sistema
       - NEXT_PUBLIC_APP_ENV=development
     command: npm run dev
@@ -48,6 +48,7 @@ services:
       - CACHE_STORE=database
       - QUEUE_CONNECTION=database
       - SESSION_DRIVER=database
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
     depends_on:
       redis:
         condition: service_started
