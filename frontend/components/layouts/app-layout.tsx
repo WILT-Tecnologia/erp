@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useAuth } from "@/providers/auth-provider"
+import { useAuthStore } from "@/store/auth.store"
 import { DashboardLayout } from "./dashboard-layout"
 import { redirect } from "next/navigation"
 
@@ -15,8 +16,9 @@ export function AppLayout({
   requireAuth = true,
 }: AppLayoutProps) {
   const { isAuthenticated, isLoading } = useAuth()
+  const hasHydrated = useAuthStore((state) => state.hasHydrated)
 
-  if (isLoading) {
+  if (isLoading || !hasHydrated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />

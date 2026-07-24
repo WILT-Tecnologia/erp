@@ -4,7 +4,7 @@ import type { loginSchema } from "@/schemas/login.schema"
 export type LoginFormData = z.infer<typeof loginSchema>
 
 export interface AuthState {
-  user: import("@/types").User | null
+  admin: import("@/types").Admin | null
   isAuthenticated: boolean
   isLoading: boolean
 }

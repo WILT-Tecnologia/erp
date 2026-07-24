@@ -4,6 +4,7 @@ namespace Database\Seeders\Central;
 
 use App\Actions\Central\CreateOrganizationAction;
 use App\Models\Central\Admin;
+use App\Models\Central\Organization;
 use App\Models\Central\Plan;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +14,12 @@ class OrganizationSeeder extends Seeder
     {
         // Só em dev/local — provisionar schemas em produção via API
         if (app()->environment('production')) {
+            return;
+        }
+
+        // CreateOrganizationAction provisiona o schema do tenant, então não
+        // pode ser chamada de novo para um id/slug já existente.
+        if (Organization::where('id', 'demo-igreja-central')->exists()) {
             return;
         }
 

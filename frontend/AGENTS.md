@@ -1,423 +1,150 @@
-Você é um arquiteto de software sênior especializado em React, Next.js, TypeScript e aplicações enterprise.
+# Design System
 
-Sua missão é criar e configurar um projeto frontend completo utilizando as tecnologias abaixo, seguindo rigorosamente os princípios SOLID, Clean Architecture, Clean Code, Separation of Concerns, DRY, KISS e boas práticas modernas de desenvolvimento.
+O projeto utiliza uma arquitetura híbrida de interface composta por:
 
-# Stack Obrigatória
+- **Shadcn/UI** como Design System oficial.
+- **Tailwind CSS 4** como sistema de estilização.
+- **MUI X Data Grid** exclusivamente para componentes de tabela.
 
-* Next.js (App Router)
-* TypeScript
-* TailwindCSS
-* shadcn/ui
-* next-themes
-* React Hook Form
-* Zod
-* Zustand
-* SWR
-* TanStack Table
-* Framer Motion
-* Sonner
-* Lucide React
-* ESLint
-* Prettier
-* Husky
-* lint-staged
-* Docker
-* Docker Compose
+Esta combinação é obrigatória em todo o projeto.
 
-# Objetivos
+## Regras
 
-Criar uma base frontend moderna, robusta, escalável e preparada para crescimento a longo prazo.
+Todo componente visual da aplicação deve utilizar exclusivamente:
 
-O backend será uma API Laravel.
+- Shadcn/UI
+- Tailwind CSS
 
-Toda comunicação com APIs deve ser centralizada e desacoplada para facilitar:
+Exemplos:
 
-* troca de endpoints
-* troca de backend
-* versionamento
-* autenticação
-* interceptadores
-* tratamento global de erros
+- Button
+- Input
+- Select
+- Checkbox
+- Radio Group
+- Switch
+- Card
+- Badge
+- Dialog
+- Sheet
+- Drawer
+- Popover
+- Dropdown Menu
+- Tooltip
+- Tabs
+- Navigation Menu
+- Breadcrumb
+- Calendar
+- Command
+- Skeleton
+- Progress
+- Toast
+- Sidebar
 
-# Estrutura Arquitetural
+---
 
-Utilizar arquitetura baseada em Feature Driven Design combinada com Clean Architecture.
+# Tabelas
 
-Criar a seguinte estrutura:
+Todas as tabelas da aplicação devem utilizar **obrigatoriamente** o **MUI X Data Grid** e se possível utilizar a **Tanstack table**.
 
-src/
+Não utilizar:
 
-├── app/
-│
-├── components/
-│ ├── ui/
-│ ├── layouts/
-│ ├── shared/
-│
-├── features/
-│ ├── auth/
-│ │ ├── components/
-│ │ ├── hooks/
-│ │ ├── services/
-│ │ ├── schemas/
-│ │ ├── types/
-│ │ ├── store/
-│ │ └── pages/
-│ │
-│ ├── users/
-│ │ ├── components/
-│ │ ├── hooks/
-│ │ ├── services/
-│ │ ├── schemas/
-│ │ ├── types/
-│ │ ├── store/
-│ │ └── pages/
-│
-├── services/
-│ ├── api/
-│ │ ├── client.ts
-│ │ ├── endpoints.ts
-│ │ ├── interceptors.ts
-│ │ ├── types.ts
-│ │ └── config.ts
-│
-├── hooks/
-│
-├── lib/
-│
-├── providers/
-│
-├── store/
-│
-├── schemas/
-│
-├── types/
-│
-├── constants/
-│
-├── utils/
-│
-├── config/
-│
-└── middleware/
+- HTML Table
+- DataTables
+- AG Grid
+- tabelas customizadas
 
-# API Layer
+A Data Grid da MUI é o padrão oficial do projeto por oferecer:
 
-Criar uma camada centralizada para comunicação com o Laravel.
+- Virtualização nativa
+- Alta performance
+- Paginação Server-side
+- Ordenação Server-side
+- Filtros Server-side
+- Seleção de linhas
+- Agrupamentos
+- Column Pinning
+- Column Visibility
+- Column Resize
+- Exportação
+- Edição inline
+- Tree Data
+- Row Actions
+- Excelente acessibilidade
 
-Estrutura:
-
-services/api/
-
-client.ts
-endpoints.ts
-config.ts
-interceptors.ts
-
-Requisitos:
-
-* URL base através de variáveis de ambiente
-* suporte a múltiplos ambientes
-* suporte a versionamento da API
-* tratamento global de erros
-* tipagem completa
-* reutilização de requests
-* fácil troca futura para Axios ou Fetch
+Toda nova listagem deve ser construída sobre um componente reutilizável da aplicação.
 
 Exemplo:
 
-API_URL=https://api.meusistema.com
-API_VERSION=v1
+components/shared/DataGrid/
 
-Gerar automaticamente:
+Nunca instanciar diretamente o DataGrid da MUI em páginas.
 
-/api/v1/auth/login
-/api/v1/users
-/api/v1/customers
+Sempre criar ou reutilizar um wrapper interno da aplicação.
 
-# Autenticação
+---
 
-Preparar estrutura para:
+# Integração entre Shadcn e MUI
 
-* JWT
-* Sanctum
-* Passport
+Embora o projeto utilize o MUI X Data Grid, a identidade visual deve permanecer **100% alinhada ao Design System do Shadcn/UI**.
 
-Criar:
+O Data Grid deve ser customizado utilizando:
 
-* Auth Store (Zustand)
-* Auth Provider
-* Middleware
-* Persistência segura
-* Refresh Token preparado
+- Tailwind CSS quando possível
+- Theme Provider do MUI
+- CSS Variables
+- Tokens de cores do projeto
+- Variáveis do tema claro/escuro
 
-# Zustand
+O usuário nunca deve perceber visualmente que existem duas bibliotecas diferentes.
 
-Separar stores por domínio.
+O Data Grid deve seguir exatamente:
 
-Exemplo:
+- Tipografia
+- Espaçamentos
+- Border Radius
+- Sombras
+- Paleta de cores
+- Estados de Hover
+- Estados de Focus
+- Estados de Seleção
+- Dark Mode
+- Light Mode
 
-store/
-├── auth.store.ts
-├── user.store.ts
-├── app.store.ts
+Toda alteração de tema deve refletir automaticamente tanto nos componentes Shadcn quanto no MUI Data Grid.
 
-Evitar store global gigante.
+É proibido utilizar o tema padrão do Material Design.
 
-# SWR
+O Theme do MUI deve consumir os mesmos tokens utilizados pelo Tailwind e pelo Shadcn para manter consistência visual em toda a aplicação.
 
-Criar camada reutilizável:
+---
 
-hooks/
-├── useApi.ts
-├── usePaginatedApi.ts
-├── useInfiniteApi.ts
+# Wrapper da Data Grid
 
-Padronizar:
-
-* loading
-* error
-* mutate
-* cache
-
-# React Hook Form + Zod
-
-Criar integração padrão.
+Todo Data Grid deverá ser encapsulado em um componente reutilizável.
 
 Exemplo:
 
-schemas/
-├── login.schema.ts
-├── user.schema.ts
-
-Forms devem utilizar:
-
-* zodResolver
-* tipagem automática
-* mensagens de erro padronizadas
-
-# TanStack Table
-
-Criar uma tabela reutilizável enterprise.
-
-components/shared/DataTable/
-
-Suporte para:
-
-* paginação
-* busca
-* filtros
-* ordenação
-* loading
-* empty state
-* ações
-* seleção múltipla
-
-# Shadcn
-
-Instalar e configurar.
-
-Adicionar componentes base:
-
-* Button
-* Card
-* Dialog
-* Sheet
-* Dropdown
-* Popover
-* Select
-* Form
-* Table
-* Tabs
-* Tooltip
-* Badge
-* Skeleton
-* Alert
-* AlertDialog
-
-Criar tema consistente.
-
-# Next Themes
-
-Implementar:
-
-* Light Mode
-* Dark Mode
-* Theme Switcher
-
-Persistência automática.
-
-# Sonner
-
-Criar wrapper global.
-
-Exemplo:
-
-toast.success()
-toast.error()
-toast.warning()
-
-Padronizar mensagens.
-
-# Framer Motion
-
-Criar abstrações reutilizáveis:
-
-components/shared/animations/
-
-* FadeIn
-* SlideUp
-* SlideLeft
-* PageTransition
-
-# Layout
-
-Criar estrutura pronta para sistema administrativo.
-
-components/layouts/
-
-* AppLayout
-* AuthLayout
-* DashboardLayout
-
-Dashboard contendo:
-
-* Sidebar
-* Header
-* UserMenu
-* Breadcrumb
-* Content Area
-
-# Sidebar
-
-Sidebar colapsável.
-
-Suporte para:
-
-* ícones
-* grupos
-* submenu
-* permissões
-
-# Controle de Permissões
-
-Preparar estrutura:
-
-features/auth/permissions/
-
-Permitir:
-
-can()
-hasRole()
-hasPermission()
-
-# Variáveis de Ambiente
-
-Criar:
-
-.env.local
-.env.development
-.env.production
-
-Com tipagem.
-
-# ESLint e Qualidade
-
-Configurar:
-
-* eslint
-* prettier
-* husky
-* lint-staged
-
-Executar automaticamente:
-
-* lint
-* format
-* type-check
-
-Antes dos commits.
-
-# Docker
-
-Criar Dockerfile otimizado para desenvolvimento.
-
-Criar docker-compose.yml.
-
-Requisitos:
-
-* Hot Reload funcionando
-* Watch automático
-* Refletir alterações sem rebuild manual
-* Volume mapeado
-* Node_modules isolado
-
-Exemplo:
-
-docker compose up
-
-E qualquer alteração no frontend deve atualizar automaticamente.
-
-# Performance
-
-Configurar:
-
-* lazy loading
-* dynamic imports
-* memoização onde necessário
-* code splitting
-* otimizações nativas do Next
-
-# Providers
-
-Criar:
-
-providers/
-
-* ThemeProvider
-* AuthProvider
-* ToastProvider
-* SWRProvider
-
-Centralizados.
-
-# Tipagem
-
-Proibir:
-
-* any
-* unknown sem justificativa
-
-Criar tipagem forte para:
-
-* requests
-* responses
-* paginação
-* autenticação
-
-# Convenções
-
-Utilizar:
-
-ComponentName.tsx
-feature-name.service.ts
-feature-name.schema.ts
-feature-name.types.ts
-
-# Gerar
-
-1. Instalação de todas as dependências.
-2. Configuração completa.
-3. Estrutura de pastas.
-4. Arquivos iniciais.
-5. Providers.
-6. Layout principal.
-7. Sistema de autenticação base.
-8. API Client.
-9. Docker.
-10. Exemplo de módulo Auth.
-11. Exemplo de CRUD de Usuários.
-12. Exemplo de DataTable reutilizável.
-13. Exemplo de formulário com React Hook Form + Zod.
-14. Comentários explicando decisões arquiteturais.
-15. Projeto pronto para produção.
+components/shared/DataGrid/
+
+O wrapper será responsável por:
+
+- Configuração padrão
+- Tema
+- Internacionalização
+- Paginação
+- Loading
+- Empty State
+- Overlay
+- Toolbar
+- Column Menu
+- Persistência de colunas
+- Persistência de filtros
+- Persistência de ordenação
+- Integração com Server-side
+- Integração com Sonner
+- Integração com o tema da aplicação
+
+Nenhuma página deverá conhecer diretamente a implementação do MUI X Data Grid.
+
+Todas as páginas utilizarão exclusivamente o componente compartilhado da aplicação.

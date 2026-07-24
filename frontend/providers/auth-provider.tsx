@@ -7,12 +7,12 @@ import {
   type ReactNode,
 } from "react"
 import { useAuthStore } from "@/store/auth.store"
-import { api } from "@/services/api"
-import type { User } from "@/types"
+import { authService } from "@/features/auth/services/auth.service"
+import type { Admin } from "@/types"
 
 interface AuthContextData {
   isAuthenticated: boolean
-  user: User | null
+  admin: Admin | null
   isLoading: boolean
   logout: () => void
 }
@@ -21,25 +21,22 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const {
-    user,
+    admin,
     isAuthenticated,
     isLoading,
-    setUser,
+    setAdmin,
     setLoading,
     logout: storeLogout,
   } = useAuthStore()
 
   useEffect(() => {
     const token = localStorage.getItem("auth_token")
-    if (token && !user) {
+    if (token && !admin) {
       setLoading(true)
-      api
-        .get<User>("/auth/me")
-        .then((response) => setUser(response))
-        .catch(() => {
-          localStorage.removeItem("auth_token")
-          storeLogout()
-        })
+      authService
+        .me()
+        .then((response) => setAdmin(response))
+        .catch(storeLogout)
         .finally(() => setLoading(false))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        user,
+        admin,
         isLoading,
         logout: storeLogout,
       }}

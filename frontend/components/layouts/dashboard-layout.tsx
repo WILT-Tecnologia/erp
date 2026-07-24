@@ -1,7 +1,8 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { Sidebar } from "./sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "./sidebar"
 import { Header } from "./header"
 
 interface DashboardLayoutProps {
@@ -10,14 +11,12 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
         <Header />
-        <main className="flex-1 p-6">
-          {children}
-        </main>
-      </div>
-    </div>
+        <main className="flex-1 overflow-auto bg-background p-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

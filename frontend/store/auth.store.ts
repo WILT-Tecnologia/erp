@@ -1,63 +1,66 @@
+import { STORAGE_KEYS } from "@/constants"
+import { removeAuthCookie, setAuthCookie } from "@/lib/cookies"
+import type { Admin } from "@/types"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { User, AuthTokens } from "@/types"
-import { STORAGE_KEYS } from "@/constants"
 
 interface AuthState {
-  user: User | null
-  tokens: AuthTokens | null
+  admin: Admin | null
+  token: string | null
   isAuthenticated: boolean
   isLoading: boolean
+  hasHydrated: boolean
 
-  setUser: (user: User | null) => void
-  setTokens: (tokens: AuthTokens | null) => void
+  setAdmin: (admin: Admin | null) => void
   setLoading: (isLoading: boolean) => void
-  login: (user: User, tokens: AuthTokens) => void
+  setHasHydrated: (hasHydrated: boolean) => void
+  login: (admin: Admin, token: string) => void
   logout: () => void
-  updateUser: (user: Partial<User>) => void
+  updateAdmin: (admin: Partial<Admin>) => void
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: null,
-      tokens: null,
+      admin: null,
+      token: null,
       isAuthenticated: false,
       isLoading: false,
+      hasHydrated: false,
 
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
-
-      setTokens: (tokens) => set({ tokens }),
+      setAdmin: (admin) => set({ admin, isAuthenticated: !!admin }),
 
       setLoading: (isLoading) => set({ isLoading }),
 
-      login: (user, tokens) => {
-        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, tokens.access_token)
-        if (tokens.refresh_token) {
-          localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refresh_token)
-        }
-        set({ user, tokens, isAuthenticated: true, isLoading: false })
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
+
+      login: (admin, token) => {
+        localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token)
+        setAuthCookie(STORAGE_KEYS.AUTH_TOKEN, token)
+        set({ admin, token, isAuthenticated: true, isLoading: false })
       },
 
       logout: () => {
         localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN)
-        localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
-        localStorage.removeItem(STORAGE_KEYS.USER)
-        set({ user: null, tokens: null, isAuthenticated: false })
+        removeAuthCookie(STORAGE_KEYS.AUTH_TOKEN)
+        set({ admin: null, token: null, isAuthenticated: false })
       },
 
-      updateUser: (userData) =>
+      updateAdmin: (adminData) =>
         set((state) => ({
-          user: state.user ? { ...state.user, ...userData } : null,
+          admin: state.admin ? { ...state.admin, ...adminData } : null,
         })),
     }),
     {
       name: STORAGE_KEYS.USER,
       partialize: (state) => ({
-        user: state.user,
-        tokens: state.tokens,
+        admin: state.admin,
+        token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
     }
   )
 )

@@ -1,26 +1,20 @@
 import { api } from "@/services/api"
-import type { User, AuthTokens, LoginCredentials } from "@/types"
+import { API_ENDPOINTS } from "@/constants"
+import type { Admin, LoginCredentials, LoginResponse } from "@/types"
 
 export const authService = {
   async login(credentials: LoginCredentials) {
-    const response = await api.post<{
-      user: User
-      tokens: AuthTokens
-    }>("/auth/login", credentials)
-    return response
+    return api.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials, {
+      skipAuth: true,
+    })
   },
 
   async logout() {
-    return api.post("/auth/logout")
+    return api.post(API_ENDPOINTS.AUTH.LOGOUT)
   },
 
   async me() {
-    return api.get<User>("/auth/me")
-  },
-
-  async refreshToken(refreshToken: string) {
-    return api.post<AuthTokens>("/auth/refresh", {
-      refresh_token: refreshToken,
-    })
+    const response = await api.get<{ data: Admin }>(API_ENDPOINTS.AUTH.ME)
+    return response.data
   },
 }

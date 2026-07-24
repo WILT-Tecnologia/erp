@@ -15,8 +15,8 @@ services:
       - /app/.next
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-      - NEXT_PUBLIC_API_VERSION=v1
+      - NEXT_PUBLIC_API_URL=http://localhost:8989
+      - NEXT_PUBLIC_API_VERSION=
       - NEXT_PUBLIC_APP_NAME=ERP Sistema
       - NEXT_PUBLIC_APP_ENV=development
     command: npm run dev

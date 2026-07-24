@@ -2,27 +2,26 @@
 
 import { useAuthStore } from "@/store/auth.store"
 
+/**
+ * A API central hoje não expõe roles/permissions para o Admin (apenas
+ * autenticação via Sanctum). Este hook fica pronto para plugar um sistema
+ * de papéis quando o backend passar a retorná-los em `/admin/me`.
+ */
 export function usePermissions() {
-  const user = useAuthStore((state) => state.user)
+  const admin = useAuthStore((state) => state.admin)
 
-  const hasRole = (role: string): boolean => {
-    return user?.roles?.includes(role) ?? false
-  }
+  const hasRole = (): boolean => false
 
-  const hasPermission = (permission: string): boolean => {
-    return user?.permissions?.includes(permission) ?? false
-  }
+  const hasPermission = (): boolean => false
 
-  const can = (action: string, resource?: string): boolean => {
-    const permission = resource ? `${resource}:${action}` : action
-    return hasPermission(permission)
-  }
+  const can = (): boolean => false
 
   return {
     hasRole,
     hasPermission,
     can,
-    roles: user?.roles ?? [],
-    permissions: user?.permissions ?? [],
+    roles: [] as string[],
+    permissions: [] as string[],
+    isAuthenticated: !!admin,
   }
 }
