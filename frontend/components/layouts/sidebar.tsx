@@ -1,23 +1,9 @@
 "use client"
 
+import { useMemo } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import {
-  LayoutDashboard,
-  Building2,
-  Church,
-  Home,
-  Users,
-  Users2,
-  GitBranch,
-  CalendarDays,
-  Wallet,
-  BarChart3,
-  Target,
-  UserCog,
-  Settings,
-  ChevronRight,
-} from "lucide-react"
+import { Church, ChevronRight } from "lucide-react"
 import {
   Sidebar as SidebarPrimitive,
   SidebarContent,
@@ -29,61 +15,132 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { useAuth } from "@/providers/auth-provider"
+import { usePermissions } from "@/features/auth/permissions"
+import { useSidebarRoutes } from "@/features/menu-routes/hooks/useSidebarRoutes"
+import { LucideIcon } from "@/features/menu-routes/components/icon-picker"
+import type { MenuRoute } from "@/types"
 
-interface NavItem {
-  label: string
-  href: string
-  icon: React.ComponentType<{ className?: string }>
+function isActiveOrHasActiveDescendant(
+  route: MenuRoute,
+  pathname: string
+): boolean {
+  if (pathname === route.slug || pathname.startsWith(`${route.slug}/`))
+    return true
+  return route.children.some((child) =>
+    isActiveOrHasActiveDescendant(child, pathname)
+  )
 }
 
-interface NavGroup {
-  label: string
-  items: NavItem[]
+function filterVisibleRoutes(
+  routes: MenuRoute[],
+  hasAnyPermission: (names: string[]) => boolean
+): MenuRoute[] {
+  return routes
+    .map((route) => {
+      const children = filterVisibleRoutes(route.children, hasAnyPermission)
+      const isVisible = hasAnyPermission(route.permissions.map((p) => p.name))
+      if (!isVisible && children.length === 0) return null
+      return { ...route, children }
+    })
+    .filter((route): route is MenuRoute => route !== null)
 }
 
-const navGroups: NavGroup[] = [
-  {
-    label: "Principal",
-    items: [{ label: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
-  },
-  {
-    label: "Gestão",
-    items: [
-      { label: "Organizações", href: "/organizations", icon: Building2 },
-      { label: "Igrejas", href: "/churches", icon: Church },
-      { label: "Congregações", href: "/congregations", icon: Home },
-      { label: "Membros", href: "/members", icon: Users },
-      { label: "Famílias", href: "/families", icon: Users2 },
-      { label: "Departamentos", href: "/departments", icon: GitBranch },
-      { label: "Eventos", href: "/events", icon: CalendarDays },
-    ],
-  },
-  {
-    label: "Financeiro",
-    items: [
-      { label: "Financeiro", href: "/financial", icon: Wallet },
-      { label: "Relatórios", href: "/reports", icon: BarChart3 },
-    ],
-  },
-  {
-    label: "CRM",
-    items: [{ label: "Pipeline CRM", href: "/crm", icon: Target }],
-  },
-  {
-    label: "Administração",
-    items: [
-      { label: "Administradores", href: "/admins", icon: UserCog },
-      { label: "Usuários", href: "/users", icon: Users },
-      { label: "Configurações", href: "/settings", icon: Settings },
-    ],
-  },
-]
+function groupByCategory(routes: MenuRoute[]): Map<string, MenuRoute[]> {
+  const groups = new Map<string, MenuRoute[]>()
+  for (const route of routes) {
+    const group = groups.get(route.category) ?? []
+    group.push(route)
+    groups.set(route.category, group)
+  }
+  return groups
+}
+
+function MenuRouteNode({
+  route,
+  pathname,
+  depth = 0,
+}: {
+  route: MenuRoute
+  pathname: string
+  depth?: number
+}) {
+  const isActive = pathname === route.slug
+  const hasActiveDescendant = isActiveOrHasActiveDescendant(route, pathname)
+
+  if (route.children.length > 0) {
+    const ItemComp = depth === 0 ? SidebarMenuItem : SidebarMenuSubItem
+    const ButtonComp = depth === 0 ? SidebarMenuButton : SidebarMenuSubButton
+
+    return (
+      <Collapsible
+        defaultOpen={hasActiveDescendant}
+        className="group/collapsible"
+      >
+        <ItemComp>
+          <CollapsibleTrigger asChild>
+            <ButtonComp isActive={isActive} className="cursor-pointer">
+              <LucideIcon name={route.icon} className="size-4" />
+              <span>{route.title}</span>
+              <ChevronRight className="ml-auto size-3.5 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+            </ButtonComp>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {route.children.map((child) => (
+                <MenuRouteNode
+                  key={child.id}
+                  route={child}
+                  pathname={pathname}
+                  depth={depth + 1}
+                />
+              ))}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </ItemComp>
+      </Collapsible>
+    )
+  }
+
+  const ItemComp = depth === 0 ? SidebarMenuItem : SidebarMenuSubItem
+  const ButtonComp = depth === 0 ? SidebarMenuButton : SidebarMenuSubButton
+
+  return (
+    <ItemComp>
+      <ButtonComp asChild isActive={isActive} tooltip={route.title}>
+        <Link href={route.slug}>
+          <LucideIcon name={route.icon} className="size-4" />
+          <span>{route.title}</span>
+        </Link>
+      </ButtonComp>
+    </ItemComp>
+  )
+}
 
 export function AppSidebar() {
   const pathname = usePathname()
   const { admin } = useAuth()
+  const { hasAnyPermission } = usePermissions()
+  const { routes, isLoading } = useSidebarRoutes()
+
+  const visibleRoutes = useMemo(
+    () => filterVisibleRoutes(routes, hasAnyPermission),
+    [routes, hasAnyPermission]
+  )
+
+  const groupedRoutes = useMemo(
+    () => groupByCategory(visibleRoutes),
+    [visibleRoutes]
+  )
 
   const initials = admin?.name
     ?.split(" ")
@@ -100,37 +157,38 @@ export function AppSidebar() {
             <Church className="size-4 text-white" />
           </div>
           <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-bold text-sidebar-foreground">ERP Sistema</span>
-            <span className="text-[11px] text-sidebar-foreground/50">Multi-Tenant SaaS</span>
+            <span className="text-sm font-bold text-sidebar-foreground">
+              ERP Sistema
+            </span>
+            <span className="text-[11px] text-sidebar-foreground/50">
+              Multi-Tenant SaaS
+            </span>
           </div>
         </div>
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        {navGroups.map((group) => (
-          <SidebarGroup key={group.label}>
-            <SidebarGroupLabel className="text-sidebar-foreground/40">
-              {group.label}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => {
-                  const isActive = pathname.startsWith(item.href)
-                  return (
-                    <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton asChild isActive={isActive} tooltip={item.label}>
-                        <Link href={item.href}>
-                          <item.icon className="size-4" />
-                          <span>{item.label}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  )
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+        {!isLoading &&
+          Array.from(groupedRoutes.entries()).map(
+            ([category, categoryRoutes]) => (
+              <SidebarGroup key={category}>
+                <SidebarGroupLabel className="text-sidebar-foreground/40">
+                  {category}
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <SidebarMenu>
+                    {categoryRoutes.map((route) => (
+                      <MenuRouteNode
+                        key={route.id}
+                        route={route}
+                        pathname={pathname}
+                      />
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            )
+          )}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border p-3">
@@ -142,7 +200,9 @@ export function AppSidebar() {
             <span className="truncate text-sm font-semibold text-sidebar-foreground">
               {admin?.name ?? "Usuário"}
             </span>
-            <span className="truncate text-[11px] text-sidebar-foreground/50">Administrador</span>
+            <span className="truncate text-[11px] text-sidebar-foreground/50">
+              Administrador
+            </span>
           </div>
           <ChevronRight className="size-3.5 shrink-0 text-sidebar-foreground/40 group-data-[collapsible=icon]:hidden" />
         </div>

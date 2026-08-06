@@ -8,8 +8,9 @@ FRONTEND_SERVICES := frontend
 help: ## Lista os comandos disponíveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-up: ## Sobe backend + frontend juntos (comando único)
-	docker compose up -d
+up: ## Sobe backend + frontend juntos (comando único) e acompanha os logs
+	docker compose up -d --build
+	docker compose logs -f --tail=100
 
 up-backend: ## Sobe somente o backend (db, redis, app, nginx, pgadmin)
 	docker compose up -d $(BACKEND_SERVICES)

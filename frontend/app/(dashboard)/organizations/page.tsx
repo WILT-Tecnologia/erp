@@ -30,14 +30,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, Pause, Play, Pencil, Trash2, Building2 } from "lucide-react"
+import {
+  MoreHorizontal,
+  Pause,
+  Play,
+  Pencil,
+  Trash2,
+  Building2,
+} from "lucide-react"
 import type { GridColDef } from "@mui/x-data-grid"
 import type { Organization } from "@/types"
 import { useOrganizations } from "@/features/organizations/hooks/useOrganizations"
 import { OrganizationForm } from "@/features/organizations/components/organization-form"
 import type { OrganizationFormData } from "@/schemas/organization.schema"
 
-const statusMap: Record<Organization["status"], { label: string; variant: "default" | "secondary" | "destructive" }> = {
+const statusMap: Record<
+  Organization["status"],
+  { label: string; variant: "default" | "secondary" | "destructive" }
+> = {
   active: { label: "Ativa", variant: "default" },
   suspended: { label: "Suspensa", variant: "destructive" },
   inactive: { label: "Inativa", variant: "secondary" },
@@ -61,11 +71,18 @@ export default function OrganizationsPage() {
     activateOrganization,
   } = useOrganizations()
 
-  const [drawer, setDrawer] = useState<{ open: boolean; organization: Organization | null }>({
+  const [drawer, setDrawer] = useState<{
+    open: boolean
+    organization: Organization | null
+  }>({
     open: false,
     organization: null,
   })
   const [deleting, setDeleting] = useState<Organization | null>(null)
+  const [blockers, setBlockers] = useState<{
+    congregations?: { id: string; name: string }[]
+    subscriptions?: { id: string; status: string }[]
+  } | null>(null)
   const [isPending, setIsPending] = useState(false)
 
   const handleSubmit = async (data: OrganizationFormData) => {
@@ -89,8 +106,22 @@ export default function OrganizationsPage() {
 
   const handleDelete = async () => {
     if (!deleting) return
-    await deleteOrganization(deleting.id)
-    setDeleting(null)
+    try {
+      await deleteOrganization(deleting.id)
+      setDeleting(null)
+    } catch (error) {
+      const err = error as {
+        body?: {
+          congregations?: { id: string; name: string }[]
+          subscriptions?: { id: string; status: string }[]
+        }
+      }
+      if (err.body?.congregations?.length || err.body?.subscriptions?.length) {
+        setBlockers(err.body)
+      } else {
+        setDeleting(null)
+      }
+    }
   }
 
   const columns: GridColDef<Organization>[] = [
@@ -105,8 +136,12 @@ export default function OrganizationsPage() {
             <Building2 className="size-4 text-white" />
           </div>
           <div className="min-w-0">
-            <div className="truncate text-sm font-medium">{params.row.name}</div>
-            <div className="truncate text-xs text-muted-foreground">{params.row.slug}</div>
+            <div className="truncate text-sm font-medium">
+              {params.row.name}
+            </div>
+            <div className="truncate text-xs text-muted-foreground">
+              {params.row.slug}
+            </div>
           </div>
         </div>
       ),
@@ -145,49 +180,59 @@ export default function OrganizationsPage() {
       field: "created_at",
       headerName: "Criada em",
       width: 130,
-      valueFormatter: (value: string) => new Date(value).toLocaleDateString("pt-BR"),
+      valueFormatter: (value: string) =>
+        new Date(value).toLocaleDateString("pt-BR"),
     },
     {
       field: "actions",
-      headerName: "Ações",
+      headerName: "",
       width: 80,
       sortable: false,
       filterable: false,
+      hideable: false,
       disableExport: true,
       renderCell: (params) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8">
-              <MoreHorizontal className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => setDrawer({ open: true, organization: params.row })}
-            >
-              <Pencil className="size-4" />
-              Editar
-            </DropdownMenuItem>
-            {params.row.status === "suspended" ? (
-              <DropdownMenuItem onClick={() => activateOrganization(params.row.id)}>
-                <Play className="size-4" />
-                Reativar
+        <div className="row-actions flex h-full items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() =>
+                  setDrawer({ open: true, organization: params.row })
+                }
+              >
+                <Pencil className="size-4" />
+                Editar
               </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem onClick={() => suspendOrganization(params.row.id)}>
-                <Pause className="size-4" />
-                Suspender
+              {params.row.status === "suspended" ? (
+                <DropdownMenuItem
+                  onClick={() => activateOrganization(params.row.id)}
+                >
+                  <Play className="size-4" />
+                  Reativar
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => suspendOrganization(params.row.id)}
+                >
+                  <Pause className="size-4" />
+                  Suspender
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
+                className="text-destructive transition-colors hover:bg-destructive/10 focus:text-destructive"
+                onClick={() => setDeleting(params.row)}
+              >
+                <Trash2 className="size-4" />
+                Excluir
               </DropdownMenuItem>
-            )}
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => setDeleting(params.row)}
-            >
-              <Trash2 className="size-4" />
-              Excluir
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       ),
     },
   ]
@@ -200,7 +245,9 @@ export default function OrganizationsPage() {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Organizações</h1>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Organizações
+              </h1>
               <p className="mt-1 text-muted-foreground">
                 Gerencie os tenants (organizações) do sistema
               </p>
@@ -255,24 +302,80 @@ export default function OrganizationsPage() {
         </SheetContent>
       </Sheet>
 
-      <AlertDialog open={!!deleting} onOpenChange={(open) => !open && setDeleting(null)}>
+      <AlertDialog
+        open={!!deleting}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleting(null)
+            setBlockers(null)
+          }
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
-              Esta ação não pode ser desfeita. A organização{" "}
-              <strong>{deleting?.name}</strong> será marcada como removida (o schema é
-              mantido para auditoria).
+            <AlertDialogDescription asChild>
+              <div>
+                {blockers ? (
+                  <div className="space-y-3">
+                    <p>
+                      A organização <strong>{deleting?.name}</strong> possui
+                      dependências e não pode ser removida enquanto elas
+                      existirem:
+                    </p>
+                    {!!blockers.congregations?.length && (
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold uppercase text-muted-foreground">
+                          Congregações
+                        </p>
+                        {blockers.congregations.map((c) => (
+                          <div
+                            key={c.id}
+                            className="rounded-md border px-3 py-2 text-sm text-foreground"
+                          >
+                            {c.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!!blockers.subscriptions?.length && (
+                      <div className="space-y-1">
+                        <p className="text-xs font-semibold uppercase text-muted-foreground">
+                          Assinaturas
+                        </p>
+                        {blockers.subscriptions.map((s) => (
+                          <div
+                            key={s.id}
+                            className="rounded-md border px-3 py-2 text-sm text-foreground"
+                          >
+                            Assinatura ({s.status})
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <span>
+                    Esta ação não pode ser desfeita. A organização{" "}
+                    <strong>{deleting?.name}</strong> será marcada como removida
+                    (o schema é mantido para auditoria).
+                  </span>
+                )}
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Excluir
-            </AlertDialogAction>
+            <AlertDialogCancel>
+              {blockers ? "Fechar" : "Cancelar"}
+            </AlertDialogCancel>
+            {!blockers && (
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Excluir
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

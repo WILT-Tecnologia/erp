@@ -12,6 +12,7 @@ export const ROUTES = {
   ADMINS_EDIT: (id: string) => `/admins/${id}/edit`,
   ADMINS_SHOW: (id: string) => `/admins/${id}`,
   ORGANIZATIONS: "/organizations",
+  MENU_ROUTES: "/global-services/menu-routes",
 } as const
 
 export const API_ENDPOINTS = {
@@ -27,4 +28,18 @@ export const API_ENDPOINTS = {
   ORGANIZATION_SUSPEND: (id: string) => `/admin/organizations/${id}/suspend`,
   ORGANIZATION_ACTIVATE: (id: string) => `/admin/organizations/${id}/activate`,
   PLANS: "/admin/plans",
+  PLAN: (id: string) => `/admin/plans/${id}`,
+  PERMISSION_DEFINITIONS: "/admin/permission-definitions",
+  PERMISSION_DEFINITION: (id: string) => `/admin/permission-definitions/${id}`,
+  MENU_ROUTES: "/admin/menu-routes",
+  MENU_ROUTE: (id: string) => `/admin/menu-routes/${id}`,
+  MENU_ROUTES_TREE: "/admin/menu-routes/tree",
+  DASHBOARD_STATS: "/admin/dashboard/stats",
+  CONTACTS: "/admin/contacts",
+  CONTACT: (id: string) => `/admin/contacts/${id}`,
+  CONTACT_ACTIVITIES: (contactId: string) =>
+    `/admin/contacts/${contactId}/activities`,
+  CONTACT_TASKS: (contactId: string) => `/admin/contacts/${contactId}/tasks`,
+  CONTACT_TASK: (contactId: string, taskId: string) =>
+    `/admin/contacts/${contactId}/tasks/${taskId}`,
 } as const

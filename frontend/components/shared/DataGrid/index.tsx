@@ -88,7 +88,10 @@ function Toolbar({
           <GridToolbarQuickFilter
             className="!m-0 w-full max-w-[280px]"
             slotProps={{
-              root: { placeholder: searchPlaceholder ?? "Pesquisar...", size: "small" },
+              root: {
+                placeholder: searchPlaceholder ?? "Pesquisar...",
+                size: "small",
+              },
             }}
           />
         )}
@@ -166,9 +169,18 @@ export function DataGridWrapper<T extends GridValidRowModel>({
         />
       ),
       noRowsOverlay: () => <EmptyState message={emptyMessage} />,
-      noResultsOverlay: () => <EmptyState message="Nenhum resultado para o filtro aplicado" />,
+      noResultsOverlay: () => (
+        <EmptyState message="Nenhum resultado para o filtro aplicado" />
+      ),
     }),
-    [newLabel, onNew, emptyMessage, searchValue, onSearchChange, searchPlaceholder]
+    [
+      newLabel,
+      onNew,
+      emptyMessage,
+      searchValue,
+      onSearchChange,
+      searchPlaceholder,
+    ]
   )
 
   return (
@@ -209,6 +221,19 @@ export function DataGridWrapper<T extends GridValidRowModel>({
         columnVisibilityModel={persisted.columnVisibilityModel}
         onColumnVisibilityModelChange={persisted.setColumnVisibilityModel}
         sx={{
+          "& [data-field='actions']": {
+            position: "sticky",
+            right: 0,
+            zIndex: 1,
+            backgroundColor: "var(--card)",
+            "& .row-actions": {
+              opacity: 0,
+              transition: "opacity 120ms ease",
+            },
+          },
+          "& .MuiDataGrid-row:hover [data-field='actions'] .row-actions": {
+            opacity: 1,
+          },
           border: "none",
           fontFamily: "var(--font-inter), system-ui, sans-serif",
           "--DataGrid-rowBorderColor": "var(--border)",

@@ -107,3 +107,107 @@ export interface Organization {
   created_at: string
   updated_at: string
 }
+
+export interface PermissionDefinition {
+  id: string
+  name: string
+  label: string
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ContactStage =
+  "novo" | "contato" | "qualificado" | "proposta" | "ganho" | "perdido"
+
+export interface ContactActivity {
+  id: string
+  type: "whatsapp" | "call" | "email" | "note"
+  text: string
+  user: string | null
+  occurred_at: string | null
+}
+
+export interface ContactTask {
+  id: string
+  label: string
+  due_date: string | null
+  done: boolean
+}
+
+export interface Contact {
+  id: string
+  organization_id: string
+  name: string
+  email: string | null
+  phone: string | null
+  assignee: string | null
+  status: ContactStage
+  value: number
+  tags: string[]
+  notes: string | null
+  activities: ContactActivity[]
+  tasks: ContactTask[]
+  created_at: string
+  updated_at: string
+}
+
+export type DashboardPeriod = "week" | "month" | "quarter" | "year" | "custom"
+
+export interface DashboardGrowthPoint {
+  month: string
+  total: number
+}
+
+export interface DashboardRevenueExpensePoint {
+  month: string
+  revenue: number
+  expense: number
+}
+
+export interface DashboardActivity {
+  id: string
+  type: "organization" | "admin" | "subscription"
+  text: string
+  created_at: string | null
+}
+
+export interface DashboardRecentUser {
+  name: string
+  created_at: string | null
+  organization: string
+}
+
+export interface DashboardStats {
+  admins_count: number
+  common_users_count: number
+  organizations_count: number
+  active_organizations_count: number
+  active_congregations_count: number
+  plans_count: number
+  revenue_month: number
+  churn_amount: number
+  past_due_amount: number
+  balance_month: number
+  growth: DashboardGrowthPoint[]
+  revenue_expense_trend: DashboardRevenueExpensePoint[]
+  recent_activities: DashboardActivity[]
+  recent_users: DashboardRecentUser[]
+  period: { from: string; to: string }
+}
+
+export interface MenuRoute {
+  id: string
+  title: string
+  slug: string
+  icon: string | null
+  category: string
+  sort_order: number
+  parent_id: string | null
+  is_active: boolean
+  permissions: PermissionDefinition[]
+  children: MenuRoute[]
+  children_count: number | null
+  created_at: string
+  updated_at: string
+}

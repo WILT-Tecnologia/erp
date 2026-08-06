@@ -2,7 +2,13 @@
 
 use App\Http\Controllers\Central\AdminController;
 use App\Http\Controllers\Central\AuthController;
+use App\Http\Controllers\Central\ContactActivityController;
+use App\Http\Controllers\Central\ContactController;
+use App\Http\Controllers\Central\ContactTaskController;
+use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\MenuRouteController;
 use App\Http\Controllers\Central\OrganizationController;
+use App\Http\Controllers\Central\PermissionDefinitionController;
 use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\PublicPlanController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +29,8 @@ Route::prefix('admin')->group(function () {
         Route::get('me', [AuthController::class,'me']);
         Route::post('logout', [AuthController::class, 'logout']);
 
+        Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('plans', PlanController::class);
 
@@ -30,5 +38,15 @@ Route::prefix('admin')->group(function () {
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
+
+        Route::apiResource('permission-definitions', PermissionDefinitionController::class);
+
+        Route::get('menu-routes/tree', [MenuRouteController::class, 'tree']);
+        Route::apiResource('menu-routes', MenuRouteController::class);
+
+        Route::apiResource('contacts', ContactController::class);
+        Route::post('contacts/{contact}/activities', [ContactActivityController::class, 'store']);
+        Route::post('contacts/{contact}/tasks', [ContactTaskController::class, 'store']);
+        Route::patch('contacts/{contact}/tasks/{task}', [ContactTaskController::class, 'update']);
     });
 });

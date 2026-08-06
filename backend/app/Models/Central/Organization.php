@@ -104,6 +104,11 @@ class Organization extends BaseTenant implements TenantWithDatabase
         return $this->hasMany(Subscription::class);
      }
 
+     public function congregations(): HasMany
+     {
+        return $this->hasMany(Congregation::class);
+     }
+
      /* ---------- Scopes ---------- */
 
      public function scopeActive($query)

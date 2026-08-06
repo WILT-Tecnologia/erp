@@ -90,11 +90,27 @@ class OrganizationController extends Controller
     /**
      * Soft delete: suspende e marca como deletada.
      * O schema permanece no banco para auditoria.
+     *
+     * Bloqueado se houver congregações ou assinaturas ativas/em atraso
+     * vinculadas — o admin precisa resolver essas dependências antes.
      */
     public function destroy(
         Organization $organization,
         DeleteOrganizationAction $action,
     ): JsonResponse {
+        $congregations = $organization->congregations()->get(['congregations.id', 'congregations.name']);
+        $subscriptions = $organization->subscriptions()
+            ->whereIn('status', ['active', 'past_due', 'trialing'])
+            ->get(['subscriptions.id', 'subscriptions.status']);
+
+        if ($congregations->isNotEmpty() || $subscriptions->isNotEmpty()) {
+            return response()->json([
+                'message' => 'Esta organização possui congregações ou assinaturas vinculadas e não pode ser removida.',
+                'congregations' => $congregations,
+                'subscriptions' => $subscriptions,
+            ], 422);
+        }
+
         $action->softDelete($organization);
 
         return response()->json(null, 204);

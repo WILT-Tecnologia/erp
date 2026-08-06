@@ -3,8 +3,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Stancl\Tenancy\Middleware\IdentificationMiddleware;
-use Stancl\Tenancy\Resolvers\PathTenantResolver;
-use App\Models\Central\Tenant;
+use App\Models\Central\Organization;
 use Symfony\Component\HttpFoundation\Response;
 
 class InitializeTenancyByHeader extends IdentificationMiddleware
@@ -15,7 +14,7 @@ class InitializeTenancyByHeader extends IdentificationMiddleware
 
         abort_if(! $tenantId, 400, 'Header X-Tenant-Id é obrigatório.');
 
-        $tenant = Tenant::find($tenantId);
+        $tenant = Organization::find($tenantId);
         abort_if(! $tenant, 404, 'Tenant não encontrado.');
 
         tenancy()->initialize($tenant);

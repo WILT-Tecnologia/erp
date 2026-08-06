@@ -34,7 +34,14 @@ const newLeadSchema = z.object({
   email: z.string().email("E-mail inválido").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
   assignee: z.string().min(1, "Selecione um responsável"),
-  status: z.enum(["novo", "contato", "qualificado", "proposta", "ganho", "perdido"]),
+  status: z.enum([
+    "novo",
+    "contato",
+    "qualificado",
+    "proposta",
+    "ganho",
+    "perdido",
+  ]),
   value: z.coerce.number().min(0).default(0),
   tags: z.string().optional().or(z.literal("")),
 })
@@ -44,7 +51,9 @@ export type NewLeadFormData = z.input<typeof newLeadSchema>
 interface NewLeadSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  organizationId: string
   onSubmit: (data: {
+    organization_id: string
     name: string
     email: string
     phone: string
@@ -55,9 +64,20 @@ interface NewLeadSheetProps {
   }) => void
 }
 
-const ASSIGNEES = ["Pastor Carlos", "Diácono João", "Evangelista Ana", "Secretária Maria", "Tesoureiro Carlos"]
+const ASSIGNEES = [
+  "Pastor Carlos",
+  "Diácono João",
+  "Evangelista Ana",
+  "Secretária Maria",
+  "Tesoureiro Carlos",
+]
 
-export function NewLeadSheet({ open, onOpenChange, onSubmit }: NewLeadSheetProps) {
+export function NewLeadSheet({
+  open,
+  onOpenChange,
+  organizationId,
+  onSubmit,
+}: NewLeadSheetProps) {
   const form = useForm<NewLeadFormData>({
     resolver: zodResolver(newLeadSchema),
     defaultValues: {
@@ -73,6 +93,7 @@ export function NewLeadSheet({ open, onOpenChange, onSubmit }: NewLeadSheetProps
 
   const handleSubmit = (data: NewLeadFormData) => {
     onSubmit({
+      organization_id: organizationId,
       name: data.name,
       email: data.email ?? "",
       phone: data.phone ?? "",
@@ -94,10 +115,15 @@ export function NewLeadSheet({ open, onOpenChange, onSubmit }: NewLeadSheetProps
       <SheetContent className="w-full max-w-md sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Novo Lead / Contato</SheetTitle>
-          <SheetDescription>Adicione um novo contato ao pipeline.</SheetDescription>
+          <SheetDescription>
+            Adicione um novo contato ao pipeline.
+          </SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-6 space-y-4">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="mt-6 space-y-4"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -118,7 +144,11 @@ export function NewLeadSheet({ open, onOpenChange, onSubmit }: NewLeadSheetProps
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="email@exemplo.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="email@exemplo.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,7 +240,10 @@ export function NewLeadSheet({ open, onOpenChange, onSubmit }: NewLeadSheetProps
                 <FormItem>
                   <FormLabel>Tags (separadas por vírgula)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Família, Jovem, Evangelização" {...field} />
+                    <Input
+                      placeholder="Ex: Família, Jovem, Evangelização"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

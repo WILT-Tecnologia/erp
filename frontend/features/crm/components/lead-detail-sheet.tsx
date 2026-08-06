@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
@@ -24,44 +25,63 @@ import {
   Mail,
   Phone,
   CheckSquare,
-  Clock,
+  Square,
   MessageSquare,
   Tag,
+  Plus,
 } from "lucide-react"
-import { STAGES, type CRMLead, type LeadStage } from "../types"
+import { STAGES, type LeadStage } from "../types"
+import type { Contact } from "@/types"
 
 interface LeadDetailSheetProps {
-  lead: CRMLead | null
+  contact: Contact | null
   onClose: () => void
   onChangeStage: (id: string, stage: LeadStage) => void
   onSaveNote: (id: string, note: string) => void
+  onAddActivity: (id: string, text: string) => void
+  onAddTask: (id: string, label: string) => void
+  onToggleTask: (id: string, taskId: string, done: boolean) => void
 }
 
 export function LeadDetailSheet({
-  lead,
+  contact,
   onClose,
   onChangeStage,
   onSaveNote,
+  onAddActivity,
+  onAddTask,
+  onToggleTask,
 }: LeadDetailSheetProps) {
-  const [note, setNote] = useState(lead?.notes ?? "")
+  const [note, setNote] = useState(contact?.notes ?? "")
+  const [newActivity, setNewActivity] = useState("")
+  const [newTask, setNewTask] = useState("")
 
-  if (!lead) return null
-  const stage = STAGES.find((s) => s.id === lead.status)!
+  if (!contact) return null
+  const stage = STAGES.find((s) => s.id === contact.status)!
 
   return (
-    <Sheet open={!!lead} onOpenChange={(open) => !open && onClose()}>
+    <Sheet
+      open={!!contact}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+    >
       <SheetContent className="w-full max-w-lg overflow-y-auto sm:max-w-lg">
         <SheetHeader>
           <div className="mb-1 flex items-center gap-2">
-            <Badge style={{ backgroundColor: stage.colorVar, color: "white" }}>{stage.label}</Badge>
-            {lead.value > 0 && (
+            <Badge style={{ backgroundColor: stage.colorVar, color: "white" }}>
+              {stage.label}
+            </Badge>
+            {contact.value > 0 && (
               <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                R$ {lead.value.toLocaleString("pt-BR")}
+                R$ {contact.value.toLocaleString("pt-BR")}
               </span>
             )}
           </div>
-          <SheetTitle>{lead.name}</SheetTitle>
-          <SheetDescription>Responsável: {lead.assignee}</SheetDescription>
+          <SheetTitle>{contact.name}</SheetTitle>
+          <SheetDescription>
+            Responsável: {contact.assignee ?? "—"}
+          </SheetDescription>
         </SheetHeader>
 
         <Tabs defaultValue="info" className="mt-4">
@@ -77,23 +97,27 @@ export function LeadDetailSheet({
                 <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Mail className="size-3" /> E-mail
                 </div>
-                <div className="truncate text-sm font-medium">{lead.email}</div>
+                <div className="truncate text-sm font-medium">
+                  {contact.email ?? "—"}
+                </div>
               </div>
               <div className="rounded-lg border bg-muted/40 p-3">
                 <div className="mb-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Phone className="size-3" /> Telefone
                 </div>
-                <div className="text-sm font-medium">{lead.phone}</div>
+                <div className="text-sm font-medium">
+                  {contact.phone ?? "—"}
+                </div>
               </div>
             </div>
 
-            {lead.tags.length > 0 && (
+            {contact.tags.length > 0 && (
               <div>
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   Tags
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {lead.tags.map((tag) => (
+                  {contact.tags.map((tag) => (
                     <Badge key={tag} variant="outline" className="gap-1">
                       <Tag className="size-2.5" />
                       {tag}
@@ -108,8 +132,10 @@ export function LeadDetailSheet({
                 Atualizar estágio
               </div>
               <Select
-                value={lead.status}
-                onValueChange={(value) => onChangeStage(lead.id, value as LeadStage)}
+                value={contact.status}
+                onValueChange={(value) =>
+                  onChangeStage(contact.id, value as LeadStage)
+                }
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -138,7 +164,7 @@ export function LeadDetailSheet({
                 size="sm"
                 className="mt-2"
                 onClick={() => {
-                  onSaveNote(lead.id, note)
+                  onSaveNote(contact.id, note)
                   toast.success("Nota salva")
                 }}
               >
@@ -147,14 +173,38 @@ export function LeadDetailSheet({
             </div>
           </TabsContent>
 
-          <TabsContent value="atividades">
-            {lead.activities.length === 0 ? (
+          <TabsContent value="atividades" className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Registrar uma atividade..."
+                value={newActivity}
+                onChange={(e) => setNewActivity(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newActivity.trim()) {
+                    onAddActivity(contact.id, newActivity.trim())
+                    setNewActivity("")
+                  }
+                }}
+              />
+              <Button
+                size="icon"
+                variant="outline"
+                disabled={!newActivity.trim()}
+                onClick={() => {
+                  onAddActivity(contact.id, newActivity.trim())
+                  setNewActivity("")
+                }}
+              >
+                <Plus className="size-4" />
+              </Button>
+            </div>
+            {contact.activities.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 Nenhuma atividade registrada ainda.
               </p>
             ) : (
               <div className="space-y-4">
-                {lead.activities.map((a) => (
+                {contact.activities.map((a) => (
                   <div key={a.id} className="flex gap-3">
                     <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10">
                       <MessageSquare className="size-3.5 text-primary" />
@@ -162,7 +212,10 @@ export function LeadDetailSheet({
                     <div>
                       <div className="text-sm">{a.text}</div>
                       <div className="mt-0.5 text-xs text-muted-foreground">
-                        {a.date} · {a.user}
+                        {a.occurred_at
+                          ? new Date(a.occurred_at).toLocaleString("pt-BR")
+                          : "—"}
+                        {a.user ? ` · ${a.user}` : ""}
                       </div>
                     </div>
                   </div>
@@ -171,29 +224,59 @@ export function LeadDetailSheet({
             )}
           </TabsContent>
 
-          <TabsContent value="tarefas">
-            {lead.tasks.length === 0 ? (
+          <TabsContent value="tarefas" className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Nova tarefa..."
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newTask.trim()) {
+                    onAddTask(contact.id, newTask.trim())
+                    setNewTask("")
+                  }
+                }}
+              />
+              <Button
+                size="icon"
+                variant="outline"
+                disabled={!newTask.trim()}
+                onClick={() => {
+                  onAddTask(contact.id, newTask.trim())
+                  setNewTask("")
+                }}
+              >
+                <Plus className="size-4" />
+              </Button>
+            </div>
+            {contact.tasks.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 Nenhuma tarefa pendente.
               </p>
             ) : (
               <div className="space-y-2">
-                {lead.tasks.map((t) => (
-                  <div
+                {contact.tasks.map((t) => (
+                  <button
                     key={t.id}
-                    className="flex items-center gap-3 rounded-lg border bg-muted/40 p-3"
+                    onClick={() => onToggleTask(contact.id, t.id, !t.done)}
+                    className="flex w-full items-center gap-3 rounded-lg border bg-muted/40 p-3 text-left"
                   >
-                    <CheckSquare
-                      className={`size-4 ${t.done ? "text-emerald-500" : "text-muted-foreground/40"}`}
-                    />
-                    <div className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : ""}`}>
+                    {t.done ? (
+                      <CheckSquare className="size-4 text-emerald-500" />
+                    ) : (
+                      <Square className="size-4 text-muted-foreground/40" />
+                    )}
+                    <div
+                      className={`flex-1 text-sm ${t.done ? "text-muted-foreground line-through" : ""}`}
+                    >
                       {t.label}
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Clock className="size-3" />
-                      {t.due}
-                    </div>
-                  </div>
+                    {t.due_date && (
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(t.due_date).toLocaleDateString("pt-BR")}
+                      </div>
+                    )}
+                  </button>
                 ))}
               </div>
             )}

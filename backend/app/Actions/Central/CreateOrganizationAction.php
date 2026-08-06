@@ -37,7 +37,7 @@ class CreateOrganizationAction
             // Cria o primeiro usuário do tenant, se informado
             if (! empty($data['first_user'])) {
                 $organization->run(function () use ($data) {
-                    \App\Model\Tenant\User::create([
+                    \App\Models\Tenant\User::create([
                         'name' => $data['first_user']['name'],
                         'email' => $data['first_user']['email'],
                         'password' => $data['first_user']['password'],

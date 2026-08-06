@@ -47,6 +47,11 @@ return [
             'driver' => 'sanctum', // se estiver usando Sanctum
             'provider' => 'admins',
         ],
+
+        'api-tenant' => [
+            'driver' => 'sanctum',
+            'provider' => 'tenant_users',
+        ],
     ],
 
     /*
@@ -79,6 +84,11 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Central\Admin::class,
+        ],
+
+        'tenant_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Tenant\User::class,
         ],
     ],
 

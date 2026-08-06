@@ -4,6 +4,9 @@ FROM base AS deps
 WORKDIR /app
 COPY package-lock.json package.json ./
 RUN npm install --ignore-scripts
+COPY docker/entrypoint.dev.sh /usr/local/bin/entrypoint.dev.sh
+RUN chmod +x /usr/local/bin/entrypoint.dev.sh
+ENTRYPOINT ["entrypoint.dev.sh"]
 
 FROM base AS builder
 WORKDIR /app
