@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Central\AdminController;
 use App\Http\Controllers\Central\AuthController;
+use App\Http\Controllers\Central\DomainController;
 use App\Http\Controllers\Central\OrganizationController;
 use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\PublicPlanController;
@@ -30,5 +31,11 @@ Route::prefix('admin')->group(function () {
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
+
+        Route::prefix('organizations/{organization:slug}')->group(function () {
+            Route::apiResource('domains', DomainController::class);
+            Route::post('domains/{domain}/verify', [DomainController::class, 'verify']);
+            Route::post('domains/{domain}/make-primary', [DomainController::class, 'makePrimary']);
+        })
     });
 });
