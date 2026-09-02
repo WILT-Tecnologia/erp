@@ -36,6 +36,6 @@ Route::prefix('admin')->group(function () {
             Route::apiResource('domains', DomainController::class);
             Route::post('domains/{domain}/verify', [DomainController::class, 'verify']);
             Route::post('domains/{domain}/make-primary', [DomainController::class, 'makePrimary']);
-        })
+        });
     });
 });
