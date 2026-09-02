@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-medium">{{ organization()?.name ?? 'Organização' }}</h1>
+
+  @if (summary(); as s) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Igrejas</div>
+        <div class="text-2xl font-semibold">{{ s.churches }}</div>
+        <div class="text-xs text-on-surface/50">{{ s.congregations }} congregações</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Membros</div>
+        <div class="text-2xl font-semibold">{{ s.members }}</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Famílias / Departamentos</div>
+        <div class="text-2xl font-semibold">{{ s.families }} / {{ s.departments }}</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Saldo financeiro</div>
+        <div class="text-2xl font-semibold">{{ s.balance | currency: 'BRL' }}</div>
+        <div class="text-xs text-on-surface/50">{{ s.events }} eventos</div>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <mat-card class="p-4">
+        <h2 class="mb-4 font-medium">Saldo por conta</h2>
+        <canvas baseChart type="bar" [data]="balanceByAccountChartData"></canvas>
+      </mat-card>
+      <mat-card class="p-4">
+        <h2 class="mb-4 font-medium">Membros por status</h2>
+        <canvas baseChart type="bar" [data]="membersByStatusChartData"></canvas>
+      </mat-card>
+    </div>
+  } @else if (!loading()) {
+    <p class="text-on-surface/60">Não foi possível carregar os dados da organização.</p>
+  }
+</div>

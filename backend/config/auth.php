@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\User;
-
 return [
 
     /*
@@ -16,8 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => env('AUTH_GUARD', 'api-admin'),
     ],
 
     /*
@@ -38,9 +35,16 @@ return [
     */
 
     'guards' => [
+        // Laravel merges its own framework-default auth.php on top of this
+        // file for the 'guards'/'providers'/'passwords' keys specifically
+        // (Illuminate\Foundation\Bootstrap\LoadConfiguration), so a 'web'
+        // guard pointing at a 'users' provider always resolves even if not
+        // declared here. It's shadowed below instead of left dangling, so
+        // it can never fatal-error by resolving the (nonexistent)
+        // App\Models\User the framework default points at.
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'admins',
         ],
 
         'api-admin' => [
@@ -72,15 +76,14 @@ return [
     */
 
     'providers' => [
+        // Shadows the framework default 'users' provider (see comment on
+        // the 'web' guard above) so it can never resolve the nonexistent
+        // App\Models\User.
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => App\Models\Central\Admin::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Central\Admin::class,
@@ -111,14 +114,11 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-    ],
+    // Not used anywhere (no password-reset routes exist). Left empty here;
+    // the framework's default 'passwords.users' entry still gets merged
+    // back in regardless (see comment above), but it's harmless since it
+    // resolves through the now-safely-shadowed 'users' provider.
+    'passwords' => [],
 
     /*
     |--------------------------------------------------------------------------

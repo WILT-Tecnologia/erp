@@ -11,6 +11,8 @@ use App\Http\Controllers\Central\OrganizationController;
 use App\Http\Controllers\Central\PermissionDefinitionController;
 use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\PublicPlanController;
+use App\Http\Controllers\Central\TenantAccessController;
+use App\Http\Middleware\InitializeTenancyForAdmin;
 use Illuminate\Support\Facades\Route;
 
 // ────────────── PÚBLICAS ──────────────
@@ -38,6 +40,15 @@ Route::prefix('admin')->group(function () {
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
+
+        // Admin-to-tenant access: super admins entering a specific
+        // organization's schema. Scaffold group — real tenant business
+        // resources (churches, members, ...) get added under here later.
+        Route::prefix('organizations/{organization}')
+            ->middleware(InitializeTenancyForAdmin::class)
+            ->group(function () {
+                Route::get('tenant-context', [TenantAccessController::class, 'show']);
+            });
 
         Route::apiResource('permission-definitions', PermissionDefinitionController::class);
 

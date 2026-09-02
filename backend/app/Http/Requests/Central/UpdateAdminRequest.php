@@ -26,6 +26,7 @@ class UpdateAdminRequest extends FormRequest
             'locale'   => ['sometimes', 'nullable', 'string', 'max:10'],
             'timezone' => ['sometimes', 'nullable', 'string', 'max:60'],
             'status'   => ['sometimes', Rule::enum(AdminStatus::class)],
+            'is_super_admin' => ['sometimes', 'boolean'],
             'settings' => ['sometimes', 'nullable', 'array'],
         ];
     }

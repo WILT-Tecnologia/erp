@@ -36,4 +36,7 @@ else
     echo "No pending migrations, skipping."
 fi
 
+echo "Running tenant migrations..."
+php artisan tenants:migrate --force
+
 exec "$@"

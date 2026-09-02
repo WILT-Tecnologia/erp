@@ -1,0 +1,52 @@
+<div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-medium">Dashboard</h1>
+
+  @if (stats(); as s) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Organizações</div>
+        <div class="text-2xl font-semibold">{{ s.organizations_count }}</div>
+        <div class="text-xs text-on-surface/50">{{ s.active_organizations_count }} ativas</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Admins</div>
+        <div class="text-2xl font-semibold">{{ s.admins_count }}</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Receita do mês</div>
+        <div class="text-2xl font-semibold">{{ s.revenue_month | currency: 'BRL' }}</div>
+      </mat-card>
+      <mat-card class="p-4">
+        <div class="text-sm text-on-surface/60">Saldo do mês</div>
+        <div class="text-2xl font-semibold">{{ s.balance_month | currency: 'BRL' }}</div>
+      </mat-card>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <mat-card class="p-4">
+        <h2 class="mb-4 font-medium">Crescimento de organizações</h2>
+        <canvas baseChart type="line" [data]="growthChartData"></canvas>
+      </mat-card>
+      <mat-card class="p-4">
+        <h2 class="mb-4 font-medium">Receita x Churn</h2>
+        <canvas baseChart type="bar" [data]="revenueChartData"></canvas>
+      </mat-card>
+    </div>
+
+    <mat-card class="p-4">
+      <h2 class="mb-4 font-medium">Atividades recentes</h2>
+      <ul class="flex flex-col gap-2">
+        @for (activity of s.recent_activities; track activity.id) {
+          <li class="text-sm flex justify-between border-b border-outline/50 pb-2">
+            <span>{{ activity.text }}</span>
+            <span class="text-on-surface/50">{{ activity.created_at | date: 'short' }}</span>
+          </li>
+        } @empty {
+          <li class="text-sm text-on-surface/50">Nenhuma atividade recente.</li>
+        }
+      </ul>
+    </mat-card>
+  } @else if (!loading()) {
+    <p class="text-on-surface/60">Não foi possível carregar as estatísticas.</p>
+  }
+</div>

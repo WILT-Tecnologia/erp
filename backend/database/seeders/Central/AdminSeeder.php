@@ -17,6 +17,7 @@ class AdminSeeder extends Seeder
                 'password'          => Hash::make('password'),
                 'email_verified_at' => now(),
                 'status'            => AdminStatus::Active,
+                'is_super_admin'    => true,
                 'locale'            => 'pt-BR',
                 'timezone'          => 'America/Sao_Paulo',
             ]

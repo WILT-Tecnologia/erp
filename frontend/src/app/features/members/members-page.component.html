@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-medium">Membros</h1>
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Novo membro
+    </button>
+  </div>
+
+  <app-data-grid [columns]="columns" [data]="members()" [loading]="loading()" persistKey="members">
+    <ng-template #rowActions let-row>
+      <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="remove(row)" matTooltip="Excluir">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>

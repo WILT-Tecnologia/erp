@@ -1,0 +1,18 @@
+<mat-sidenav-container class="h-screen">
+  <mat-sidenav
+    [mode]="sidenavMode()"
+    [opened]="sidenavOpened()"
+    (openedChange)="mobileOpened.set($event)"
+    [style.width.px]="sidenavWidthPx()"
+    class="!border-r !border-outline !bg-surface-container transition-[width] duration-200"
+  >
+    <app-sidebar [collapsed]="collapsed()" (collapseToggle)="toggleCollapse()" (linkClick)="closeMobileMenu()"></app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="flex flex-col h-screen">
+    <app-header [showMenuButton]="isHandset()" (menuToggle)="toggleMobileMenu()"></app-header>
+    <main class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-surface">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

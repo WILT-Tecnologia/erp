@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar membro' : 'Novo membro' }}</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome completo</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Telefone</mat-label>
+      <input matInput formControlName="phone" mask="(00) 00000-0000" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Igreja</mat-label>
+      <input matInput formControlName="church" />
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Departamento</mat-label>
+        <input matInput formControlName="department" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="active">Ativo</mat-option>
+          <mat-option value="inactive">Inativo</mat-option>
+          <mat-option value="visitor">Visitante</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data de ingresso</mat-label>
+      <input matInput type="date" formControlName="joined_at" />
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit">Salvar</button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar departamento' : 'Novo departamento' }}</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" placeholder="Louvor e Adoração" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Igreja</mat-label>
+      <input matInput formControlName="church" placeholder="Igreja Central" />
+    </mat-form-field>
+
+    <div class="flex gap-3">
+      <mat-form-field appearance="outline" class="flex-1">
+        <mat-label>Líder</mat-label>
+        <input matInput formControlName="leader" placeholder="Ana Beatriz" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-32">
+        <mat-label>Membros</mat-label>
+        <input matInput type="number" min="0" formControlName="members" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descrição</mat-label>
+      <textarea matInput rows="3" formControlName="description" placeholder="Breve descrição do departamento"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="active">Ativo</mat-option>
+        <mat-option value="inactive">Inativo</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit">Salvar</button>
+  </mat-dialog-actions>
+</form>

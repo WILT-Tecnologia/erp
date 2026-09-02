@@ -1,0 +1,63 @@
+<div class="flex flex-col gap-3">
+  <div class="flex items-center justify-between gap-3">
+    <mat-form-field appearance="outline" class="w-full max-w-sm" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [ngModel]="searchTerm"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Buscar..."
+      />
+    </mat-form-field>
+    <ng-content select="[gridToolbarActions]"></ng-content>
+  </div>
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  <div class="overflow-x-auto border border-outline rounded-md">
+    <table mat-table [dataSource]="dataSource" matSort (matSortChange)="onSort($event)" class="w-full">
+      @for (column of columns; track column.key) {
+        <ng-container [matColumnDef]="column.key">
+          <th mat-header-cell *matHeaderCellDef [mat-sort-header]="column.sortable ? column.key : ''">
+            {{ column.label }}
+          </th>
+          <td mat-cell *matCellDef="let row">{{ valueFor(row, column) }}</td>
+        </ng-container>
+      }
+
+      @if (showActionsColumn) {
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Ações</th>
+          <td mat-cell *matCellDef="let row" class="text-right">
+            <ng-container
+              [ngTemplateOutlet]="rowActionsTemplate ?? null"
+              [ngTemplateOutletContext]="{ $implicit: row }"
+            ></ng-container>
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell p-4 text-center text-on-surface/60" [attr.colspan]="displayedColumns.length">
+          {{ emptyMessage }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  @if (serverSide) {
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPage($event)"
+    ></mat-paginator>
+  } @else {
+    <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPage($event)"></mat-paginator>
+  }
+</div>

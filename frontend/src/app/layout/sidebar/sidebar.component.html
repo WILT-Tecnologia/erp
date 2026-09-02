@@ -1,0 +1,87 @@
+<nav class="flex flex-col h-full w-full bg-surface-container">
+  <div class="h-16 flex items-center gap-2 px-4 font-medium text-lg whitespace-nowrap overflow-hidden shrink-0">
+    @if (!collapsed()) {
+      <span>ERP Sistema</span>
+    } @else {
+      <mat-icon>apps</mat-icon>
+    }
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+    @if (collapsed()) {
+      <div class="flex flex-col w-full py-2">
+        @for (group of groups(); track group.key) {
+          @for (item of group.items; track item.slug) {
+            @if (resolveLink(group.key, item.slug); as link) {
+              <a
+                [routerLink]="link"
+                routerLinkActive="bg-primary/10 text-primary"
+                class="flex items-center justify-center w-full py-2.5 text-on-surface/80 hover:bg-surface-container-high"
+                [matTooltip]="item.title"
+                matTooltipPosition="right"
+                (click)="linkClick.emit()"
+              >
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </a>
+            } @else {
+              <div
+                class="flex items-center justify-center w-full py-2.5 opacity-40 cursor-not-allowed"
+                [matTooltip]="item.title + ' — selecione uma organização'"
+                matTooltipPosition="right"
+              >
+                <mat-icon>{{ item.icon }}</mat-icon>
+              </div>
+            }
+          }
+        }
+      </div>
+    } @else {
+      @for (group of groups(); track group.key) {
+        <div class="w-full">
+          <button
+            type="button"
+            class="flex items-center gap-2 w-full px-4 py-2.5 text-xs uppercase tracking-wide text-on-surface/60 font-medium hover:text-on-surface"
+            (click)="toggleGroup(group.key)"
+          >
+            <mat-icon class="!text-base !w-4 !h-4 shrink-0">{{ group.icon }}</mat-icon>
+            <span class="flex-1 text-left truncate">{{ group.label }}</span>
+            <mat-icon class="!text-base !w-4 !h-4 shrink-0 transition-transform" [class.rotate-180]="!isGroupOpen(group.key)">
+              expand_more
+            </mat-icon>
+          </button>
+
+          @if (isGroupOpen(group.key)) {
+            <div class="flex flex-col w-full pb-2">
+              @for (item of group.items; track item.slug) {
+                @if (resolveLink(group.key, item.slug); as link) {
+                  <a
+                    [routerLink]="link"
+                    routerLinkActive="bg-primary/10 text-primary"
+                    class="flex items-center gap-3 w-full px-4 py-2 text-sm text-on-surface/90 hover:bg-surface-container-high"
+                    (click)="linkClick.emit()"
+                  >
+                    <mat-icon class="shrink-0">{{ item.icon }}</mat-icon>
+                    <span class="truncate">{{ item.title }}</span>
+                  </a>
+                } @else {
+                  <div
+                    class="flex items-center gap-3 w-full px-4 py-2 text-sm opacity-40 cursor-not-allowed"
+                    matTooltip="Selecione uma organização para acessar"
+                    matTooltipPosition="right"
+                  >
+                    <mat-icon class="shrink-0">{{ item.icon }}</mat-icon>
+                    <span class="truncate">{{ item.title }}</span>
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <button mat-icon-button class="hidden md:flex justify-center m-2 shrink-0" (click)="collapseToggle.emit()">
+    <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+  </button>
+</nav>

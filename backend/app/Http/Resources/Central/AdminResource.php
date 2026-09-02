@@ -19,6 +19,7 @@ class AdminResource extends JsonResource
             'locale' => $this->locale,
             'timezone' => $this->timezone,
             'status' => $this->status,
+            'is_super_admin' => (bool) $this->is_super_admin,
             'settings' => $this->settings,
             'last_login_at' => $this->last_login_at?->toIso8601String(),
             'created_at' => $this->created_at->toIso8601String(),

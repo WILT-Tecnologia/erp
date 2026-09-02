@@ -1,0 +1,29 @@
+<button
+  mat-button
+  [matMenuTriggerFor]="tenantMenu"
+  class="!flex !items-center !gap-1 max-w-[220px]"
+>
+  <mat-icon class="!text-base !w-4 !h-4">{{ tenantContext.scope() === 'global' ? 'public' : 'apartment' }}</mat-icon>
+  <span class="truncate">
+    {{ tenantContext.scope() === 'global' ? 'Todas as organizações' : tenantContext.organization()?.name }}
+  </span>
+  <mat-icon class="!text-base !w-4 !h-4">arrow_drop_down</mat-icon>
+</button>
+
+<mat-menu #tenantMenu="matMenu">
+  <button mat-menu-item (click)="selectGlobal()">
+    <mat-icon>public</mat-icon>
+    <span>Todas as organizações</span>
+  </button>
+
+  @if (organizations().length > 0) {
+    <mat-divider></mat-divider>
+  }
+
+  @for (organization of organizations(); track organization.id) {
+    <button mat-menu-item (click)="selectOrganization(organization)">
+      <mat-icon>apartment</mat-icon>
+      <span>{{ organization.name }}</span>
+    </button>
+  }
+</mat-menu>

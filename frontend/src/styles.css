@@ -1,0 +1,57 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+/*
+ * Bridge Angular Material's system CSS variables (--mat-sys-*, set by
+ * @include mat.theme() in material-theme.scss) into Tailwind v4 theme
+ * tokens, so utility classes and Material components share one palette.
+ */
+@theme {
+  --color-primary: var(--mat-sys-primary);
+  --color-on-primary: var(--mat-sys-on-primary);
+  --color-secondary: var(--mat-sys-secondary);
+  --color-on-secondary: var(--mat-sys-on-secondary);
+  --color-tertiary: var(--mat-sys-tertiary);
+  --color-error: var(--mat-sys-error);
+  --color-on-error: var(--mat-sys-on-error);
+  --color-surface: var(--mat-sys-surface);
+  --color-on-surface: var(--mat-sys-on-surface);
+  --color-surface-variant: var(--mat-sys-surface-variant);
+  --color-surface-container: var(--mat-sys-surface-container);
+  --color-surface-container-high: var(--mat-sys-surface-container-high);
+  --color-outline: var(--mat-sys-outline);
+  --font-sans: var(--mat-sys-body-medium-font, Roboto, sans-serif);
+}
+
+/*
+ * Minimal, consistent scrollbars app-wide instead of the bulky default OS
+ * ones, and a hard guard against accidental page-level horizontal scroll.
+ */
+html,
+body {
+  overflow-x: hidden;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-outline) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--mat-sys-outline);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mat-sys-on-surface-variant);
+}

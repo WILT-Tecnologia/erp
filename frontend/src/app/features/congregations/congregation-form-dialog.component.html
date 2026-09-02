@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar congregação' : 'Nova congregação' }}</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome da congregação</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="code" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="active">Ativa</mat-option>
+          <mat-option value="inactive">Inativa</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Igreja vinculada</mat-label>
+      <input matInput formControlName="church" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Líder responsável</mat-label>
+      <input matInput formControlName="leader" />
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Cidade</mat-label>
+        <input matInput formControlName="city" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>UF</mat-label>
+        <input matInput formControlName="state" maxlength="2" />
+      </mat-form-field>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Nº de membros</mat-label>
+        <input matInput type="number" min="0" formControlName="members" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit">Salvar</button>
+  </mat-dialog-actions>
+</form>

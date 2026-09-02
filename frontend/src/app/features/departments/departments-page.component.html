@@ -1,0 +1,38 @@
+<div class="flex flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-medium">Departamentos</h1>
+      <p class="text-sm text-on-surface/60">Gerencie os ministérios e departamentos das igrejas</p>
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Novo departamento
+    </button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Total de departamentos</div>
+      <div class="text-2xl font-semibold">{{ departments().length }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Departamentos ativos</div>
+      <div class="text-2xl font-semibold">{{ activeCount() }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Membros envolvidos</div>
+      <div class="text-2xl font-semibold">{{ totalMembers() }}</div>
+    </mat-card>
+  </div>
+
+  <app-data-grid [columns]="columns" [data]="departments()" [loading]="loading()" persistKey="departments">
+    <ng-template #rowActions let-row>
+      <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="remove(row)" matTooltip="Excluir">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>
