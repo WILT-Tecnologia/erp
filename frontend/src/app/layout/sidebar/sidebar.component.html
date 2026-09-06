@@ -1,4 +1,4 @@
-<nav class="flex flex-col h-full w-full bg-surface-container">
+<nav class="flex flex-col h-full! w-full bg-surface-container">
   <div
     class="h-16 flex items-center gap-2 px-4 font-medium text-lg whitespace-nowrap overflow-hidden shrink-0"
   >
@@ -12,51 +12,72 @@
   <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
     @if (collapsed()) {
       <mat-nav-list class="flex flex-col w-full py-2">
-        @for (group of groups(); track group.key) {
-          @for (item of group.items; track item.title) {
-            <app-sidebar-menu-item
-              [item]="item"
-              [group]="group.key"
-              [organizationId]="organizationId()"
-              [collapsed]="true"
-              (linkClick)="linkClick.emit()"
-            />
-          }
+        @for (entry of collapsedEntries(); track entry.section.key) {
+          <app-sidebar-menu-item
+            [item]="entry.item"
+            [basePath]="entry.section.basePath"
+            [organizationId]="organizationId()"
+            [collapsed]="true"
+            (linkClick)="linkClick.emit()"
+          />
         }
       </mat-nav-list>
     } @else {
-      @for (group of groups(); track group.key) {
-        <div class="w-full">
-          <button
-            mat-button
-            type="button"
-            class="flex items-center gap-2 w-full! justify-start! px-4! py-2.5! text-xs uppercase tracking-wide text-on-surface/60 font-medium hover:text-on-surface"
-            (click)="toggleGroup(group.key)"
+      @for (section of sections(); track section.key) {
+        @if (section.bare) {
+          <mat-nav-list class="flex flex-col w-full">
+            @for (item of section.items; track item.title) {
+              <app-sidebar-menu-item
+                [item]="item"
+                [basePath]="section.basePath"
+                [organizationId]="organizationId()"
+                [collapsed]="false"
+                (linkClick)="linkClick.emit()"
+              />
+            }
+          </mat-nav-list>
+        } @else if (sectionDisabled(section)) {
+          <div
+            class="flex items-center gap-2 w-full px-4 py-2.5 text-xs uppercase tracking-wide text-on-surface/60 font-medium opacity-40 cursor-not-allowed"
+            matTooltip="Selecione uma organização para acessar"
+            matTooltipPosition="right"
           >
-            <mat-icon class="text-base! w-4! h-4! shrink-0">{{ group.icon }}</mat-icon>
-            <span class="flex-1 text-left truncate">{{ group.label }}</span>
-            <mat-icon
-              class="text-base! w-4! h-4! shrink-0 transition-transform"
-              [class.rotate-180]="!isGroupOpen(group.key)"
+            <mat-icon class="text-base! w-4! h-4! shrink-0">{{ section.icon }}</mat-icon>
+            <span class="flex-1 text-left truncate">{{ section.label }}</span>
+          </div>
+        } @else {
+          <div class="w-full">
+            <button
+              mat-button
+              type="button"
+              class="flex items-center gap-2 w-full! justify-start! px-4! py-2.5! text-xs uppercase tracking-wide text-on-surface/60 font-medium hover:text-on-surface"
+              (click)="toggleSection(section.key)"
             >
-              expand_more
-            </mat-icon>
-          </button>
+              <mat-icon class="text-base! w-4! h-4! shrink-0">{{ section.icon }}</mat-icon>
+              <span class="flex-1 text-left truncate">{{ section.label }}</span>
+              <mat-icon
+                class="text-base! w-4! h-4! shrink-0 transition-transform"
+                [class.rotate-180]="!isSectionOpen(section.key)"
+              >
+                expand_more
+              </mat-icon>
+            </button>
 
-          @if (isGroupOpen(group.key)) {
-            <mat-nav-list class="flex flex-col w-full pb-2">
-              @for (item of group.items; track item.title) {
-                <app-sidebar-menu-item
-                  [item]="item"
-                  [group]="group.key"
-                  [organizationId]="organizationId()"
-                  [collapsed]="false"
-                  (linkClick)="linkClick.emit()"
-                />
-              }
-            </mat-nav-list>
-          }
-        </div>
+            @if (isSectionOpen(section.key)) {
+              <mat-nav-list class="flex flex-col w-full pb-2">
+                @for (item of section.items; track item.title) {
+                  <app-sidebar-menu-item
+                    [item]="item"
+                    [basePath]="section.basePath"
+                    [organizationId]="organizationId()"
+                    [collapsed]="false"
+                    (linkClick)="linkClick.emit()"
+                  />
+                }
+              </mat-nav-list>
+            }
+          </div>
+        }
       }
     }
   </div>

@@ -6,17 +6,21 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 
+import { TenantContextService } from '../../core/tenant/tenant-context.service';
 import { NotificationService } from '../../shared/services/notification.service';
-import { Organization } from '../organizations/organization.model';
-import { OrganizationService } from '../organizations/organization.service';
 import { KanbanBoardComponent } from './components/kanban-board.component';
 import { LeadDetailDialogComponent } from './components/lead-detail-dialog.component';
 import { NewLeadDialogComponent } from './components/new-lead-dialog.component';
 import { Contact, ContactStage } from './contact.model';
 import { ContactService } from './contact.service';
 
+// NOTE: ContactService calls /admin/contacts, which requires a central Admin
+// bearer token. A real tenant end-user session has no such token and will
+// get a 401 here until a future /api/tenant/contacts endpoint exists. Super
+// admins browsing into an org (who still hold their Admin token) are
+// unaffected. This is a known, accepted gap from moving CRM to tenant scope
+// ahead of the backend work, not a bug to silently work around.
 @Component({
   selector: 'app-crm-page',
   standalone: true,
@@ -28,22 +32,21 @@ import { ContactService } from './contact.service';
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     KanbanBoardComponent,
   ],
   templateUrl: './crm-page.component.html',
 })
 export class CrmPageComponent implements OnInit {
-  private readonly organizationService = inject(OrganizationService);
+  private readonly tenantContext = inject(TenantContextService);
   private readonly contactService = inject(ContactService);
   private readonly dialog = inject(MatDialog);
   private readonly notification = inject(NotificationService);
 
   readonly contacts = signal<Contact[]>([]);
-  readonly organizations = signal<Organization[]>([]);
-  readonly organizationId = signal<string | null>(null);
   readonly loading = signal(false);
   readonly search = signal('');
+
+  readonly organizationId = computed(() => this.tenantContext.organizationSlug());
 
   readonly filteredContacts = computed(() => {
     const term = this.search().trim().toLowerCase();
@@ -68,24 +71,6 @@ export class CrmPageComponent implements OnInit {
   readonly emProposta = computed(() => this.contacts().filter((c) => c.status === 'proposta').length);
 
   ngOnInit(): void {
-    this.loadOrganizations();
-  }
-
-  private loadOrganizations(): void {
-    this.organizationService.list().subscribe({
-      next: (orgs) => {
-        this.organizations.set(orgs);
-        if (!this.organizationId() && orgs.length > 0) {
-          this.organizationId.set(orgs[0].id);
-          this.loadContacts();
-        }
-      },
-      error: () => this.notification.error('Erro ao carregar organizações.'),
-    });
-  }
-
-  onOrganizationChange(id: string): void {
-    this.organizationId.set(id);
     this.loadContacts();
   }
 

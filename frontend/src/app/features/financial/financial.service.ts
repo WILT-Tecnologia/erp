@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { Observable, delay, map, of } from 'rxjs';
 
 import { BankAccount, Transaction, TransactionFormValue } from './transaction.model';
 
@@ -112,6 +112,16 @@ export class FinancialService {
 
   listAccounts(): Observable<BankAccount[]> {
     return of([...mockAccounts]).pipe(delay(300));
+  }
+
+  /** Contas a pagar — transações do tipo despesa. */
+  listPayable(): Observable<Transaction[]> {
+    return this.listTransactions().pipe(map((list) => list.filter((t) => t.type === 'despesa')));
+  }
+
+  /** Contas a receber — transações do tipo receita. */
+  listReceivable(): Observable<Transaction[]> {
+    return this.listTransactions().pipe(map((list) => list.filter((t) => t.type === 'receita')));
   }
 
   create(payload: TransactionFormValue): Observable<Transaction> {

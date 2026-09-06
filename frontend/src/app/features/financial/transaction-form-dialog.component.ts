@@ -11,6 +11,8 @@ import { Transaction, TransactionStatus } from './transaction.model';
 
 export interface TransactionFormDialogData {
   transaction?: Transaction;
+  /** Pre-selects the type when creating from a type-specific page (e.g. Contas a Pagar). */
+  defaultType?: Transaction['type'];
 }
 
 const CATEGORIES = ['Dízimos', 'Ofertas', 'Infraestrutura', 'Utilidades', 'Materiais', 'Eventos', 'Missões', 'Outros'];
@@ -63,7 +65,7 @@ export class TransactionFormDialogComponent {
   private buildForm() {
     const transaction = this.data.transaction;
     return this.fb.nonNullable.group({
-      type: [transaction?.type ?? 'receita', Validators.required],
+      type: [transaction?.type ?? this.data.defaultType ?? 'receita', Validators.required],
       description: [transaction?.description ?? '', Validators.required],
       amount: [transaction?.amount ?? 0, [Validators.required, Validators.min(0.01)]],
       date: [transaction?.date ?? new Date().toISOString().slice(0, 10), Validators.required],

@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 
-import { MenuGroupKey, SidebarNavItem, resolveNavLink } from './sidebar-nav';
+import { SidebarNavItem, resolveNavLink } from './sidebar-nav';
 
 @Component({
   selector: 'app-sidebar-menu-item',
@@ -30,14 +30,16 @@ export class SidebarMenuItemComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly item = input.required<SidebarNavItem>();
-  readonly group = input.required<MenuGroupKey>();
+  readonly basePath = input.required<string[]>();
   readonly organizationId = input<string | null>(null);
   readonly collapsed = input(false);
 
   readonly linkClick = output<void>();
 
   readonly hasChildren = computed(() => !!this.item().children?.length);
-  readonly link = computed(() => resolveNavLink(this.group(), this.item().path, this.organizationId()));
+  readonly link = computed(() => resolveNavLink(this.basePath(), this.item().path, this.organizationId()));
+  /** True when this item (leaf or with children) needs an organization context that isn't available yet. */
+  readonly disabled = computed(() => this.basePath().includes(':organizationId') && !this.organizationId());
 
   readonly expanded = signal(false);
 
@@ -60,7 +62,7 @@ export class SidebarMenuItemComponent implements OnInit {
   }
 
   resolveChildLink(child: SidebarNavItem): string[] | null {
-    return resolveNavLink(this.group(), child.path, this.organizationId());
+    return resolveNavLink(this.basePath(), child.path, this.organizationId());
   }
 
   private updateExpanded(): void {

@@ -1,0 +1,16 @@
+<div class="flex flex-col gap-4">
+  <div>
+    <h1 class="text-2xl font-medium">Contas Bancárias</h1>
+    <p class="text-sm text-on-surface/60">Contas correntes, poupança e caixa da organização</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    @for (a of accounts(); track a.id) {
+      <mat-card class="p-4">
+        <div class="text-sm font-medium">{{ a.name }}</div>
+        <div class="text-xs text-on-surface/60">{{ a.bank || a.type }}</div>
+        <div class="mt-2 text-2xl font-semibold">{{ a.balance | currency: 'BRL' }}</div>
+      </mat-card>
+    }
+  </div>
+</div>

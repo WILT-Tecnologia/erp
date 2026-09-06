@@ -4,25 +4,10 @@
       <h1 class="text-3xl font-bold tracking-tight">Pipeline CRM</h1>
       <p class="mt-1 text-gray-500 dark:text-gray-400">{{ contacts().length }} contatos no pipeline</p>
     </div>
-    <div class="flex items-center gap-2">
-      @if (organizations().length > 0) {
-        <mat-form-field appearance="outline" class="w-56!">
-          <mat-select
-            [value]="organizationId()"
-            (selectionChange)="onOrganizationChange($event.value)"
-            placeholder="Selecionar organização"
-          >
-            @for (org of organizations(); track org.id) {
-              <mat-option [value]="org.id">{{ org.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      }
-      <button mat-flat-button color="primary" [disabled]="!organizationId()" (click)="openNew()">
-        <mat-icon>add</mat-icon>
-        Novo contato
-      </button>
-    </div>
+    <button mat-flat-button color="primary" [disabled]="!organizationId()" (click)="openNew()">
+      <mat-icon>add</mat-icon>
+      Novo contato
+    </button>
   </div>
 
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -31,7 +31,7 @@ export class ShellComponent {
   readonly mobileOpened = signal(false);
   readonly sidenavOpened = computed(() => (this.isHandset() ? this.mobileOpened() : true));
   readonly collapsed = signal(this.readCollapsed());
-  readonly sidenavWidthPx = computed(() => (this.collapsed() && !this.isHandset() ? 64 : 256));
+  readonly sidenavWidthPx = computed(() => (this.collapsed() && !this.isHandset() ? 64 : 320));
 
   toggleMobileMenu(): void {
     this.mobileOpened.update((opened) => !opened);

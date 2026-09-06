@@ -9,6 +9,8 @@ import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/sl
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { TenantAuthService } from '../../core/auth/tenant-auth.service';
+import { TenantContextService } from '../../core/tenant/tenant-context.service';
 import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
@@ -28,13 +30,23 @@ import { NotificationService } from '../../shared/services/notification.service'
 })
 export class SettingsPageComponent {
   private readonly auth = inject(AuthService);
+  private readonly tenantAuth = inject(TenantAuthService);
+  private readonly tenantContext = inject(TenantContextService);
   private readonly notification = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
 
-  readonly admin = this.auth.admin;
+  // A super admin browsing into an organization has no TenantAuthService
+  // session, so their own Admin identity is the correct one to show; a real
+  // tenant user has no Admin session, so their TenantUser identity is used.
+  readonly displayName = computed(() =>
+    this.tenantContext.isSuperAdmin() ? this.auth.admin()?.name : this.tenantAuth.tenantUser()?.name,
+  );
+  readonly displayEmail = computed(() =>
+    this.tenantContext.isSuperAdmin() ? this.auth.admin()?.email : this.tenantAuth.tenantUser()?.email,
+  );
 
   readonly initials = computed(() => {
-    const name = this.admin()?.name ?? 'U';
+    const name = this.displayName() ?? 'U';
     return name
       .split(' ')
       .map((part) => part[0])

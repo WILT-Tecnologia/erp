@@ -7,7 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
-import { MenuGroupKey, buildSidebarNav } from './sidebar-nav';
+import { SidebarNavItem, SidebarNavSection, buildSidebarNav } from './sidebar-nav';
 import { SidebarMenuItemComponent } from './sidebar-menu-item.component';
 
 @Component({
@@ -31,22 +31,47 @@ export class SidebarComponent {
   readonly collapseToggle = output<void>();
   readonly linkClick = output<void>();
 
-  private readonly navGroups = buildSidebarNav(this.router.config);
+  private readonly navSections = buildSidebarNav(this.router.config);
 
-  readonly groups = computed(() => {
-    if (this.tenantContext.isSuperAdmin()) return this.navGroups;
-    if (this.tenantContext.isTenantUser()) return this.navGroups.filter((group) => group.key === 'organization');
+  readonly sections = computed(() => {
+    if (this.tenantContext.isSuperAdmin()) return this.navSections;
+    if (this.tenantContext.isTenantUser()) return this.navSections.filter((section) => section.key !== 'admin');
     return [];
   });
 
-  private readonly groupOpen = signal<Record<MenuGroupKey, boolean>>({ admin: true, organization: true });
+  /**
+   * When the sidebar is collapsed to a rail, every section renders as a
+   * single icon (the section's "parent route") — its own items only appear
+   * in a flyout menu when clicked. A "bare" section already has exactly one
+   * plain item (Dashboard/Relatórios), which is used as-is; every other
+   * section is wrapped into a synthetic item whose `children` are the
+   * section's real items, reusing `SidebarMenuItemComponent`'s existing
+   * has-children/flyout rendering with no further changes.
+   */
+  readonly collapsedEntries = computed(() =>
+    this.sections().map((section) => ({
+      section,
+      item: section.bare
+        ? section.items[0]
+        : ({ title: section.label, icon: section.icon, path: [], children: section.items } as SidebarNavItem),
+    })),
+  );
 
-  isGroupOpen(key: MenuGroupKey): boolean {
-    return this.groupOpen()[key];
+  private readonly sectionOpen = signal<Record<string, boolean>>(
+    Object.fromEntries(this.navSections.map((section) => [section.key, section.key === 'admin'])),
+  );
+
+  isSectionOpen(key: string): boolean {
+    return this.sectionOpen()[key] ?? false;
   }
 
-  toggleGroup(key: MenuGroupKey): void {
-    this.groupOpen.update((state) => ({ ...state, [key]: !state[key] }));
+  toggleSection(key: string): void {
+    this.sectionOpen.update((state) => ({ ...state, [key]: !state[key] }));
+  }
+
+  /** A section that requires an organization context is disabled as a whole until one is available. */
+  sectionDisabled(section: SidebarNavSection): boolean {
+    return section.basePath.includes(':organizationId') && !this.organizationId();
   }
 
   organizationId(): string | null {

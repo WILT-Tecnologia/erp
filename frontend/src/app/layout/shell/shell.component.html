@@ -4,7 +4,7 @@
     [opened]="sidenavOpened()"
     (openedChange)="mobileOpened.set($event)"
     [style.width.px]="sidenavWidthPx()"
-    class="border-r! border-outline! bg-surface-container! transition-[width,transform]! duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
+    class="border-r! border-outline! bg-surface-container! transition-[width,transform]! duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] max-w-[80vw]"
   >
     <app-sidebar
       [collapsed]="collapsed()"
@@ -18,7 +18,7 @@
     [style.marginLeft.px]="isHandset() ? 0 : sidenavWidthPx()"
   >
     <app-header [showMenuButton]="isHandset()" (menuToggle)="toggleMobileMenu()"></app-header>
-    <main class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-surface">
+    <main class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-surface!">
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>

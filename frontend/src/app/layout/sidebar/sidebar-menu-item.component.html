@@ -1,81 +1,76 @@
-@if (hasChildren()) {
+@if (disabled()) {
+  <div
+    class="flex items-center gap-3 w-full px-4 py-2 text-sm text-on-surface/90 opacity-40 cursor-not-allowed"
+    matTooltip="Selecione uma organização para acessar"
+    matTooltipPosition="right"
+  >
+    <mat-icon class="shrink-0">{{ item().icon }}</mat-icon>
+    @if (!collapsed()) {
+      <span class="truncate">{{ item().title }}</span>
+    }
+  </div>
+} @else if (hasChildren()) {
   @if (collapsed()) {
     <button
       mat-list-item
       [matMenuTriggerFor]="childMenu"
-      class="flex items-center justify-center w-full py-2.5 text-on-surface/80 hover:bg-surface-container-high"
+      class="flex items-center w-full py-2.5 px-4 text-on-surface/90 hover:bg-surface-container-high"
       [matTooltip]="item().title"
       matTooltipPosition="right"
     >
-      <mat-icon>{{ item().icon }}</mat-icon>
+      <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
     </button>
 
     <mat-menu #childMenu="matMenu">
       <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: item().children }" />
     </mat-menu>
   } @else {
-    <div class="w-full">
-      <button
-        mat-button
-        type="button"
-        class="flex items-center gap-2 w-full! justify-start! px-4! py-2! rounded-md! text-sm text-on-surface/90 hover:bg-surface-container-high"
-        (click)="toggle($event)"
+    <button mat-list-item type="button" class="w-full!" (click)="toggle($event)">
+      <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+      <span matListItemTitle class="flex! justify-items-start! items-start!">{{
+        item().title
+      }}</span>
+      <mat-icon
+        matListItemMeta
+        class="transition-transform"
+        style="font-family: 'Material Icons'"
+        [class.rotate-180]="expanded()"
       >
-        <mat-icon class="shrink-0">{{ item().icon }}</mat-icon>
-        <span class="flex-1 text-left truncate">{{ item().title }}</span>
-        <mat-icon
-          class="text-base! w-4! h-4! shrink-0 transition-transform"
-          [class.rotate-180]="expanded()"
-        >
-          expand_more
-        </mat-icon>
-      </button>
+        expand_more
+      </mat-icon>
+    </button>
 
-      @if (expanded()) {
-        <mat-nav-list class="flex flex-col w-full ml-4 pl-2 border-l border-outline-variant">
-          @for (child of item().children; track child.title) {
-            <app-sidebar-menu-item
-              [item]="child"
-              [group]="group()"
-              [organizationId]="organizationId()"
-              [collapsed]="false"
-              (linkClick)="linkClick.emit()"
-            />
-          }
-        </mat-nav-list>
-      }
-    </div>
+    @if (expanded()) {
+      <mat-nav-list
+        class="flex flex-col w-full ml-4 pl-4! bg-black/5! rounded! border-l-4! border-solid! border-primary/50!"
+      >
+        @for (child of item().children; track child.title) {
+          <app-sidebar-menu-item
+            [item]="child"
+            [basePath]="basePath()"
+            [organizationId]="organizationId()"
+            [collapsed]="false"
+            (linkClick)="linkClick.emit()"
+          />
+        }
+      </mat-nav-list>
+    }
   }
 } @else {
-  @if (link(); as resolvedLink) {
-    <a
-      mat-list-item
-      [routerLink]="resolvedLink"
-      routerLinkActive="bg-primary/10 text-primary"
-      class="flex items-center gap-3 w-full px-4 py-2 text-sm text-on-surface/90 hover:bg-surface-container-high"
-      [class.justify-center]="collapsed()"
-      [matTooltip]="collapsed() ? item().title : ''"
-      matTooltipPosition="right"
-      (click)="linkClick.emit()"
-    >
-      <mat-icon class="shrink-0">{{ item().icon }}</mat-icon>
-      @if (!collapsed()) {
-        <span class="truncate">{{ item().title }}</span>
-      }
-    </a>
-  } @else {
-    <div
-      class="flex items-center gap-3 w-full px-4 py-2 text-sm opacity-40 cursor-not-allowed"
-      [class.justify-center]="collapsed()"
-      matTooltip="Selecione uma organização para acessar"
-      matTooltipPosition="right"
-    >
-      <mat-icon class="shrink-0">{{ item().icon }}</mat-icon>
-      @if (!collapsed()) {
-        <span class="truncate">{{ item().title }}</span>
-      }
-    </div>
-  }
+  <a
+    mat-list-item
+    [routerLink]="link()"
+    routerLinkActive="bg-primary/10 text-primary"
+    class="w-full"
+    [matTooltip]="collapsed() ? item().title : ''"
+    matTooltipPosition="right"
+    (click)="linkClick.emit()"
+  >
+    <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+    @if (!collapsed()) {
+      <span matListItemTitle>{{ item().title }}</span>
+    }
+  </a>
 }
 
 <ng-template #menuItems let-items>
