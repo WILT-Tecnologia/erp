@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 
+import { AccordionGroupService } from './accordion-group.service';
 import { SidebarNavItem, resolveNavLink } from './sidebar-nav';
+
+const HOVER_CLOSE_DELAY_MS = 150;
 
 @Component({
   selector: 'app-sidebar-menu-item',
@@ -23,11 +26,14 @@ import { SidebarNavItem, resolveNavLink } from './sidebar-nav';
     MatMenuModule,
     SidebarMenuItemComponent,
   ],
+  providers: [AccordionGroupService],
   templateUrl: './sidebar-menu-item.component.html',
 })
 export class SidebarMenuItemComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  /** The exclusive-accordion group this item belongs to (provided by its parent). */
+  private readonly siblings = inject(AccordionGroupService, { skipSelf: true });
 
   readonly item = input.required<SidebarNavItem>();
   readonly basePath = input.required<string[]>();
@@ -41,7 +47,9 @@ export class SidebarMenuItemComponent implements OnInit {
   /** True when this item (leaf or with children) needs an organization context that isn't available yet. */
   readonly disabled = computed(() => this.basePath().includes(':organizationId') && !this.organizationId());
 
-  readonly expanded = signal(false);
+  readonly expanded = computed(() => this.siblings.isOpen(this.item().title));
+
+  private closeTimeout: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
     this.router.events
@@ -58,11 +66,29 @@ export class SidebarMenuItemComponent implements OnInit {
 
   toggle(event: Event): void {
     event.stopPropagation();
-    this.expanded.update((value) => !value);
+    this.siblings.toggle(this.item().title);
   }
 
   resolveChildLink(child: SidebarNavItem): string[] | null {
     return resolveNavLink(this.basePath(), child.path, this.organizationId());
+  }
+
+  /** Collapsed-rail flyout: open immediately on hover, no click required. */
+  openOnHover(trigger: MatMenuTrigger): void {
+    this.cancelClose();
+    trigger.openMenu();
+  }
+
+  /** Collapsed-rail flyout: close shortly after the pointer leaves, canceled if it returns in time. */
+  scheduleClose(trigger: MatMenuTrigger): void {
+    this.cancelClose();
+    this.closeTimeout = setTimeout(() => trigger.closeMenu(), HOVER_CLOSE_DELAY_MS);
+  }
+
+  cancelClose(): void {
+    if (this.closeTimeout === undefined) return;
+    clearTimeout(this.closeTimeout);
+    this.closeTimeout = undefined;
   }
 
   private updateExpanded(): void {
@@ -76,6 +102,6 @@ export class SidebarMenuItemComponent implements OnInit {
       matrixParams: 'ignored',
     });
 
-    if (isActive) this.expanded.set(true);
+    if (isActive) this.siblings.open(this.item().title);
   }
 }

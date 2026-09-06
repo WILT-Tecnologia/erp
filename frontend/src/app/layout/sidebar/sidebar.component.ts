@@ -7,6 +7,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
+import { AccordionGroupService } from './accordion-group.service';
 import { SidebarNavItem, SidebarNavSection, buildSidebarNav } from './sidebar-nav';
 import { SidebarMenuItemComponent } from './sidebar-menu-item.component';
 
@@ -21,6 +22,7 @@ import { SidebarMenuItemComponent } from './sidebar-menu-item.component';
     MatListModule,
     SidebarMenuItemComponent,
   ],
+  providers: [AccordionGroupService],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
@@ -57,16 +59,15 @@ export class SidebarComponent {
     })),
   );
 
-  private readonly sectionOpen = signal<Record<string, boolean>>(
-    Object.fromEntries(this.navSections.map((section) => [section.key, section.key === 'admin'])),
-  );
+  /** Only one top-level section is ever open at a time. */
+  private readonly openSectionKey = signal<string | null>('admin');
 
   isSectionOpen(key: string): boolean {
-    return this.sectionOpen()[key] ?? false;
+    return this.openSectionKey() === key;
   }
 
   toggleSection(key: string): void {
-    this.sectionOpen.update((state) => ({ ...state, [key]: !state[key] }));
+    this.openSectionKey.update((current) => (current === key ? null : key));
   }
 
   /** A section that requires an organization context is disabled as a whole until one is available. */

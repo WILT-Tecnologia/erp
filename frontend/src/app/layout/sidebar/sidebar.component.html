@@ -56,26 +56,31 @@
               <mat-icon class="text-base! w-4! h-4! shrink-0">{{ section.icon }}</mat-icon>
               <span class="flex-1 text-left truncate">{{ section.label }}</span>
               <mat-icon
-                class="text-base! w-4! h-4! shrink-0 transition-transform"
+                class="text-base! w-4! h-4! shrink-0 transition-transform duration-300"
                 [class.rotate-180]="!isSectionOpen(section.key)"
               >
                 expand_more
               </mat-icon>
             </button>
 
-            @if (isSectionOpen(section.key)) {
-              <mat-nav-list class="flex flex-col w-full pb-2">
-                @for (item of section.items; track item.title) {
-                  <app-sidebar-menu-item
-                    [item]="item"
-                    [basePath]="section.basePath"
-                    [organizationId]="organizationId()"
-                    [collapsed]="false"
-                    (linkClick)="linkClick.emit()"
-                  />
-                }
-              </mat-nav-list>
-            }
+            <div
+              class="grid min-h-0 transition-[grid-template-rows] duration-300 ease-in-out"
+              [style.grid-template-rows]="isSectionOpen(section.key) ? '1fr' : '0fr'"
+            >
+              <div class="min-h-0 overflow-hidden">
+                <mat-nav-list class="flex flex-col w-full pb-2">
+                  @for (item of section.items; track item.title) {
+                    <app-sidebar-menu-item
+                      [item]="item"
+                      [basePath]="section.basePath"
+                      [organizationId]="organizationId()"
+                      [collapsed]="false"
+                      (linkClick)="linkClick.emit()"
+                    />
+                  }
+                </mat-nav-list>
+              </div>
+            </div>
           </div>
         }
       }
