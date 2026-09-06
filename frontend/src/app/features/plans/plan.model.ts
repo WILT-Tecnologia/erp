@@ -19,7 +19,7 @@ export interface Plan {
   updated_at?: string;
 }
 
-export type PlanFormValue = {
+export interface PlanFormValue {
   name: string;
   slug: string;
   description?: string;
@@ -33,4 +33,4 @@ export type PlanFormValue = {
   is_public: boolean;
   sort_order: number;
   status: PlanStatus;
-};
+}

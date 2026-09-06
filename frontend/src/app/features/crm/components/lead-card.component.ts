@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 
-import { Contact } from '../contact.model';
+import { type Contact } from '../contact.model';
 
 @Component({
   selector: 'app-lead-card',

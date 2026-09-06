@@ -15,7 +15,11 @@
       <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleStatus(row)" [matTooltip]="row.status === 'suspended' ? 'Reativar' : 'Suspender'">
+      <button
+        mat-icon-button
+        (click)="toggleStatus(row)"
+        [matTooltip]="row.status === 'suspended' ? 'Reativar' : 'Suspender'"
+      >
         <mat-icon>{{ row.status === 'suspended' ? 'play_arrow' : 'pause' }}</mat-icon>
       </button>
       <button mat-icon-button (click)="remove(row)" matTooltip="Excluir">

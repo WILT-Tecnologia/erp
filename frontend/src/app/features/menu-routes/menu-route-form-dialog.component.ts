@@ -1,14 +1,15 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
-import { MenuRoute } from './menu-route.model';
+import { Modal } from '../../layout/modal/modal';
+import { type MenuRoute } from './menu-route.model';
 
 export interface MenuRouteFormDialogData {
   menuRoute?: MenuRoute;
@@ -20,7 +21,7 @@ export interface MenuRouteFormDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
@@ -31,6 +32,8 @@ export interface MenuRouteFormDialogData {
   templateUrl: './menu-route-form-dialog.component.html',
 })
 export class MenuRouteFormDialogComponent {
+  data = inject<MenuRouteFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MenuRouteFormDialogComponent>);
 
@@ -38,7 +41,9 @@ export class MenuRouteFormDialogComponent {
   readonly form: ReturnType<MenuRouteFormDialogComponent['buildForm']>;
   readonly parentOptions: MenuRoute[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: MenuRouteFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.menuRoute;
     this.parentOptions = data.menuRoutes.filter((route) => route.id !== data.menuRoute?.id);
     this.form = this.buildForm();

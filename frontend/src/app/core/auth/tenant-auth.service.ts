@@ -1,12 +1,17 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, finalize, tap } from 'rxjs';
+import { finalize, type Observable, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS, STORAGE_KEYS } from '../constants/api-endpoints';
-import { TenantLoginPayload, TenantLoginResponse, TenantOrganizationSummary, TenantUser } from './tenant-user.model';
+import {
+  type TenantLoginPayload,
+  type TenantLoginResponse,
+  type TenantOrganizationSummary,
+  type TenantUser,
+} from './tenant-user.model';
 
 /**
  * Session for a regular tenant end user (as opposed to AuthService, which
@@ -46,12 +51,10 @@ export class TenantAuthService {
 
   login(payload: TenantLoginPayload): Observable<TenantLoginResponse> {
     this._isLoading.set(true);
-    return this.http
-      .post<TenantLoginResponse>(`${environment.apiUrl}${API_ENDPOINTS.tenantAuth.login}`, payload)
-      .pipe(
-        tap((response) => this.setSession(response)),
-        finalize(() => this._isLoading.set(false)),
-      );
+    return this.http.post<TenantLoginResponse>(`${environment.apiUrl}${API_ENDPOINTS.tenantAuth.login}`, payload).pipe(
+      tap((response) => this.setSession(response)),
+      finalize(() => this._isLoading.set(false)),
+    );
   }
 
   fetchMe(): Observable<{ user: TenantUser; organization: TenantOrganizationSummary | null }> {

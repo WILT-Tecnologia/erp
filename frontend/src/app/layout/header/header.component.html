@@ -16,9 +16,7 @@
   <nav class="flex items-center gap-1 text-sm flex-1 min-w-0 overflow-hidden">
     @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
       @if (!last && crumb.link) {
-        <a [routerLink]="crumb.link" class="text-on-surface/60 hover:text-on-surface truncate">{{
-          crumb.label
-        }}</a>
+        <a [routerLink]="crumb.link" class="text-on-surface/60 hover:text-on-surface truncate">{{ crumb.label }}</a>
         <mat-icon class="text-base! w-4! h-4! text-on-surface/40">chevron_right</mat-icon>
       } @else {
         <span class="text-on-surface font-medium truncate">{{ crumb.label }}</span>
@@ -29,6 +27,14 @@
   @if (authService.admin()?.is_super_admin) {
     <app-tenant-selector></app-tenant-selector>
   }
+
+  <button
+    mat-icon-button
+    (click)="toggleTheme()"
+    [matTooltip]="themeService.resolvedScheme() === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'"
+  >
+    <mat-icon>{{ themeService.resolvedScheme() === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+  </button>
 
   <button mat-icon-button [matMenuTriggerFor]="userMenu">
     <mat-icon>account_circle</mat-icon>

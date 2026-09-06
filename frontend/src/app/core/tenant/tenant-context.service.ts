@@ -1,4 +1,4 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 
 import { AuthService } from '../auth/auth.service';
 import { TenantAuthService } from '../auth/tenant-auth.service';

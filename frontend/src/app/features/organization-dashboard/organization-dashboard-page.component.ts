@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ChartConfiguration } from 'chart.js';
+import { type ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { forkJoin } from 'rxjs';
 
 import { OrganizationContextService } from '../../core/organization/organization-context.service';
-import { CongregationService } from '../congregations/congregation.service';
 import { ChurchService } from '../churches/church.service';
+import { CongregationService } from '../congregations/congregation.service';
 import { DepartmentService } from '../departments/department.service';
 import { EventService } from '../events/event.service';
 import { FamilyService } from '../families/family.service';
@@ -45,8 +45,14 @@ export class OrganizationDashboardPageComponent implements OnInit {
   readonly loading = signal(true);
   readonly summary = signal<OrganizationSummary | null>(null);
 
-  balanceByAccountChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [{ data: [], label: 'Saldo' }] };
-  membersByStatusChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [{ data: [], label: 'Membros' }] };
+  balanceByAccountChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [],
+    datasets: [{ data: [], label: 'Saldo' }],
+  };
+  membersByStatusChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [],
+    datasets: [{ data: [], label: 'Membros' }],
+  };
 
   ngOnInit(): void {
     forkJoin({

@@ -13,7 +13,7 @@ export interface Transaction {
   date: string;
 }
 
-export type TransactionFormValue = {
+export interface TransactionFormValue {
   description: string;
   category: string;
   type: TransactionType;
@@ -22,7 +22,7 @@ export type TransactionFormValue = {
   method: string;
   status: TransactionStatus;
   date: string;
-};
+}
 
 export interface BankAccount {
   id: string;

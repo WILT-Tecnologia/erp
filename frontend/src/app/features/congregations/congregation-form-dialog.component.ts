@@ -1,12 +1,13 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { Congregation, CongregationFormValue } from './congregation.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Congregation, type CongregationFormValue } from './congregation.model';
 
 export interface CongregationFormDialogData {
   congregation?: Congregation;
@@ -15,24 +16,21 @@ export interface CongregationFormDialogData {
 @Component({
   selector: 'app-congregation-form-dialog',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-  ],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './congregation-form-dialog.component.html',
 })
 export class CongregationFormDialogComponent {
+  data = inject<CongregationFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<CongregationFormDialogComponent>);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<CongregationFormDialogComponent['buildForm']>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: CongregationFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.congregation;
     this.form = this.buildForm();
   }

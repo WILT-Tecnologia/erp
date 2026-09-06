@@ -1,13 +1,14 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { Transaction, TransactionStatus } from './transaction.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Transaction, type TransactionStatus } from './transaction.model';
 
 export interface TransactionFormDialogData {
   transaction?: Transaction;
@@ -37,7 +38,7 @@ const STATUSES: { value: TransactionStatus; label: string }[] = [
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatButtonToggleModule,
     MatFormFieldModule,
@@ -47,6 +48,8 @@ const STATUSES: { value: TransactionStatus; label: string }[] = [
   templateUrl: './transaction-form-dialog.component.html',
 })
 export class TransactionFormDialogComponent {
+  data = inject<TransactionFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<TransactionFormDialogComponent>);
 
@@ -57,7 +60,9 @@ export class TransactionFormDialogComponent {
   readonly methods = METHODS;
   readonly statuses = STATUSES;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: TransactionFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.transaction;
     this.form = this.buildForm();
   }

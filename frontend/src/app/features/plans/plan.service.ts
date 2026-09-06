@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
-import { ApiCollection, ApiResource } from '../../core/http/api-response.model';
-import { Plan, PlanFormValue } from './plan.model';
+import { type ApiCollection, type ApiResource } from '../../core/http/api-response.model';
+import { type Plan, type PlanFormValue } from './plan.model';
 
 @Injectable({ providedIn: 'root' })
 export class PlanService {
@@ -21,9 +21,7 @@ export class PlanService {
   }
 
   update(id: string, payload: PlanFormValue): Observable<Plan> {
-    return this.http
-      .put<ApiResource<Plan>>(`${this.baseUrl}/${id}`, payload)
-      .pipe(map((response) => response.data));
+    return this.http.put<ApiResource<Plan>>(`${this.baseUrl}/${id}`, payload).pipe(map((response) => response.data));
   }
 
   delete(id: string): Observable<void> {

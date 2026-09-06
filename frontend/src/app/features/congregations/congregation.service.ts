@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { Congregation, CongregationFormValue } from './congregation.model';
+import { type Congregation, type CongregationFormValue } from './congregation.model';
 
 const INITIAL_CONGREGATIONS: Congregation[] = [
   {

@@ -39,7 +39,7 @@
               <div class="text-xs text-on-surface/60">{{ t.category }} · {{ t.date | date: 'dd/MM/yyyy' }}</div>
             </div>
             <div class="text-right">
-              <div class="font-semibold" [class.text-red-500]="t.type === 'despesa'">
+              <div class="font-semibold" [class.text-error]="t.type === 'despesa'">
                 {{ t.type === 'receita' ? '+ ' : '- ' }}{{ t.amount | currency: 'BRL' }}
               </div>
             </div>

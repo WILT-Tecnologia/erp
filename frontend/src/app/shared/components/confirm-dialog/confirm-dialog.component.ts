@@ -1,6 +1,8 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+import { Modal } from '../../../layout/modal/modal';
 
 export interface ConfirmDialogData {
   title: string;
@@ -12,18 +14,28 @@ export interface ConfirmDialogData {
 @Component({
   selector: 'app-confirm-dialog',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [Modal, MatButtonModule],
   template: `
-    <h2 mat-dialog-title>{{ data.title }}</h2>
-    <mat-dialog-content>{{ data.message }}</mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="false">{{ data.cancelLabel ?? 'Cancelar' }}</button>
-      <button mat-flat-button color="warn" [mat-dialog-close]="true">
-        {{ data.confirmLabel ?? 'Excluir' }}
-      </button>
-    </mat-dialog-actions>
+    <app-modal [modalTitle]="data.title" (closed)="cancel()">
+      {{ data.message }}
+      <div modal-footer>
+        <button mat-button (click)="cancel()">{{ data.cancelLabel ?? 'Cancelar' }}</button>
+        <button mat-flat-button color="warn" (click)="confirm()">
+          {{ data.confirmLabel ?? 'Excluir' }}
+        </button>
+      </div>
+    </app-modal>
   `,
 })
 export class ConfirmDialogComponent {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData) {}
+  data = inject<ConfirmDialogData>(MAT_DIALOG_DATA);
+  private readonly dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
+
+  cancel(): void {
+    this.dialogRef.close(false);
+  }
+
+  confirm(): void {
+    this.dialogRef.close(true);
+  }
 }

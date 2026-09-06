@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { Church, ChurchFormValue } from './church.model';
+import { type Church, type ChurchFormValue } from './church.model';
 
 const INITIAL_CHURCHES: Church[] = [
   {

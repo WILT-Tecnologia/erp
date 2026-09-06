@@ -1,15 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 
+import { Modal } from '../../../layout/modal/modal';
 import { NotificationService } from '../../../shared/services/notification.service';
-import { Contact, ContactStage, ContactTask, STAGES } from '../contact.model';
+import { type Contact, type ContactStage, type ContactTask, STAGES } from '../contact.model';
 import { ContactService } from '../contact.service';
 
 export interface LeadDetailDialogData {
@@ -21,7 +22,7 @@ export interface LeadDetailDialogData {
   standalone: true,
   imports: [
     FormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,

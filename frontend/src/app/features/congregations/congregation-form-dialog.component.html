@@ -1,6 +1,5 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Editar congregação' : 'Nova congregação' }}</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
+  <app-modal [modalTitle]="isEdit ? 'Editar congregação' : 'Nova congregação'" (closed)="cancel()">
     <mat-form-field appearance="outline">
       <mat-label>Nome da congregação</mat-label>
       <input matInput formControlName="name" />
@@ -51,9 +50,10 @@
         <input matInput formControlName="phone" />
       </mat-form-field>
     </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit">Salvar</button>
-  </mat-dialog-actions>
+
+    <div modal-footer>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
 </form>

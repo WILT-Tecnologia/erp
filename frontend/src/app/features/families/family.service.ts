@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { Family, FamilyFormValue } from './family.model';
+import { type Family, type FamilyFormValue } from './family.model';
 
 const INITIAL_FAMILIES: Family[] = [
   {

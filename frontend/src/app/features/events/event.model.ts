@@ -1,13 +1,6 @@
 export type EventStatus = 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
 
-export type EventCategory =
-  | 'Culto'
-  | 'Conferência'
-  | 'Retiro'
-  | 'Educação'
-  | 'Música'
-  | 'Batismo'
-  | 'Seminário';
+export type EventCategory = 'Culto' | 'Conferência' | 'Retiro' | 'Educação' | 'Música' | 'Batismo' | 'Seminário';
 
 export interface Event {
   id: string;
@@ -21,7 +14,7 @@ export interface Event {
   status: EventStatus;
 }
 
-export type EventFormValue = {
+export interface EventFormValue {
   title: string;
   church: string;
   category: EventCategory;
@@ -30,4 +23,4 @@ export type EventFormValue = {
   participants: number;
   capacity: number;
   status: EventStatus;
-};
+}

@@ -1,12 +1,13 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { ASSIGNEES, ContactFormValue, STAGES } from '../contact.model';
+import { Modal } from '../../../layout/modal/modal';
+import { ASSIGNEES, type ContactFormValue, STAGES } from '../contact.model';
 
 export interface NewLeadDialogData {
   organizationId: string;
@@ -15,17 +16,12 @@ export interface NewLeadDialogData {
 @Component({
   selector: 'app-new-lead-dialog',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-  ],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './new-lead-dialog.component.html',
 })
 export class NewLeadDialogComponent {
+  data = inject<NewLeadDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<NewLeadDialogComponent>);
 
@@ -41,8 +37,6 @@ export class NewLeadDialogComponent {
     value: [0, [Validators.min(0)]],
     tags: [''],
   });
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: NewLeadDialogData) {}
 
   submit(): void {
     if (this.form.invalid) {

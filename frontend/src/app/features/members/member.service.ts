@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { Member, MemberFormValue } from './member.model';
+import { type Member, type MemberFormValue } from './member.model';
 
 const INITIAL_MEMBERS: Member[] = [
   {

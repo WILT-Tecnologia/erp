@@ -1,12 +1,13 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
 import { STORAGE_KEYS } from '../../core/constants/api-endpoints';
+import { Content } from '../content/content';
 import { HeaderComponent } from '../header/header.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 
@@ -15,7 +16,7 @@ const MOBILE_BREAKPOINT = '(max-width: 767.98px)';
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, HeaderComponent, MatSidenavModule],
+  imports: [RouterOutlet, SidebarComponent, HeaderComponent, MatSidenavModule, Content],
   templateUrl: './shell.component.html',
 })
 export class ShellComponent {

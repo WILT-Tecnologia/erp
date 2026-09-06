@@ -46,7 +46,10 @@
         @for (d of membersByDepartment; track d.name; let i = $index) {
           <div class="flex items-center justify-between text-xs">
             <div class="flex items-center gap-1.5">
-              <span class="size-2 rounded-full inline-block" [style.background-color]="pieColors[i % pieColors.length]"></span>
+              <span
+                class="size-2 rounded-full inline-block"
+                [style.background-color]="pieColors[i % pieColors.length]"
+              ></span>
               <span class="text-on-surface/60">{{ d.name }}</span>
             </div>
             <span class="font-semibold">{{ d.value }}</span>
@@ -62,7 +65,11 @@
           <div class="rounded-md border border-outline/50 p-3">
             <div class="text-xs text-on-surface/60">{{ s.label }}</div>
             <div class="mt-1 text-lg font-semibold">{{ s.value }}</div>
-            <div class="mt-1 text-xs font-semibold" [class.text-green-600]="s.positive" [class.text-red-500]="!s.positive">
+            <div
+              class="mt-1 text-xs font-semibold"
+              [class.text-secondary]="s.positive"
+              [class.text-error]="!s.positive"
+            >
               {{ s.change }} vs mês anterior
             </div>
           </div>

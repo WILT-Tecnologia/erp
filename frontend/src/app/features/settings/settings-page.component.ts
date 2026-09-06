@@ -5,12 +5,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { type MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { TenantAuthService } from '../../core/auth/tenant-auth.service';
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
+import { ThemeService } from '../../core/theme/theme.service';
 import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class SettingsPageComponent {
   private readonly tenantContext = inject(TenantContextService);
   private readonly notification = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly themeService = inject(ThemeService);
 
   // A super admin browsing into an organization has no TenantAuthService
   // session, so their own Admin identity is the correct one to show; a real
@@ -63,7 +65,7 @@ export class SettingsPageComponent {
   readonly emailNotifications = signal(true);
   readonly browserNotifications = signal(true);
 
-  readonly theme = signal<'light' | 'dark' | 'system'>('system');
+  readonly theme = this.themeService.theme;
   readonly language = signal('pt-BR');
 
   submitPassword(): void {
@@ -91,7 +93,7 @@ export class SettingsPageComponent {
   }
 
   setTheme(value: 'light' | 'dark' | 'system'): void {
-    this.theme.set(value);
+    this.themeService.setTheme(value);
   }
 
   setLanguage(value: string): void {

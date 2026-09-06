@@ -1,28 +1,21 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { Event, EventCategory, EventFormValue, EventStatus } from './event.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Event, type EventCategory, type EventFormValue, type EventStatus } from './event.model';
 
 export interface EventFormDialogData {
   event?: Event;
 }
 
-const CATEGORIES: EventCategory[] = [
-  'Culto',
-  'Conferência',
-  'Retiro',
-  'Educação',
-  'Música',
-  'Batismo',
-  'Seminário',
-];
+const CATEGORIES: EventCategory[] = ['Culto', 'Conferência', 'Retiro', 'Educação', 'Música', 'Batismo', 'Seminário'];
 
 const STATUSES: { value: EventStatus; label: string }[] = [
   { value: 'scheduled', label: 'Agendado' },
@@ -43,7 +36,7 @@ function toIsoDate(date: Date): string {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatDatepickerModule,
     MatFormFieldModule,
@@ -54,6 +47,8 @@ function toIsoDate(date: Date): string {
   templateUrl: './event-form-dialog.component.html',
 })
 export class EventFormDialogComponent {
+  data = inject<EventFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<EventFormDialogComponent>);
 
@@ -62,7 +57,9 @@ export class EventFormDialogComponent {
   readonly categories = CATEGORIES;
   readonly statuses = STATUSES;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: EventFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.event;
     this.form = this.buildForm();
   }

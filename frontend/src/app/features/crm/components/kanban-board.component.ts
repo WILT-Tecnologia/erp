@@ -1,14 +1,9 @@
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+import { type CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { Contact, ContactStage, STAGES } from '../contact.model';
+import { type Contact, type ContactStage, STAGES } from '../contact.model';
 import { LeadCardComponent } from './lead-card.component';
 
 type ColumnMap = Record<ContactStage, Contact[]>;

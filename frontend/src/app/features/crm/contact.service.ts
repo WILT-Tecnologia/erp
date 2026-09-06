@@ -1,18 +1,18 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
 import {
-  Contact,
-  ContactActivity,
-  ContactActivityFormValue,
-  ContactFormValue,
-  ContactStage,
-  ContactTask,
-  ContactTaskFormValue,
-  PaginatedResponse,
+  type Contact,
+  type ContactActivity,
+  type ContactActivityFormValue,
+  type ContactFormValue,
+  type ContactStage,
+  type ContactTask,
+  type ContactTaskFormValue,
+  type PaginatedResponse,
 } from './contact.model';
 
 export interface ContactListParams {
@@ -27,9 +27,7 @@ export class ContactService {
   private readonly baseUrl = `${environment.apiUrl}${API_ENDPOINTS.contacts.base}`;
 
   list(organizationId: string, params: ContactListParams = {}): Observable<PaginatedResponse<Contact>> {
-    let httpParams = new HttpParams()
-      .set('organization_id', organizationId)
-      .set('per_page', params.per_page ?? 100);
+    let httpParams = new HttpParams().set('organization_id', organizationId).set('per_page', params.per_page ?? 100);
     if (params.status) httpParams = httpParams.set('status', params.status);
     if (params.search) httpParams = httpParams.set('search', params.search);
 

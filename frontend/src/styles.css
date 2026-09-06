@@ -1,6 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 
+/*
+ * Establishes cascade layer order explicitly: the `angular-material` layer
+ * (declared in material-theme.scss, which loads before this file) must sort
+ * before Tailwind's own layers so its unlayered-by-default global reset
+ * (`*:not(mat-icon) { margin: 0; padding: 0; ... }`) doesn't win over
+ * Tailwind utilities regardless of specificity — unlayered rules always beat
+ * layered ones for normal-priority declarations, so both sides need a layer.
+ */
+@layer angular-material, theme, base, components, utilities;
+
 @import 'tailwindcss';
+
+/*
+ * Class-based dark variant: ThemeService toggles `.dark` on <html>, so
+ * `dark:` utilities react to the app's theme setting instead of only the
+ * OS-level `prefers-color-scheme` media query.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /*
  * Bridge Angular Material's system CSS variables (--mat-sys-*, set by
@@ -12,31 +29,26 @@
   --color-on-primary: var(--mat-sys-on-primary);
   --color-secondary: var(--mat-sys-secondary);
   --color-on-secondary: var(--mat-sys-on-secondary);
+  --color-secondary-container: var(--mat-sys-secondary-container);
+  --color-on-secondary-container: var(--mat-sys-on-secondary-container);
   --color-tertiary: var(--mat-sys-tertiary);
   --color-error: var(--mat-sys-error);
   --color-on-error: var(--mat-sys-on-error);
   --color-surface: var(--mat-sys-surface);
   --color-on-surface: var(--mat-sys-on-surface);
+  --color-on-surface-variant: var(--mat-sys-on-surface-variant);
   --color-surface-variant: var(--mat-sys-surface-variant);
   --color-surface-container: var(--mat-sys-surface-container);
   --color-surface-container-high: var(--mat-sys-surface-container-high);
   --color-outline: var(--mat-sys-outline);
-  --font-sans: var(--mat-sys-body-medium-font, Roboto, sans-serif);
+  --color-outline-variant: var(--mat-sys-outline-variant);
+  --font-sans: var(--mat-sys-body-medium-font, Poppins, Roboto, sans-serif);
 }
 
 @utility sidebar {
   box-shadow:
     0 2px 10px -1px rgba(0, 0, 0, 0.1),
     0 0 6px 2px rgba(196, 196, 196, 1);
-}
-
-/*
- * Minimal, consistent scrollbars app-wide instead of the bulky default OS
- * ones, and a hard guard against accidental page-level horizontal scroll.
- */
-html,
-body {
-  overflow-x: hidden;
 }
 
 * {

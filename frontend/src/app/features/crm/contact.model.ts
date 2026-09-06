@@ -7,12 +7,12 @@ export interface StageConfig {
 }
 
 export const STAGES: StageConfig[] = [
-  { id: 'novo', label: 'Novos Contatos', colorVar: '#6B7280' },
-  { id: 'contato', label: 'Em Contato', colorVar: '#3B82F6' },
-  { id: 'qualificado', label: 'Qualificados', colorVar: '#7C3AED' },
-  { id: 'proposta', label: 'Proposta/Follow-up', colorVar: '#F59E0B' },
-  { id: 'ganho', label: 'Convertidos', colorVar: '#10B981' },
-  { id: 'perdido', label: 'Perdidos', colorVar: '#EF4444' },
+  { id: 'novo', label: 'Novos Contatos', colorVar: 'var(--mat-sys-outline)' },
+  { id: 'contato', label: 'Em Contato', colorVar: 'var(--mat-sys-primary)' },
+  { id: 'qualificado', label: 'Qualificados', colorVar: 'var(--mat-sys-tertiary)' },
+  { id: 'proposta', label: 'Proposta/Follow-up', colorVar: 'var(--mat-sys-primary-fixed-dim)' },
+  { id: 'ganho', label: 'Convertidos', colorVar: 'var(--mat-sys-secondary)' },
+  { id: 'perdido', label: 'Perdidos', colorVar: 'var(--mat-sys-error)' },
 ];
 
 export interface ContactActivity {
@@ -83,10 +83,4 @@ export interface ContactTaskFormValue {
   done?: boolean;
 }
 
-export const ASSIGNEES = [
-  'Pastor Carlos',
-  'Diácono João',
-  'Evangelista Ana',
-  'Secretária Maria',
-  'Tesoureiro Carlos',
-];
+export const ASSIGNEES = ['Pastor Carlos', 'Diácono João', 'Evangelista Ana', 'Secretária Maria', 'Tesoureiro Carlos'];

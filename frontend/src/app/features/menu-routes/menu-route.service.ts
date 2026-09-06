@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
-import { MenuRoute, MenuRouteFormValue } from './menu-route.model';
+import { type MenuRoute, type MenuRouteFormValue } from './menu-route.model';
 
 interface ApiCollection<T> {
   data: T[];

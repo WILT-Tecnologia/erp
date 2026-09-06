@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { type Routes } from '@angular/router';
 
 import { adminAccessGuard } from './core/auth/admin-access.guard';
 import { authGuard, guestGuard } from './core/auth/auth.guard';
@@ -6,17 +6,14 @@ import { tenantAccessGuard } from './core/auth/tenant-access.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
 const comingSoon = () =>
-  import('./shared/components/coming-soon/coming-soon-page.component').then(
-    (m) => m.ComingSoonPageComponent,
-  );
+  import('./shared/components/coming-soon/coming-soon-page.component').then((m) => m.ComingSoonPageComponent);
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'admin/dashboard' },
   {
     path: 'login',
     canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./features/auth/components/login-page.component').then((m) => m.LoginPageComponent),
+    loadComponent: () => import('./features/auth/components/login-page.component').then((m) => m.LoginPageComponent),
   },
   {
     path: '',
@@ -36,32 +33,26 @@ export const routes: Routes = [
             title: 'Dashboard',
             data: { icon: 'dashboard', module: 'admin.dashboard' },
             loadComponent: () =>
-              import('./features/dashboard/dashboard-page.component').then(
-                (m) => m.DashboardPageComponent,
-              ),
+              import('./features/dashboard/dashboard-page.component').then((m) => m.DashboardPageComponent),
           },
           {
             path: 'organizations',
             title: 'Organizações',
             data: { icon: 'business', module: 'admin.organizations' },
             loadComponent: () =>
-              import('./features/organizations/organizations-page.component').then(
-                (m) => m.OrganizationsPageComponent,
-              ),
+              import('./features/organizations/organizations-page.component').then((m) => m.OrganizationsPageComponent),
           },
           {
             path: 'plans',
             title: 'Planos',
             data: { icon: 'credit_card', module: 'admin.plans' },
-            loadComponent: () =>
-              import('./features/plans/plans-page.component').then((m) => m.PlansPageComponent),
+            loadComponent: () => import('./features/plans/plans-page.component').then((m) => m.PlansPageComponent),
           },
           {
             path: 'admins',
             title: 'Administradores',
             data: { icon: 'supervisor_account', module: 'admin.admins' },
-            loadComponent: () =>
-              import('./features/admins/admins-page.component').then((m) => m.AdminsPageComponent),
+            loadComponent: () => import('./features/admins/admins-page.component').then((m) => m.AdminsPageComponent),
           },
           {
             path: 'users',
@@ -98,9 +89,7 @@ export const routes: Routes = [
             title: 'Rotas de Menu',
             data: { icon: 'tune', module: 'admin.menu-routes' },
             loadComponent: () =>
-              import('./features/menu-routes/menu-routes-page.component').then(
-                (m) => m.MenuRoutesPageComponent,
-              ),
+              import('./features/menu-routes/menu-routes-page.component').then((m) => m.MenuRoutesPageComponent),
           },
         ],
       },
@@ -139,8 +128,7 @@ export const routes: Routes = [
                 path: 'contacts',
                 title: 'Contatos',
                 data: { icon: 'contacts', module: 'crm.contacts' },
-                loadComponent: () =>
-                  import('./features/crm/crm-page.component').then((m) => m.CrmPageComponent),
+                loadComponent: () => import('./features/crm/crm-page.component').then((m) => m.CrmPageComponent),
               },
               {
                 path: 'leads',
@@ -587,9 +575,7 @@ export const routes: Routes = [
                 title: 'Igrejas',
                 data: { icon: 'account_balance', module: 'church.churches' },
                 loadComponent: () =>
-                  import('./features/churches/churches-page.component').then(
-                    (m) => m.ChurchesPageComponent,
-                  ),
+                  import('./features/churches/churches-page.component').then((m) => m.ChurchesPageComponent),
               },
               {
                 path: 'congregations',
@@ -605,27 +591,21 @@ export const routes: Routes = [
                 title: 'Membros',
                 data: { icon: 'group', module: 'church.members' },
                 loadComponent: () =>
-                  import('./features/members/members-page.component').then(
-                    (m) => m.MembersPageComponent,
-                  ),
+                  import('./features/members/members-page.component').then((m) => m.MembersPageComponent),
               },
               {
                 path: 'families',
                 title: 'Famílias',
                 data: { icon: 'family_restroom', module: 'church.families' },
                 loadComponent: () =>
-                  import('./features/families/families-page.component').then(
-                    (m) => m.FamiliesPageComponent,
-                  ),
+                  import('./features/families/families-page.component').then((m) => m.FamiliesPageComponent),
               },
               {
                 path: 'departments',
                 title: 'Departamentos',
                 data: { icon: 'apartment', module: 'church.departments' },
                 loadComponent: () =>
-                  import('./features/departments/departments-page.component').then(
-                    (m) => m.DepartmentsPageComponent,
-                  ),
+                  import('./features/departments/departments-page.component').then((m) => m.DepartmentsPageComponent),
               },
               {
                 path: 'ministries',
@@ -644,9 +624,7 @@ export const routes: Routes = [
                 title: 'Eventos',
                 data: { icon: 'event', module: 'church.events' },
                 loadComponent: () =>
-                  import('./features/events/events-page.component').then(
-                    (m) => m.EventsPageComponent,
-                  ),
+                  import('./features/events/events-page.component').then((m) => m.EventsPageComponent),
               },
               {
                 path: 'reports',
@@ -873,18 +851,14 @@ export const routes: Routes = [
                 title: 'Minha Conta',
                 data: { icon: 'account_circle', module: 'settings.account' },
                 loadComponent: () =>
-                  import('./features/settings/settings-page.component').then(
-                    (m) => m.SettingsPageComponent,
-                  ),
+                  import('./features/settings/settings-page.component').then((m) => m.SettingsPageComponent),
               },
               {
                 path: 'users',
                 title: 'Usuários',
                 data: { icon: 'manage_accounts', module: 'settings.users' },
                 loadComponent: () =>
-                  import('./features/tenant-users/tenant-users-page.component').then(
-                    (m) => m.TenantUsersPageComponent,
-                  ),
+                  import('./features/tenant-users/tenant-users-page.component').then((m) => m.TenantUsersPageComponent),
               },
               {
                 path: 'profiles',
@@ -931,9 +905,7 @@ export const routes: Routes = [
             title: 'Relatórios Gerais',
             data: { icon: 'bar_chart', module: 'org.reports' },
             loadComponent: () =>
-              import('./features/reports/reports-page.component').then(
-                (m) => m.ReportsPageComponent,
-              ),
+              import('./features/reports/reports-page.component').then((m) => m.ReportsPageComponent),
           },
         ],
       },

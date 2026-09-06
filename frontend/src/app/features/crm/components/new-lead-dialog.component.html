@@ -1,6 +1,5 @@
-<h2 mat-dialog-title>Novo Lead / Contato</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
+  <app-modal modalTitle="Novo Lead / Contato" (closed)="cancel()">
     <mat-form-field appearance="outline">
       <mat-label>Nome / Empresa</mat-label>
       <input matInput formControlName="name" placeholder="Ex: Família Silva" />
@@ -43,9 +42,10 @@
       <mat-label>Tags (separadas por vírgula)</mat-label>
       <input matInput formControlName="tags" placeholder="Ex: Família, Jovem, Evangelização" />
     </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit">Criar Lead</button>
-  </mat-dialog-actions>
+
+    <div modal-footer>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Criar Lead</button>
+    </div>
+  </app-modal>
 </form>

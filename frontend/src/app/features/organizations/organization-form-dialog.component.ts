@@ -1,17 +1,18 @@
-import { Component, Inject, OnInit, inject } from '@angular/core';
+import { Component, inject, type OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective } from 'ngx-mask';
 
-import { Admin } from '../../core/auth/admin.model';
+import { type Admin } from '../../core/auth/admin.model';
+import { Modal } from '../../layout/modal/modal';
 import { AdminService } from '../admins/admin.service';
-import { Plan } from '../plans/plan.model';
+import { type Plan } from '../plans/plan.model';
 import { PlanService } from '../plans/plan.service';
-import { Organization } from './organization.model';
+import { type Organization } from './organization.model';
 
 export interface OrganizationFormDialogData {
   organization?: Organization;
@@ -22,7 +23,7 @@ export interface OrganizationFormDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -32,6 +33,8 @@ export interface OrganizationFormDialogData {
   templateUrl: './organization-form-dialog.component.html',
 })
 export class OrganizationFormDialogComponent implements OnInit {
+  data = inject<OrganizationFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<OrganizationFormDialogComponent>);
   private readonly planService = inject(PlanService);
@@ -43,7 +46,9 @@ export class OrganizationFormDialogComponent implements OnInit {
   plans: Plan[] = [];
   admins: Admin[] = [];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: OrganizationFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.organization;
     this.form = this.buildForm();
   }

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, type Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
-import { ApiCollection, ApiResource } from '../../core/http/api-response.model';
-import { Organization, OrganizationFormValue } from './organization.model';
+import { type ApiCollection, type ApiResource } from '../../core/http/api-response.model';
+import { type Organization, type OrganizationFormValue } from './organization.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrganizationService {
@@ -21,9 +21,7 @@ export class OrganizationService {
   }
 
   create(payload: OrganizationFormValue): Observable<Organization> {
-    return this.http
-      .post<ApiResource<Organization>>(this.baseUrl, payload)
-      .pipe(map((response) => response.data));
+    return this.http.post<ApiResource<Organization>>(this.baseUrl, payload).pipe(map((response) => response.data));
   }
 
   update(id: string, payload: OrganizationFormValue): Observable<Organization> {

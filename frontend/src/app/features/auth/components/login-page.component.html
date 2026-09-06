@@ -54,13 +54,7 @@
           }
         </mat-form-field>
 
-        <button
-          mat-flat-button
-          color="primary"
-          type="submit"
-          [disabled]="submitting()"
-          class="mt-2! h-11! text-base!"
-        >
+        <button mat-flat-button color="primary" type="submit" [disabled]="submitting()" class="mt-2! h-11! text-base!">
           @if (submitting()) {
             <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
           }

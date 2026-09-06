@@ -13,11 +13,11 @@ export interface TenantUser {
   last_login_at: string | null;
 }
 
-export type TenantUserFormValue = {
+export interface TenantUserFormValue {
   name: string;
   email: string;
   phone?: string;
   role: TenantUserRole;
   organization: string;
   status: TenantUserStatus;
-};
+}

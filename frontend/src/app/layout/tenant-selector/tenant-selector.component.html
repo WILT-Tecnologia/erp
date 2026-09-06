@@ -1,8 +1,4 @@
-<button
-  mat-button
-  [matMenuTriggerFor]="tenantMenu"
-  class="flex! items-center! gap-1! max-w-[220px]"
->
+<button mat-button [matMenuTriggerFor]="tenantMenu" class="flex! items-center! gap-1! max-w-[220px]">
   <mat-icon class="text-base! w-4! h-4!">{{ tenantContext.scope() === 'global' ? 'public' : 'apartment' }}</mat-icon>
   <span class="truncate">
     {{ tenantContext.scope() === 'global' ? 'Todas as organizações' : tenantContext.organization()?.name }}

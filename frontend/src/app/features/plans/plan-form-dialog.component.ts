@@ -1,15 +1,16 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
 
-import { Plan } from './plan.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Plan } from './plan.model';
 
 export interface PlanFormDialogData {
   plan?: Plan;
@@ -20,7 +21,7 @@ export interface PlanFormDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -32,13 +33,17 @@ export interface PlanFormDialogData {
   templateUrl: './plan-form-dialog.component.html',
 })
 export class PlanFormDialogComponent {
+  data = inject<PlanFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<PlanFormDialogComponent>);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<PlanFormDialogComponent['buildForm']>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: PlanFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.plan;
     this.form = this.buildForm();
   }

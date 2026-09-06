@@ -1,13 +1,14 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective } from 'ngx-mask';
 
-import { Member, MemberFormValue } from './member.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Member, type MemberFormValue } from './member.model';
 
 export interface MemberFormDialogData {
   member?: Member;
@@ -18,7 +19,7 @@ export interface MemberFormDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
+    Modal,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -28,13 +29,17 @@ export interface MemberFormDialogData {
   templateUrl: './member-form-dialog.component.html',
 })
 export class MemberFormDialogComponent {
+  data = inject<MemberFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MemberFormDialogComponent>);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<MemberFormDialogComponent['buildForm']>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: MemberFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.member;
     this.form = this.buildForm();
   }

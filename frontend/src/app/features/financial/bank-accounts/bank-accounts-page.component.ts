@@ -1,9 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 
 import { FinancialService } from '../financial.service';
-import { BankAccount } from '../transaction.model';
+import { type BankAccount } from '../transaction.model';
 
 @Component({
   selector: 'app-bank-accounts-page',

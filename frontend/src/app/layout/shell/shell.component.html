@@ -10,7 +10,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content
-    class="flex flex-col h-screen transition-[margin-left]! duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]"
+    class="flex! flex-col! h-screen! transition-[margin-left]! duration-300! ease-[cubic-bezier(0.25,0.8,0.25,1)]!"
     [style.marginLeft.px]="isHandset() ? 0 : sidenavWidthPx()"
   >
     <app-header
@@ -19,8 +19,10 @@
       (menuToggle)="toggleMobileMenu()"
       (collapseToggle)="toggleCollapse()"
     ></app-header>
-    <main class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-surface-container!">
-      <router-outlet></router-outlet>
+    <main class="flex-1! overflow-y-auto! overflow-x-hidden! p-6! bg-surface-container!">
+      <app-content>
+        <router-outlet></router-outlet>
+      </app-content>
     </main>
   </mat-sidenav-content>
 </mat-sidenav-container>

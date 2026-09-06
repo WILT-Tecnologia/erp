@@ -1,6 +1,5 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Editar membro' : 'Novo membro' }}</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
+  <app-modal [modalTitle]="isEdit ? 'Editar membro' : 'Novo membro'" (closed)="cancel()">
     <mat-form-field appearance="outline">
       <mat-label>Nome completo</mat-label>
       <input matInput formControlName="name" />
@@ -40,9 +39,10 @@
       <mat-label>Data de ingresso</mat-label>
       <input matInput type="date" formControlName="joined_at" />
     </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit">Salvar</button>
-  </mat-dialog-actions>
+
+    <div modal-footer>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
 </form>

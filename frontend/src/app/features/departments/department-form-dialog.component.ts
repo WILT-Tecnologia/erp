@@ -1,12 +1,13 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { Department } from './department.model';
+import { Modal } from '../../layout/modal/modal';
+import { type Department } from './department.model';
 
 export interface DepartmentFormDialogData {
   department?: Department;
@@ -15,24 +16,21 @@ export interface DepartmentFormDialogData {
 @Component({
   selector: 'app-department-form-dialog',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-  ],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './department-form-dialog.component.html',
 })
 export class DepartmentFormDialogComponent {
+  data = inject<DepartmentFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<DepartmentFormDialogComponent>);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<DepartmentFormDialogComponent['buildForm']>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DepartmentFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.department;
     this.form = this.buildForm();
   }

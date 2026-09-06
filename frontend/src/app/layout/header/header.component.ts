@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { TenantAuthService } from '../../core/auth/tenant-auth.service';
+import { ThemeService } from '../../core/theme/theme.service';
 import { BreadcrumbService } from '../breadcrumb/breadcrumb.service';
 import { TenantSelectorComponent } from '../tenant-selector/tenant-selector.component';
 
@@ -31,6 +32,7 @@ export class HeaderComponent {
   readonly authService = inject(AuthService);
   readonly tenantAuthService = inject(TenantAuthService);
   readonly breadcrumbService = inject(BreadcrumbService);
+  readonly themeService = inject(ThemeService);
 
   readonly showMenuButton = input(false);
   readonly menuToggle = output<void>();
@@ -38,12 +40,14 @@ export class HeaderComponent {
   readonly collapsed = input(false);
   readonly collapseToggle = output<void>();
 
-  readonly principalName = computed(
-    () => this.authService.admin()?.name ?? this.tenantAuthService.tenantUser()?.name,
-  );
+  readonly principalName = computed(() => this.authService.admin()?.name ?? this.tenantAuthService.tenantUser()?.name);
   readonly principalEmail = computed(
     () => this.authService.admin()?.email ?? this.tenantAuthService.tenantUser()?.email,
   );
+
+  toggleTheme(): void {
+    this.themeService.setTheme(this.themeService.resolvedScheme() === 'dark' ? 'light' : 'dark');
+  }
 
   logout(): void {
     if (this.tenantAuthService.isAuthenticated()) {

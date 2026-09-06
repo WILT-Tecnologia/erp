@@ -1,14 +1,14 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
-import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
-import { GridColumn } from '../../shared/components/data-grid/data-grid.types';
-import { NotificationService } from '../../shared/services/notification.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { Department } from './department.model';
+import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
+import { type GridColumn } from '../../shared/components/data-grid/data-grid.types';
+import { NotificationService } from '../../shared/services/notification.service';
+import { type Department } from './department.model';
 import { DepartmentService } from './department.service';
 import { DepartmentFormDialogComponent } from './department-form-dialog.component';
 

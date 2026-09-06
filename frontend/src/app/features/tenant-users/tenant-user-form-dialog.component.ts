@@ -1,12 +1,13 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { TenantUser, TenantUserRole, TenantUserStatus } from './tenant-user.model';
+import { Modal } from '../../layout/modal/modal';
+import { type TenantUser, type TenantUserRole, type TenantUserStatus } from './tenant-user.model';
 
 export interface TenantUserFormDialogData {
   user?: TenantUser;
@@ -18,17 +19,12 @@ const STATUSES: TenantUserStatus[] = ['Ativo', 'Inativo', 'Suspenso'];
 @Component({
   selector: 'app-tenant-user-form-dialog',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-  ],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './tenant-user-form-dialog.component.html',
 })
 export class TenantUserFormDialogComponent {
+  data = inject<TenantUserFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<TenantUserFormDialogComponent>);
 
@@ -37,7 +33,9 @@ export class TenantUserFormDialogComponent {
   readonly roles = ROLES;
   readonly statuses = STATUSES;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: TenantUserFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.user;
     this.form = this.buildForm();
   }

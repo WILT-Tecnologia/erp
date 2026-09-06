@@ -1,11 +1,12 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { Admin } from '../../core/auth/admin.model';
+import { type Admin } from '../../core/auth/admin.model';
+import { Modal } from '../../layout/modal/modal';
 
 export interface AdminFormDialogData {
   admin?: Admin;
@@ -14,17 +15,21 @@ export interface AdminFormDialogData {
 @Component({
   selector: 'app-admin-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule],
   templateUrl: './admin-form-dialog.component.html',
 })
 export class AdminFormDialogComponent {
+  data = inject<AdminFormDialogData>(MAT_DIALOG_DATA);
+
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<AdminFormDialogComponent>);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<AdminFormDialogComponent['buildForm']>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: AdminFormDialogData) {
+  constructor() {
+    const data = this.data;
+
     this.isEdit = !!data.admin;
     this.form = this.buildForm();
   }

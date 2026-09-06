@@ -1,5 +1,5 @@
-import { Admin } from '../../core/auth/admin.model';
-import { Plan } from '../plans/plan.model';
+import { type Admin } from '../../core/auth/admin.model';
+import { type Plan } from '../plans/plan.model';
 
 export type OrganizationStatus = 'active' | 'suspended' | 'inactive';
 
@@ -28,7 +28,7 @@ export interface Organization {
   updated_at?: string;
 }
 
-export type OrganizationFormValue = {
+export interface OrganizationFormValue {
   name: string;
   legal_name?: string;
   slug: string;
@@ -42,4 +42,4 @@ export type OrganizationFormValue = {
   language: string;
   plan_id?: string;
   owner_admin_id?: string;
-};
+}

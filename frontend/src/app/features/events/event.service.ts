@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { Event, EventFormValue } from './event.model';
+import { type Event, type EventFormValue } from './event.model';
 
 // NOTE: this domain has no real backend endpoint yet. Data is kept in-memory
 // and mutated directly so the service can be swapped for real HttpClient

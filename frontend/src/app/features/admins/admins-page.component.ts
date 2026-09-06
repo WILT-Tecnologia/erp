@@ -1,15 +1,15 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
+import { type Admin } from '../../core/auth/admin.model';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
-import { GridColumn } from '../../shared/components/data-grid/data-grid.types';
+import { type GridColumn } from '../../shared/components/data-grid/data-grid.types';
 import { NotificationService } from '../../shared/services/notification.service';
-import { Admin } from '../../core/auth/admin.model';
 import { AdminService } from './admin.service';
 import { AdminFormDialogComponent } from './admin-form-dialog.component';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-admins-page',

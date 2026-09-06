@@ -1,29 +1,30 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
+  type AfterViewInit,
   Component,
   ContentChild,
   EventEmitter,
+  inject,
   Input,
-  OnChanges,
-  OnInit,
+  type OnChanges,
+  type OnInit,
   Output,
-  TemplateRef,
+  type TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, type PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatSort, MatSortModule, type Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { GridStateService } from '../../services/grid-state.service';
-import { GridColumn, GridPage, GridSort } from './data-grid.types';
+import { type GridColumn, type GridPage, type GridSort } from './data-grid.types';
 
 @Component({
   selector: 'app-data-grid',
@@ -43,7 +44,9 @@ import { GridColumn, GridPage, GridSort } from './data-grid.types';
   ],
   templateUrl: './data-grid.component.html',
 })
-export class DataGridComponent<T extends Record<string, any>> implements OnInit, OnChanges, AfterViewInit {
+export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
+  private readonly gridState = inject(GridStateService);
+
   @Input({ required: true }) columns: GridColumn<T>[] = [];
   @Input() data: T[] = [];
   @Input() loading = false;
@@ -55,7 +58,7 @@ export class DataGridComponent<T extends Record<string, any>> implements OnInit,
   @Input() showActionsColumn = true;
   @Input() emptyMessage = 'Nenhum registro encontrado.';
 
-  @Output() search = new EventEmitter<string>();
+  @Output() searchChange = new EventEmitter<string>();
   @Output() page = new EventEmitter<GridPage>();
   @Output() sortChange = new EventEmitter<GridSort>();
 
@@ -67,8 +70,6 @@ export class DataGridComponent<T extends Record<string, any>> implements OnInit,
   readonly dataSource = new MatTableDataSource<T>([]);
   searchTerm = '';
 
-  constructor(private readonly gridState: GridStateService) {}
-
   get displayedColumns(): string[] {
     const keys = this.columns.map((c) => c.key);
     return this.showActionsColumn ? [...keys, 'actions'] : keys;
@@ -78,9 +79,6 @@ export class DataGridComponent<T extends Record<string, any>> implements OnInit,
     const state = this.gridState.load(this.persistKey);
     if (state?.pageSize) {
       this.pageSize = state.pageSize;
-    }
-    if (state?.sortActive) {
-      this.searchTerm = this.searchTerm;
     }
   }
 
@@ -96,13 +94,13 @@ export class DataGridComponent<T extends Record<string, any>> implements OnInit,
   }
 
   valueFor(row: T, column: GridColumn<T>): string {
-    return column.valueFn ? column.valueFn(row) : (row[column.key] ?? '');
+    return column.valueFn ? column.valueFn(row) : String((row as Record<string, unknown>)[column.key] ?? '');
   }
 
   onSearchChange(term: string): void {
     this.searchTerm = term;
     if (this.serverSide) {
-      this.search.emit(term);
+      this.searchChange.emit(term);
     } else {
       this.dataSource.filter = term.trim().toLowerCase();
     }
@@ -120,5 +118,10 @@ export class DataGridComponent<T extends Record<string, any>> implements OnInit,
     if (this.serverSide) {
       this.sortChange.emit({ active: sort.active, direction: sort.direction });
     }
+  }
+
+  onClearSearch(): void {
+    this.searchTerm = '';
+    this.onSearchChange('');
   }
 }

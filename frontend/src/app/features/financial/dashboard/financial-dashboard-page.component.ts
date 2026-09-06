@@ -1,11 +1,11 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ChartConfiguration } from 'chart.js';
+import { type ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
-import { BankAccount, Transaction } from '../transaction.model';
 import { FinancialService } from '../financial.service';
+import { type BankAccount, type Transaction } from '../transaction.model';
 
 const MONTHLY_TREND = [
   { month: 'Mar', receita: 42000, despesa: 28000 },

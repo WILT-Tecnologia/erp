@@ -1,4 +1,4 @@
-export interface GridColumn<T = any> {
+export interface GridColumn<T = unknown> {
   key: string;
   label: string;
   sortable?: boolean;

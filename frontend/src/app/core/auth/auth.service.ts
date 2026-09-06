@@ -1,12 +1,12 @@
-import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, finalize, tap } from 'rxjs';
+import { finalize, type Observable, tap } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS, STORAGE_KEYS } from '../constants/api-endpoints';
-import { Admin, LoginPayload, LoginResponse } from './admin.model';
+import { type Admin, type LoginPayload, type LoginResponse } from './admin.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

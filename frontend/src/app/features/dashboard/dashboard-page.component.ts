@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { type ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
 
+import { type DashboardStats } from './dashboard.model';
 import { DashboardService } from './dashboard.service';
-import { DashboardStats } from './dashboard.model';
 
 @Component({
   selector: 'app-dashboard-page',

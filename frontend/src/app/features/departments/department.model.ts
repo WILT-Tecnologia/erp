@@ -10,11 +10,11 @@ export interface Department {
   status: DepartmentStatus;
 }
 
-export type DepartmentFormValue = {
+export interface DepartmentFormValue {
   name: string;
   church: string;
   leader: string;
   members: number;
   description?: string;
   status: DepartmentStatus;
-};
+}

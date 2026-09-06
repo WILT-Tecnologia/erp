@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, computed, inject, input, output } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, type OnInit, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, type MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
 
 import { AccordionGroupService } from './accordion-group.service';
-import { SidebarNavItem, resolveNavLink } from './sidebar-nav';
+import { resolveNavLink, type SidebarNavItem } from './sidebar-nav';
 
 const HOVER_CLOSE_DELAY_MS = 150;
 

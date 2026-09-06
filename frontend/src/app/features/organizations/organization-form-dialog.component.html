@@ -1,6 +1,5 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Editar organização' : 'Nova organização' }}</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
+  <app-modal [modalTitle]="isEdit ? 'Editar organização' : 'Nova organização'" (closed)="cancel()">
     <div class="grid grid-cols-2 gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Nome</mat-label>
@@ -84,9 +83,10 @@
         </mat-select>
       </mat-form-field>
     </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <button mat-button type="button" (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit">Salvar</button>
-  </mat-dialog-actions>
+
+    <div modal-footer>
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
 </form>

@@ -8,20 +8,13 @@ import { Router } from '@angular/router';
 
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
 import { AccordionGroupService } from './accordion-group.service';
-import { SidebarNavItem, SidebarNavSection, buildSidebarNav } from './sidebar-nav';
 import { SidebarMenuItemComponent } from './sidebar-menu-item.component';
+import { buildSidebarNav, type SidebarNavItem, type SidebarNavSection } from './sidebar-nav';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatButtonModule,
-    MatListModule,
-    SidebarMenuItemComponent,
-  ],
+  imports: [CommonModule, MatIconModule, MatTooltipModule, MatButtonModule, MatListModule, SidebarMenuItemComponent],
   providers: [AccordionGroupService],
   templateUrl: './sidebar.component.html',
 })

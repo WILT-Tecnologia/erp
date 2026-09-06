@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of } from 'rxjs';
+import { delay, type Observable, of } from 'rxjs';
 
-import { TenantUser, TenantUserFormValue } from './tenant-user.model';
+import { type TenantUser, type TenantUserFormValue } from './tenant-user.model';
 
 // NOTE: this domain has no real backend endpoint yet. Data is kept in-memory
 // and mutated directly so the service can be swapped for real HttpClient

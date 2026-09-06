@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, type OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +12,7 @@ import { NotificationService } from '../../shared/services/notification.service'
 import { KanbanBoardComponent } from './components/kanban-board.component';
 import { LeadDetailDialogComponent } from './components/lead-detail-dialog.component';
 import { NewLeadDialogComponent } from './components/new-lead-dialog.component';
-import { Contact, ContactStage } from './contact.model';
+import { type Contact, type ContactStage } from './contact.model';
 import { ContactService } from './contact.service';
 
 // NOTE: ContactService calls /admin/contacts, which requires a central Admin

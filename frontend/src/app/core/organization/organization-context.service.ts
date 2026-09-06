@@ -1,11 +1,11 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { type ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, distinctUntilChanged, filter, map, of, startWith, switchMap } from 'rxjs';
 
-import { TenantAuthService } from '../auth/tenant-auth.service';
-import { Organization } from '../../features/organizations/organization.model';
+import { type Organization } from '../../features/organizations/organization.model';
 import { OrganizationService } from '../../features/organizations/organization.service';
+import { TenantAuthService } from '../auth/tenant-auth.service';
 
 /**
  * Resolves which organization is currently being viewed, based on the

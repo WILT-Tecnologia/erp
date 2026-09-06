@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, map, of } from 'rxjs';
+import { delay, map, type Observable, of } from 'rxjs';
 
-import { BankAccount, Transaction, TransactionFormValue } from './transaction.model';
+import { type BankAccount, type Transaction, type TransactionFormValue } from './transaction.model';
 
 // NOTE: this domain has no real backend endpoint yet. Data is kept in-memory
 // and mutated directly so the service can be swapped for real HttpClient

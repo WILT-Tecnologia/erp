@@ -1,4 +1,4 @@
-import { Route, Routes } from '@angular/router';
+import { type Route, type Routes } from '@angular/router';
 
 export interface SidebarNavItem {
   title: string;

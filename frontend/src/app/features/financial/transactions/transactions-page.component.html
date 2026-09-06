@@ -10,12 +10,7 @@
     </button>
   </div>
 
-  <app-data-grid
-    [columns]="columns"
-    [data]="transactions()"
-    [loading]="loading()"
-    persistKey="financial-transactions"
-  >
+  <app-data-grid [columns]="columns" [data]="transactions()" [loading]="loading()" persistKey="financial-transactions">
     <ng-template #rowActions let-row>
       <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
         <mat-icon>edit</mat-icon>
