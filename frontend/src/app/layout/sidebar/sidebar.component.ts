@@ -30,7 +30,6 @@ export class SidebarComponent {
   private readonly router = inject(Router);
 
   readonly collapsed = input(false);
-  readonly collapseToggle = output<void>();
   readonly linkClick = output<void>();
 
   private readonly navSections = buildSidebarNav(this.router.config);

@@ -4,6 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth.service';
@@ -20,6 +21,7 @@ import { TenantSelectorComponent } from '../tenant-selector/tenant-selector.comp
     MatMenuModule,
     MatButtonModule,
     MatDividerModule,
+    MatTooltipModule,
     RouterLink,
     TenantSelectorComponent,
   ],
@@ -32,6 +34,9 @@ export class HeaderComponent {
 
   readonly showMenuButton = input(false);
   readonly menuToggle = output<void>();
+
+  readonly collapsed = input(false);
+  readonly collapseToggle = output<void>();
 
   readonly principalName = computed(
     () => this.authService.admin()?.name ?? this.tenantAuthService.tenantUser()?.name,

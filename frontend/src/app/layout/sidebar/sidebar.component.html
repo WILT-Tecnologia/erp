@@ -1,4 +1,4 @@
-<nav class="flex flex-col h-full! w-full bg-surface-container">
+<nav class="flex flex-col h-full! w-full bg-surface">
   <div
     class="h-16 flex items-center gap-2 px-4 font-medium text-lg whitespace-nowrap overflow-hidden shrink-0"
   >
@@ -86,12 +86,4 @@
       }
     }
   </div>
-
-  <button
-    mat-icon-button
-    class="hidden md:flex justify-center m-2 shrink-0"
-    (click)="collapseToggle.emit()"
-  >
-    <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
-  </button>
 </nav>
