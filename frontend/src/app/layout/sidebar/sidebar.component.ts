@@ -2,28 +2,42 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
-import { MenuGroupKey, SIDEBAR_NAV, resolveNavLink } from './sidebar-nav';
+import { MenuGroupKey, buildSidebarNav } from './sidebar-nav';
+import { SidebarMenuItemComponent } from './sidebar-menu-item.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, MatIconModule, MatTooltipModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatListModule,
+    SidebarMenuItemComponent,
+  ],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
   private readonly tenantContext = inject(TenantContextService);
+  private readonly router = inject(Router);
 
   readonly collapsed = input(false);
   readonly collapseToggle = output<void>();
   readonly linkClick = output<void>();
 
-  readonly groups = computed(() =>
-    this.tenantContext.isSuperAdmin() ? SIDEBAR_NAV : SIDEBAR_NAV.filter((group) => group.key === 'admin'),
-  );
+  private readonly navGroups = buildSidebarNav(this.router.config);
+
+  readonly groups = computed(() => {
+    if (this.tenantContext.isSuperAdmin()) return this.navGroups;
+    if (this.tenantContext.isTenantUser()) return this.navGroups.filter((group) => group.key === 'organization');
+    return [];
+  });
 
   private readonly groupOpen = signal<Record<MenuGroupKey, boolean>>({ admin: true, organization: true });
 
@@ -35,7 +49,7 @@ export class SidebarComponent {
     this.groupOpen.update((state) => ({ ...state, [key]: !state[key] }));
   }
 
-  resolveLink(group: MenuGroupKey, slug: string): string[] | null {
-    return resolveNavLink(group, slug, this.tenantContext.organizationSlug());
+  organizationId(): string | null {
+    return this.tenantContext.organizationSlug();
   }
 }

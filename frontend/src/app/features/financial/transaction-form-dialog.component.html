@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Editar transação' : 'Nova transação' }}</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
     <mat-button-toggle-group formControlName="type" class="w-full">
       <mat-button-toggle value="receita" class="flex-1">Receita</mat-button-toggle>
       <mat-button-toggle value="despesa" class="flex-1">Despesa</mat-button-toggle>

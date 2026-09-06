@@ -6,7 +6,7 @@
     </div>
     <div class="flex items-center gap-2">
       @if (organizations().length > 0) {
-        <mat-form-field appearance="outline" class="!w-56">
+        <mat-form-field appearance="outline" class="w-56!">
           <mat-select
             [value]="organizationId()"
             (selectionChange)="onOrganizationChange($event.value)"
@@ -64,8 +64,8 @@
     </div>
   </div>
 
-  <mat-form-field appearance="outline" class="!max-w-sm">
-    <mat-icon matPrefix class="!mr-1 !text-gray-400">search</mat-icon>
+  <mat-form-field appearance="outline" class="max-w-sm!">
+    <mat-icon matPrefix class="mr-1! text-gray-400!">search</mat-icon>
     <input
       matInput
       [ngModel]="search()"

@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\AuthController;
-use App\Http\Middleware\InitializeTenancyByHeader;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,13 +12,15 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Estas rotas são carregadas com o middleware "api" e prefixo "api/tenant"
-| (ver bootstrap/app.php). A identificação do tenant é feita pelo header
-| "X-Tenant-Id" (InitializeTenancyByHeader), que inicializa a conexão com
-| o schema/DB da organização antes de qualquer query.
+| (ver bootstrap/app.php). A identificação do tenant é feita pelo domínio
+| da requisição (InitializeTenancyByDomain), que resolve a organization
+| cujo domínio (tabela domains) bate com o Host da requisição e inicializa
+| a conexão com o schema/DB correspondente antes de qualquer query — sem
+| exigir que o cliente informe o tenant explicitamente.
 |
 */
 
-Route::middleware([InitializeTenancyByHeader::class])->group(function () {
+Route::middleware([InitializeTenancyByDomain::class])->group(function () {
     Route::post('login', [AuthController::class, 'login']);
 
     Route::middleware('auth:api-tenant')->group(function () {

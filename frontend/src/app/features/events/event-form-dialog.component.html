@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Editar evento' : 'Novo evento' }}</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
-  <mat-dialog-content class="flex flex-col gap-4 !pt-2">
+  <mat-dialog-content class="flex flex-col gap-4 pt-2!">
     <mat-form-field appearance="outline">
       <mat-label>Título</mat-label>
       <input matInput formControlName="title" placeholder="Culto de Celebração" />

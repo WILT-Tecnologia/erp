@@ -4,6 +4,11 @@ export const API_ENDPOINTS = {
     logout: '/admin/logout',
     me: '/admin/me',
   },
+  tenantAuth: {
+    login: '/tenant/login',
+    logout: '/tenant/logout',
+    me: '/tenant/me',
+  },
   dashboard: {
     stats: '/admin/dashboard/stats',
   },
@@ -30,6 +35,9 @@ export const API_ENDPOINTS = {
 export const STORAGE_KEYS = {
   authToken: 'auth_token',
   authUser: 'auth_user',
+  tenantAuthToken: 'tenant_auth_token',
+  tenantAuthUser: 'tenant_auth_user',
+  tenantAuthOrganization: 'tenant_auth_organization',
   theme: 'theme',
   sidebarCollapsed: 'sidebar_collapsed',
 } as const;

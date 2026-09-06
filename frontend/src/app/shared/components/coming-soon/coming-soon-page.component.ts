@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
   imports: [MatIconModule],
   template: `
     <div class="flex flex-col items-center justify-center gap-3 py-24 text-center text-on-surface/60">
-      <mat-icon class="!text-4xl !w-10 !h-10">construction</mat-icon>
+      <mat-icon class="text-4xl! w-10! h-10!">construction</mat-icon>
       <h1 class="text-xl font-medium text-on-surface">{{ title }}</h1>
       <p class="text-sm max-w-sm">Este módulo ainda está em desenvolvimento e será disponibilizado em breve.</p>
     </div>

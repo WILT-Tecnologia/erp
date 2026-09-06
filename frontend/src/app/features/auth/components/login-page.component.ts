@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '../../../core/auth/auth.service';
+import { TenantAuthService } from '../../../core/auth/tenant-auth.service';
+import { TenantResolutionService } from '../../../core/tenant/tenant-resolution.service';
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
@@ -28,11 +30,14 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class LoginPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly tenantAuthService = inject(TenantAuthService);
+  private readonly tenantResolution = inject(TenantResolutionService);
   private readonly router = inject(Router);
   private readonly notification = inject(NotificationService);
 
   readonly submitting = signal(false);
   readonly hidePassword = signal(true);
+  readonly isTenantHost = this.tenantResolution.isTenantHost();
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -46,6 +51,22 @@ export class LoginPageComponent {
     }
 
     this.submitting.set(true);
+
+    if (this.isTenantHost) {
+      this.tenantAuthService.login(this.form.getRawValue()).subscribe({
+        next: (response) => {
+          this.submitting.set(false);
+          const slug = response.organization?.slug;
+          this.router.navigate(slug ? ['/organizations', slug, 'dashboard'] : ['/login']);
+        },
+        error: () => {
+          this.submitting.set(false);
+          this.notification.error('E-mail ou senha inválidos.');
+        },
+      });
+      return;
+    }
+
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => {
         this.submitting.set(false);

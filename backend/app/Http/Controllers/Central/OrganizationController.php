@@ -46,17 +46,7 @@ class OrganizationController extends Controller
         StoreOrganizationRequest $request,
         CreateOrganizationAction $action,
     ): JsonResponse {
-        $data = $request->validated();
-
-        // Domínio é gerenciado pela tabela domains do stancl, separado
-        $domain = $data['domain'] ?? null;
-        unset($data['domain']);
-
-        $organization = $action->execute($data);
-
-        if ($domain) {
-            $organization->domains()->create(['domain' => $domain]);
-        }
+        $organization = $action->execute($request->validated());
 
         return (new OrganizationResource(
             $organization->load(['plan', 'ownerAdmin', 'domains'])

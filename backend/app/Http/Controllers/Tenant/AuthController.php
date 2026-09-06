@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tenant\LoginRequest;
+use App\Http\Resources\Tenant\OrganizationSummaryResource;
 use App\Http\Resources\Tenant\UserResource;
 use App\Models\Tenant\User;
 use Illuminate\Http\JsonResponse;
@@ -14,8 +15,8 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     /**
-     * Autentica um usuário do tenant (já identificado via header X-Tenant-Id)
-     * e retorna um token Sanctum.
+     * Autentica um usuário do tenant (já identificado pelo domínio da
+     * requisição via InitializeTenancyByDomain) e retorna um token Sanctum.
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -41,15 +42,19 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'user' => new UserResource($user),
+            'organization' => tenant() ? new OrganizationSummaryResource(tenant()) : null,
         ]);
     }
 
     /**
      * Retorna o usuário autenticado, com roles e permissions resolvidas.
      */
-    public function me(Request $request): UserResource
+    public function me(Request $request): JsonResponse
     {
-        return new UserResource($request->user());
+        return response()->json([
+            'user' => new UserResource($request->user()),
+            'organization' => tenant() ? new OrganizationSummaryResource(tenant()) : null,
+        ]);
     }
 
     /**

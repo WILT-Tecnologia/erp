@@ -2,12 +2,16 @@
   <mat-card class="w-full max-w-md p-8 sm:p-10">
     <div class="flex flex-col items-center text-center gap-3 mb-2">
       <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary">
-        <mat-icon class="!w-7 !h-7 !text-3xl">apps</mat-icon>
+        <mat-icon class="w-7! h-7! text-3xl!">apps</mat-icon>
       </div>
       <div>
         <h1 class="text-2xl font-semibold text-on-surface">ERP Sistema</h1>
         <p class="text-sm text-on-surface/60 mt-1">
-          Acesse o painel administrativo com sua conta de administrador
+          @if (isTenantHost) {
+            Acesse sua organização
+          } @else {
+            Acesse o painel administrativo com sua conta de administrador
+          }
         </p>
       </div>
     </div>
@@ -16,7 +20,7 @@
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5 mt-6">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>E-mail</mat-label>
-          <mat-icon matPrefix class="!text-base text-on-surface/40 mr-2">mail</mat-icon>
+          <mat-icon matPrefix class="text-base! text-on-surface/40 mr-2">mail</mat-icon>
           <input matInput type="email" formControlName="email" autocomplete="email" placeholder="voce@empresa.com" />
           @if (form.controls.email.hasError('required')) {
             <mat-error>Informe seu e-mail.</mat-error>
@@ -28,7 +32,7 @@
 
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Senha</mat-label>
-          <mat-icon matPrefix class="!text-base text-on-surface/40 mr-2">lock</mat-icon>
+          <mat-icon matPrefix class="text-base! text-on-surface/40 mr-2">lock</mat-icon>
           <input
             matInput
             [type]="hidePassword() ? 'password' : 'text'"
@@ -55,7 +59,7 @@
           color="primary"
           type="submit"
           [disabled]="submitting()"
-          class="!mt-2 !h-11 !text-base"
+          class="mt-2! h-11! text-base!"
         >
           @if (submitting()) {
             <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>

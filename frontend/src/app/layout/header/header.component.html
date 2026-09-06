@@ -1,4 +1,4 @@
-<mat-toolbar class="!bg-surface-container border-b border-outline gap-2">
+<mat-toolbar class="bg-surface-container! border-b border-outline gap-2">
   @if (showMenuButton()) {
     <button mat-icon-button (click)="menuToggle.emit()">
       <mat-icon>menu</mat-icon>
@@ -8,8 +8,10 @@
   <nav class="flex items-center gap-1 text-sm flex-1 min-w-0 overflow-hidden">
     @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
       @if (!last && crumb.link) {
-        <a [routerLink]="crumb.link" class="text-on-surface/60 hover:text-on-surface truncate">{{ crumb.label }}</a>
-        <mat-icon class="!text-base !w-4 !h-4 text-on-surface/40">chevron_right</mat-icon>
+        <a [routerLink]="crumb.link" class="text-on-surface/60 hover:text-on-surface truncate">{{
+          crumb.label
+        }}</a>
+        <mat-icon class="text-base! w-4! h-4! text-on-surface/40">chevron_right</mat-icon>
       } @else {
         <span class="text-on-surface font-medium truncate">{{ crumb.label }}</span>
       }
@@ -25,13 +27,13 @@
   </button>
   <mat-menu #userMenu="matMenu">
     <div class="px-4 py-2">
-      <div class="text-sm font-medium text-on-surface">{{ authService.admin()?.name }}</div>
-      <div class="text-xs text-on-surface/60">{{ authService.admin()?.email }}</div>
+      <div class="text-sm font-medium text-on-surface">{{ principalName() }}</div>
+      <div class="text-xs text-on-surface/60">{{ principalEmail() }}</div>
     </div>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="logout()">
-      <mat-icon class="!text-error" [style.color]="'var(--mat-sys-error)'">logout</mat-icon>
-      <span class="!text-error" [style.color]="'var(--mat-sys-error)'">Sair</span>
+      <mat-icon class="text-error!" [style.color]="'var(--mat-sys-error)'">logout</mat-icon>
+      <span class="text-error!" [style.color]="'var(--mat-sys-error)'">Sair</span>
     </button>
   </mat-menu>
 </mat-toolbar>

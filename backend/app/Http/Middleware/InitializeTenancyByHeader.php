@@ -6,6 +6,11 @@ use Stancl\Tenancy\Middleware\IdentificationMiddleware;
 use App\Models\Central\Organization;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Não é mais usada por nenhuma rota — routes/tenant.php identifica o tenant
+ * pelo domínio da requisição (InitializeTenancyByDomain). Mantida apenas
+ * como referência/possível fallback interno; candidata a remoção.
+ */
 class InitializeTenancyByHeader extends IdentificationMiddleware
 {
     public function handle($request, Closure $next): Response

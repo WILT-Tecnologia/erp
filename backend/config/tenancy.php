@@ -12,6 +12,12 @@ return [
     'domain_model' => Domain::class,
 
     /**
+     * Base domain used to build each organization's default tenant domain
+     * (`{slug}.{base_domain}`) when one isn't explicitly provided.
+     */
+    'base_domain' => env('TENANT_BASE_DOMAIN', 'localhost'),
+
+    /**
      * The list of domains hosting your central app.
      *
      * Only relevant if you're using the domain or subdomain identification middleware.
@@ -171,6 +177,6 @@ return [
     ],
 
     'identification_middleware' => [
-        \App\Http\Middleware\InitializeTenancyByHeader::class,
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
     ],
 ];

@@ -10,6 +10,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './core/http/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/http/interceptors/error.interceptor';
 import { tenantContextInterceptor } from './core/http/interceptors/tenant-context.interceptor';
+import { tenantHostRewriteInterceptor } from './core/http/interceptors/tenant-host-rewrite.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +20,12 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor, tenantContextInterceptor, errorInterceptor]),
+      withInterceptors([
+        tenantHostRewriteInterceptor,
+        authInterceptor,
+        tenantContextInterceptor,
+        errorInterceptor,
+      ]),
     ),
     provideEnvironmentNgxMask(),
     provideCharts(withDefaultRegisterables()),
