@@ -1,61 +1,31 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar plano' : 'Novo plano'" (closed)="cancel()">
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Nome</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Slug</mat-label>
-        <input matInput formControlName="slug" placeholder="pro" />
-      </mat-form-field>
+      <app-text-field label="Nome" formControlName="name" />
+      <app-text-field label="Slug" placeholder="pro" formControlName="slug" />
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Descrição</mat-label>
-      <textarea matInput rows="2" formControlName="description"></textarea>
-    </mat-form-field>
+    <app-description-field label="Descrição" [rows]="2" formControlName="description" />
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Preço mensal</mat-label>
-        <input matInput type="number" min="0" step="0.01" formControlName="price_monthly" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Preço anual</mat-label>
-        <input matInput type="number" min="0" step="0.01" formControlName="price_yearly" />
-      </mat-form-field>
+      <app-number-field label="Preço mensal" [min]="0" [step]="0.01" formControlName="price_monthly" />
+      <app-number-field label="Preço anual" [min]="0" [step]="0.01" formControlName="price_yearly" />
     </div>
 
     <div class="grid grid-cols-3 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Máx. usuários</mat-label>
-        <input matInput type="number" min="1" formControlName="max_users" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Máx. membros</mat-label>
-        <input matInput type="number" min="1" formControlName="max_members" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Armaz. (GB)</mat-label>
-        <input matInput type="number" min="1" formControlName="max_storage_gb" />
-      </mat-form-field>
+      <app-number-field label="Máx. usuários" [min]="1" formControlName="max_users" />
+      <app-number-field label="Máx. membros" [min]="1" formControlName="max_members" />
+      <app-number-field label="Armaz. (GB)" [min]="1" formControlName="max_storage_gb" />
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Dias de teste</mat-label>
-        <input matInput type="number" min="0" max="365" formControlName="trial_days" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Posição</mat-label>
-        <input matInput type="number" min="0" formControlName="sort_order" />
-      </mat-form-field>
+      <app-number-field label="Dias de teste" [min]="0" [max]="365" formControlName="trial_days" />
+      <app-number-field label="Posição" [min]="0" formControlName="sort_order" />
     </div>
 
     <div class="flex flex-col gap-2">
       <span class="text-sm text-on-surface/70">Funcionalidades</span>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Adicionar funcionalidade</mat-label>
         <input matInput #featureInput (keydown.enter)="$event.preventDefault(); addFeature(featureInput)" />
       </mat-form-field>
@@ -74,14 +44,8 @@
     </div>
 
     <div class="grid grid-cols-2 gap-4 items-center">
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="active">Ativo</mat-option>
-          <mat-option value="inactive">Inativo</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-slide-toggle formControlName="is_public">Público</mat-slide-toggle>
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+      <app-switch-field label="Público" formControlName="is_public" />
     </div>
 
     <div modal-footer>

@@ -2,21 +2,26 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
-import { type Family, type FamilyFormValue } from './family.model';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { type Family, type FamilyFormValue, type FamilyStatus } from './family.model';
 
 export interface FamilyFormDialogData {
   family?: Family;
 }
 
+const STATUS_OPTIONS: SelectFieldOption<FamilyStatus>[] = [
+  { value: 'active', label: 'Ativa' },
+  { value: 'inactive', label: 'Inativa' },
+];
+
 @Component({
   selector: 'app-family-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, TextFieldComponent, NumberFieldComponent, SelectFieldComponent],
   templateUrl: './family-form-dialog.component.html',
 })
 export class FamilyFormDialogComponent {
@@ -27,6 +32,7 @@ export class FamilyFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<FamilyFormDialogComponent['buildForm']>;
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;

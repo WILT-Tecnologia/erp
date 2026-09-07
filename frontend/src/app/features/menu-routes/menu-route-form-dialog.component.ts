@@ -2,13 +2,13 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Modal } from '../../layout/modal/modal';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { type MenuRoute } from './menu-route.model';
 
 export interface MenuRouteFormDialogData {
@@ -23,11 +23,11 @@ export interface MenuRouteFormDialogData {
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatSlideToggleModule,
+    TextFieldComponent,
+    NumberFieldComponent,
+    SelectFieldComponent,
+    SwitchFieldComponent,
   ],
   templateUrl: './menu-route-form-dialog.component.html',
 })
@@ -39,13 +39,18 @@ export class MenuRouteFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<MenuRouteFormDialogComponent['buildForm']>;
-  readonly parentOptions: MenuRoute[];
+  readonly parentOptions: SelectFieldOption<string | null>[];
 
   constructor() {
     const data = this.data;
 
     this.isEdit = !!data.menuRoute;
-    this.parentOptions = data.menuRoutes.filter((route) => route.id !== data.menuRoute?.id);
+    this.parentOptions = [
+      { value: null, label: 'Nenhum (item raiz)' },
+      ...data.menuRoutes
+        .filter((route) => route.id !== data.menuRoute?.id)
+        .map((route) => ({ value: route.id as string | null, label: route.title })),
+    ];
     this.form = this.buildForm();
   }
 
@@ -56,7 +61,7 @@ export class MenuRouteFormDialogComponent {
       slug: [menuRoute?.slug ?? ''],
       icon: [menuRoute?.icon ?? ''],
       category: [menuRoute?.category ?? '', Validators.required],
-      parent_id: [menuRoute?.parent_id ?? null],
+      parent_id: this.fb.control<string | null>(menuRoute?.parent_id ?? null),
       sort_order: [menuRoute?.sort_order ?? 0, Validators.required],
       is_active: [menuRoute?.is_active ?? true],
     });

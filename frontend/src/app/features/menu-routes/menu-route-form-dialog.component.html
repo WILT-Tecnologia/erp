@@ -1,44 +1,21 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar item de menu' : 'Novo item de menu'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Título</mat-label>
-      <input matInput formControlName="title" />
-    </mat-form-field>
+    <app-text-field label="Título" formControlName="title" />
 
-    <mat-form-field appearance="outline">
-      <mat-label>Rota (slug)</mat-label>
-      <input matInput formControlName="slug" placeholder="/dashboard/admins" />
-    </mat-form-field>
+    <app-text-field label="Rota (slug)" placeholder="/dashboard/admins" formControlName="slug" />
 
     <div class="flex items-end gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Ícone</mat-label>
-        <input matInput formControlName="icon" placeholder="people" />
-      </mat-form-field>
+      <app-text-field class="flex-1" label="Ícone" placeholder="people" formControlName="icon" />
       <mat-icon class="mb-5 text-3xl">{{ form.value.icon || 'help_outline' }}</mat-icon>
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Categoria</mat-label>
-      <input matInput formControlName="category" placeholder="Administração" />
-    </mat-form-field>
+    <app-text-field label="Categoria" placeholder="Administração" formControlName="category" />
 
-    <mat-form-field appearance="outline">
-      <mat-label>Item pai</mat-label>
-      <mat-select formControlName="parent_id">
-        <mat-option [value]="null">Nenhum (item raiz)</mat-option>
-        @for (option of parentOptions; track option.id) {
-          <mat-option [value]="option.id">{{ option.title }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <app-select-field label="Item pai" [options]="parentOptions" formControlName="parent_id" />
 
-    <mat-form-field appearance="outline">
-      <mat-label>Ordem</mat-label>
-      <input matInput type="number" formControlName="sort_order" />
-    </mat-form-field>
+    <app-number-field label="Ordem" formControlName="sort_order" />
 
-    <mat-slide-toggle formControlName="is_active">Ativo</mat-slide-toggle>
+    <app-switch-field label="Ativo" formControlName="is_active" />
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

@@ -1,66 +1,30 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar igreja' : 'Nova igreja'" (closed)="cancel()">
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Nome</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Código</mat-label>
-        <input matInput formControlName="code" />
-      </mat-form-field>
+      <app-text-field label="Nome" formControlName="name" />
+      <app-text-field label="Código" formControlName="code" />
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Cidade</mat-label>
-        <input matInput formControlName="city" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>UF</mat-label>
-        <input matInput formControlName="state" maxlength="2" />
-      </mat-form-field>
+      <app-text-field label="Cidade" formControlName="city" />
+      <app-text-field label="UF" [maxLength]="2" formControlName="state" />
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Pastor responsável</mat-label>
-      <input matInput formControlName="pastor" />
-    </mat-form-field>
+    <app-text-field label="Pastor responsável" formControlName="pastor" />
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Telefone</mat-label>
-        <input matInput formControlName="phone" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>E-mail</mat-label>
-        <input matInput type="email" formControlName="email" />
-      </mat-form-field>
+      <app-text-field label="Telefone" formControlName="phone" />
+      <app-email-field label="E-mail" formControlName="email" />
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Membros</mat-label>
-        <input matInput type="number" min="0" formControlName="members" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Congregações</mat-label>
-        <input matInput type="number" min="0" formControlName="congregations" />
-      </mat-form-field>
+      <app-number-field label="Membros" [min]="0" formControlName="members" />
+      <app-number-field label="Congregações" [min]="0" formControlName="congregations" />
     </div>
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Fundação</mat-label>
-        <input matInput type="date" formControlName="founded_at" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="active">Ativa</mat-option>
-          <mat-option value="inactive">Inativa</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-date-field label="Fundação" formControlName="founded_at" />
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
     </div>
 
     <div modal-footer>

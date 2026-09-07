@@ -2,6 +2,7 @@
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }
+  <ng-content select="[matPrefix]"></ng-content>
   <input
     matInput
     [type]="type()"
@@ -10,6 +11,7 @@
     [attr.maxlength]="maxLength() ?? null"
     (blur)="onTouched()"
   />
+  <ng-content select="[matSuffix]"></ng-content>
   @if (hint() && !shouldShowError) {
     <mat-hint>{{ hint() }}</mat-hint>
   }

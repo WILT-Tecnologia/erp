@@ -1,0 +1,20 @@
+<mat-form-field [appearance]="appearance()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    matInput
+    [formControl]="innerControl"
+    [mask]="mask()"
+    [showMaskTyped]="true"
+    [dropSpecialCharacters]="dropSpecialCharacters()"
+    [placeholder]="placeholder()"
+    (blur)="onTouched()"
+  />
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

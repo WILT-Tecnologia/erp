@@ -3,11 +3,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
+import { DateFieldComponent } from '../../shared/components/fields/date-field/date-field.component';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { fromIsoDate, toIsoDate } from '../../shared/utils/date.util';
 import { type Transaction, type TransactionStatus } from './transaction.model';
 
 export interface TransactionFormDialogData {
@@ -27,11 +29,15 @@ const METHODS = [
   'Boleto',
   'Débito automático',
 ];
-const STATUSES: { value: TransactionStatus; label: string }[] = [
+const STATUS_OPTIONS: SelectFieldOption<TransactionStatus>[] = [
   { value: 'pago', label: 'Pago' },
   { value: 'pendente', label: 'Pendente' },
   { value: 'atrasado', label: 'Atrasado' },
 ];
+
+function toOptions(values: string[]): SelectFieldOption<string>[] {
+  return values.map((value) => ({ value, label: value }));
+}
 
 @Component({
   selector: 'app-transaction-form-dialog',
@@ -41,9 +47,10 @@ const STATUSES: { value: TransactionStatus; label: string }[] = [
     Modal,
     MatButtonModule,
     MatButtonToggleModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
+    TextFieldComponent,
+    NumberFieldComponent,
+    DateFieldComponent,
+    SelectFieldComponent,
   ],
   templateUrl: './transaction-form-dialog.component.html',
 })
@@ -55,10 +62,10 @@ export class TransactionFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<TransactionFormDialogComponent['buildForm']>;
-  readonly categories = CATEGORIES;
-  readonly accounts = ACCOUNTS;
-  readonly methods = METHODS;
-  readonly statuses = STATUSES;
+  readonly categoryOptions = toOptions(CATEGORIES);
+  readonly accountOptions = toOptions(ACCOUNTS);
+  readonly methodOptions = toOptions(METHODS);
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;
@@ -73,7 +80,7 @@ export class TransactionFormDialogComponent {
       type: [transaction?.type ?? this.data.defaultType ?? 'receita', Validators.required],
       description: [transaction?.description ?? '', Validators.required],
       amount: [transaction?.amount ?? 0, [Validators.required, Validators.min(0.01)]],
-      date: [transaction?.date ?? new Date().toISOString().slice(0, 10), Validators.required],
+      date: [fromIsoDate(transaction?.date ?? toIsoDate(new Date())), Validators.required],
       category: [transaction?.category ?? CATEGORIES[0], Validators.required],
       account: [transaction?.account ?? ACCOUNTS[0], Validators.required],
       method: [transaction?.method ?? METHODS[0], Validators.required],
@@ -86,7 +93,8 @@ export class TransactionFormDialogComponent {
       this.form.markAllAsTouched();
       return;
     }
-    this.dialogRef.close(this.form.getRawValue());
+    const value = this.form.getRawValue();
+    this.dialogRef.close({ ...value, date: toIsoDate(value.date) });
   }
 
   cancel(): void {

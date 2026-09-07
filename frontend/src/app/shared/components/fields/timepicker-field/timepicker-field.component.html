@@ -1,0 +1,14 @@
+<mat-form-field [appearance]="appearance()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input matInput [matTimepicker]="picker" [formControl]="innerControl" [placeholder]="placeholder()" (blur)="onTouched()" />
+  <mat-timepicker-toggle matIconSuffix [for]="picker"></mat-timepicker-toggle>
+  <mat-timepicker #picker [interval]="interval()"></mat-timepicker>
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

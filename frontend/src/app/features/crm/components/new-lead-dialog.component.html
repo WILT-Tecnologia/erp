@@ -1,47 +1,12 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal modalTitle="Novo Lead / Contato" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome / Empresa</mat-label>
-      <input matInput formControlName="name" placeholder="Ex: Família Silva" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>E-mail</mat-label>
-      <input matInput type="email" formControlName="email" placeholder="email@exemplo.com" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Telefone</mat-label>
-      <input matInput formControlName="phone" placeholder="(00) 00000-0000" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Estágio inicial</mat-label>
-      <mat-select formControlName="status">
-        @for (stage of stages; track stage.id) {
-          <mat-option [value]="stage.id">{{ stage.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Responsável</mat-label>
-      <mat-select formControlName="assignee">
-        @for (assignee of assignees; track assignee) {
-          <mat-option [value]="assignee">{{ assignee }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Valor potencial (R$)</mat-label>
-      <input matInput type="number" min="0" formControlName="value" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Tags (separadas por vírgula)</mat-label>
-      <input matInput formControlName="tags" placeholder="Ex: Família, Jovem, Evangelização" />
-    </mat-form-field>
+    <app-text-field label="Nome / Empresa" placeholder="Ex: Família Silva" formControlName="name" />
+    <app-email-field label="E-mail" placeholder="email@exemplo.com" formControlName="email" />
+    <app-text-field label="Telefone" placeholder="(00) 00000-0000" formControlName="phone" />
+    <app-select-field label="Estágio inicial" [options]="stageOptions" formControlName="status" />
+    <app-select-field label="Responsável" [options]="assigneeOptions" formControlName="assignee" />
+    <app-number-field label="Valor potencial (R$)" [min]="0" formControlName="value" />
+    <app-text-field label="Tags (separadas por vírgula)" placeholder="Ex: Família, Jovem, Evangelização" formControlName="tags" />
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

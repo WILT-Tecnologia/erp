@@ -1,0 +1,22 @@
+<mat-form-field [appearance]="appearance()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [formControl]="innerControl"
+    [placeholder]="placeholder()"
+    [min]="min() ?? null"
+    [max]="max() ?? null"
+    (blur)="onTouched()"
+  />
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

@@ -24,9 +24,23 @@ export class Modal {
   readonly closed = output<void>();
 
   constructor() {
+    let isInitialSize = true;
+
     effect(() => {
       const isFullscreen = this.fullscreen();
       this.dialogRef?.updateSize(isFullscreen ? FULLSCREEN_WIDTH : DEFAULT_WIDTH, isFullscreen ? FULLSCREEN_HEIGHT : '');
+      if (isFullscreen) {
+        this.dialogRef?.addPanelClass('app-modal-fullscreen');
+      } else {
+        this.dialogRef?.removePanelClass('app-modal-fullscreen');
+      }
+
+      // Só anima a partir da primeira alternância manual: a primeira execução
+      // define o tamanho inicial do diálogo e não deve ser animada.
+      if (!isInitialSize) {
+        this.dialogRef?.addPanelClass('app-modal-animated');
+      }
+      isInitialSize = false;
     });
   }
 

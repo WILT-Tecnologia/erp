@@ -37,7 +37,7 @@ export abstract class BaseFieldComponent<T = string> implements ControlValueAcce
   readonly label = input('');
   readonly hint = input('');
   readonly placeholder = input('');
-  readonly appearance = input<'outline' | 'fill'>('outline');
+  readonly appearance = input<'outline' | 'fill'>('fill');
   readonly errorMessages = input<Partial<FieldErrorMap>>({});
 
   protected onChange: (value: T | null) => void = () => undefined;

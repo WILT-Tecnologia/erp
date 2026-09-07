@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { type MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -12,6 +11,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { TenantAuthService } from '../../core/auth/tenant-auth.service';
 import { TenantContextService } from '../../core/tenant/tenant-context.service';
 import { ThemeService } from '../../core/theme/theme.service';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { NotificationService } from '../../shared/services/notification.service';
 
 @Component({
@@ -22,10 +22,10 @@ import { NotificationService } from '../../shared/services/notification.service'
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
     MatTabsModule,
+    TextFieldComponent,
   ],
   templateUrl: './settings-page.component.html',
 })

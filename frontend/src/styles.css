@@ -73,3 +73,44 @@
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--mat-sys-on-surface-variant);
 }
+
+/*
+ * Evita que a surface do Material vire um segundo container de scroll,
+ * competindo com o overflow interno do app-modal (que já controla o
+ * scroll apenas na área de conteúdo, mantendo header/footer fixos).
+ */
+.mat-mdc-dialog-container,
+.mat-mdc-dialog-inner-container,
+.mat-mdc-dialog-surface {
+  min-height: 0;
+}
+
+.mat-mdc-dialog-surface {
+  overflow: hidden !important;
+}
+
+/*
+ * Remove o limite padrão de 560px do Material (--mat-dialog-container-max-width)
+ * apenas quando o app-modal está em fullscreen, permitindo que updateSize('95vw', ...)
+ * realmente tenha efeito na largura.
+ */
+.app-modal-fullscreen.cdk-overlay-pane {
+  max-width: none !important;
+}
+
+/*
+ * Anima a expansão/redução do modal ao alternar o fullscreen. A classe só é
+ * adicionada pelo Modal a partir da primeira alternância manual (nunca na
+ * abertura inicial do diálogo), para não animar o tamanho inicial.
+ */
+.app-modal-animated.cdk-overlay-pane {
+  transition:
+    width 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal-animated.cdk-overlay-pane {
+    transition: none;
+  }
+}

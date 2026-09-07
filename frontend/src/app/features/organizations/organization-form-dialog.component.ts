@@ -2,21 +2,28 @@ import { Component, inject, type OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { NgxMaskDirective } from 'ngx-mask';
 
 import { type Admin } from '../../core/auth/admin.model';
 import { Modal } from '../../layout/modal/modal';
+import { DescriptionFieldComponent } from '../../shared/components/fields/description-field/description-field.component';
+import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
+import { MaskedFieldComponent } from '../../shared/components/fields/masked-field/masked-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { AdminService } from '../admins/admin.service';
 import { type Plan } from '../plans/plan.model';
 import { PlanService } from '../plans/plan.service';
-import { type Organization } from './organization.model';
+import { type Organization, type OrganizationStatus } from './organization.model';
 
 export interface OrganizationFormDialogData {
   organization?: Organization;
 }
+
+const STATUS_OPTIONS: SelectFieldOption<OrganizationStatus>[] = [
+  { value: 'active', label: 'Ativa' },
+  { value: 'suspended', label: 'Suspensa' },
+  { value: 'inactive', label: 'Inativa' },
+];
 
 @Component({
   selector: 'app-organization-form-dialog',
@@ -25,10 +32,11 @@ export interface OrganizationFormDialogData {
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    NgxMaskDirective,
+    TextFieldComponent,
+    EmailFieldComponent,
+    MaskedFieldComponent,
+    DescriptionFieldComponent,
+    SelectFieldComponent,
   ],
   templateUrl: './organization-form-dialog.component.html',
 })
@@ -42,6 +50,7 @@ export class OrganizationFormDialogComponent implements OnInit {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<OrganizationFormDialogComponent['buildForm']>;
+  readonly statusOptions = STATUS_OPTIONS;
 
   plans: Plan[] = [];
   admins: Admin[] = [];
@@ -56,6 +65,17 @@ export class OrganizationFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.planService.list().subscribe((plans) => (this.plans = plans));
     this.adminService.list().subscribe((admins) => (this.admins = admins));
+  }
+
+  get planOptions(): SelectFieldOption<string | null>[] {
+    return [{ value: null, label: 'Nenhum' }, ...this.plans.map((plan) => ({ value: plan.id as string | null, label: plan.name }))];
+  }
+
+  get adminOptions(): SelectFieldOption<string | null>[] {
+    return [
+      { value: null, label: 'Nenhum' },
+      ...this.admins.map((admin) => ({ value: admin.id as string | null, label: admin.name })),
+    ];
   }
 
   private buildForm() {

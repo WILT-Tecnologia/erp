@@ -5,58 +5,21 @@
       <mat-button-toggle value="despesa" class="flex-1">Despesa</mat-button-toggle>
     </mat-button-toggle-group>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Descrição</mat-label>
-      <input matInput formControlName="description" placeholder="Ex: Dízimo culto domingo" />
-    </mat-form-field>
+    <app-text-field label="Descrição" placeholder="Ex: Dízimo culto domingo" formControlName="description" />
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Valor (R$)</mat-label>
-        <input matInput type="number" step="0.01" formControlName="amount" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Data</mat-label>
-        <input matInput type="date" formControlName="date" />
-      </mat-form-field>
+      <app-number-field class="flex-1" label="Valor (R$)" [step]="0.01" formControlName="amount" />
+      <app-date-field class="flex-1" label="Data" formControlName="date" />
     </div>
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Categoria</mat-label>
-        <mat-select formControlName="category">
-          @for (category of categories; track category) {
-            <mat-option [value]="category">{{ category }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Conta</mat-label>
-        <mat-select formControlName="account">
-          @for (account of accounts; track account) {
-            <mat-option [value]="account">{{ account }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <app-select-field class="flex-1" label="Categoria" [options]="categoryOptions" formControlName="category" />
+      <app-select-field class="flex-1" label="Conta" [options]="accountOptions" formControlName="account" />
     </div>
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Forma de pagamento</mat-label>
-        <mat-select formControlName="method">
-          @for (method of methods; track method) {
-            <mat-option [value]="method">{{ method }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          @for (status of statuses; track status.value) {
-            <mat-option [value]="status.value">{{ status.label }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <app-select-field class="flex-1" label="Forma de pagamento" [options]="methodOptions" formControlName="method" />
+      <app-select-field class="flex-1" label="Status" [options]="statusOptions" formControlName="status" />
     </div>
 
     <div modal-footer>

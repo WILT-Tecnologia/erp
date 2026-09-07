@@ -2,21 +2,38 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
-import { type Church, type ChurchFormValue } from './church.model';
+import { DateFieldComponent } from '../../shared/components/fields/date-field/date-field.component';
+import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { fromIsoDate, toIsoDate } from '../../shared/utils/date.util';
+import { type Church, type ChurchFormValue, type ChurchStatus } from './church.model';
 
 export interface ChurchFormDialogData {
   church?: Church;
 }
 
+const STATUS_OPTIONS: SelectFieldOption<ChurchStatus>[] = [
+  { value: 'active', label: 'Ativa' },
+  { value: 'inactive', label: 'Inativa' },
+];
+
 @Component({
   selector: 'app-church-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [
+    ReactiveFormsModule,
+    Modal,
+    MatButtonModule,
+    TextFieldComponent,
+    EmailFieldComponent,
+    NumberFieldComponent,
+    DateFieldComponent,
+    SelectFieldComponent,
+  ],
   templateUrl: './church-form-dialog.component.html',
 })
 export class ChurchFormDialogComponent {
@@ -27,6 +44,7 @@ export class ChurchFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<ChurchFormDialogComponent['buildForm']>;
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;
@@ -47,7 +65,7 @@ export class ChurchFormDialogComponent {
       email: [church?.email ?? '', Validators.email],
       members: [church?.members ?? 0, [Validators.required, Validators.min(0)]],
       congregations: [church?.congregations ?? 0, [Validators.required, Validators.min(0)]],
-      founded_at: [church?.founded_at ?? '', Validators.required],
+      founded_at: [church ? fromIsoDate(church.founded_at) : new Date(), Validators.required],
       status: [church?.status ?? 'active', Validators.required],
     });
   }
@@ -57,8 +75,9 @@ export class ChurchFormDialogComponent {
       this.form.markAllAsTouched();
       return;
     }
-    const value: ChurchFormValue = this.form.getRawValue();
-    this.dialogRef.close(value);
+    const value = this.form.getRawValue();
+    const payload: ChurchFormValue = { ...value, founded_at: toIsoDate(value.founded_at) };
+    this.dialogRef.close(payload);
   }
 
   cancel(): void {

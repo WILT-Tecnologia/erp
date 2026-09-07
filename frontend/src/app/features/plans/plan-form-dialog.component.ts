@@ -6,15 +6,23 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { Modal } from '../../layout/modal/modal';
-import { type Plan } from './plan.model';
+import { DescriptionFieldComponent } from '../../shared/components/fields/description-field/description-field.component';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { type Plan, type PlanStatus } from './plan.model';
 
 export interface PlanFormDialogData {
   plan?: Plan;
 }
+
+const STATUS_OPTIONS: SelectFieldOption<PlanStatus>[] = [
+  { value: 'active', label: 'Ativo' },
+  { value: 'inactive', label: 'Inativo' },
+];
 
 @Component({
   selector: 'app-plan-form-dialog',
@@ -25,10 +33,13 @@ export interface PlanFormDialogData {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
-    MatSlideToggleModule,
     MatChipsModule,
     MatIconModule,
+    TextFieldComponent,
+    NumberFieldComponent,
+    DescriptionFieldComponent,
+    SelectFieldComponent,
+    SwitchFieldComponent,
   ],
   templateUrl: './plan-form-dialog.component.html',
 })
@@ -40,6 +51,7 @@ export class PlanFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<PlanFormDialogComponent['buildForm']>;
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;

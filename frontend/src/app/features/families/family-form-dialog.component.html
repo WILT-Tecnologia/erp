@@ -1,38 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar família' : 'Nova família'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome da família</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Responsável</mat-label>
-      <input matInput formControlName="leader" />
-    </mat-form-field>
+    <app-text-field label="Nome da família" formControlName="name" />
+    <app-text-field label="Responsável" formControlName="leader" />
 
     <div class="grid grid-cols-2 gap-4">
-      <mat-form-field appearance="outline">
-        <mat-label>Nº de membros</mat-label>
-        <input matInput type="number" min="1" formControlName="members" />
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="active">Ativa</mat-option>
-          <mat-option value="inactive">Inativa</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-number-field label="Nº de membros" [min]="1" formControlName="members" />
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Igreja</mat-label>
-      <input matInput formControlName="church" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Endereço</mat-label>
-      <input matInput formControlName="address" />
-    </mat-form-field>
+    <app-text-field label="Igreja" formControlName="church" />
+    <app-text-field label="Endereço" formControlName="address" />
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

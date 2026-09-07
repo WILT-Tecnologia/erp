@@ -1,57 +1,23 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar evento' : 'Novo evento'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Título</mat-label>
-      <input matInput formControlName="title" placeholder="Culto de Celebração" />
-    </mat-form-field>
+    <app-text-field label="Título" placeholder="Culto de Celebração" formControlName="title" />
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Igreja</mat-label>
-        <input matInput formControlName="church" placeholder="Igreja Central" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Categoria</mat-label>
-        <mat-select formControlName="category">
-          @for (category of categories; track category) {
-            <mat-option [value]="category">{{ category }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <app-text-field class="flex-1" label="Igreja" placeholder="Igreja Central" formControlName="church" />
+      <app-select-field class="flex-1" label="Categoria" [options]="categoryOptions" formControlName="category" />
     </div>
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Data</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="date" />
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Local</mat-label>
-        <input matInput formControlName="location" placeholder="Templo Central" />
-      </mat-form-field>
+      <app-date-field class="flex-1" label="Data" formControlName="date" />
+      <app-text-field class="flex-1" label="Local" placeholder="Templo Central" formControlName="location" />
     </div>
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Inscritos</mat-label>
-        <input matInput type="number" min="0" formControlName="participants" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Capacidade</mat-label>
-        <input matInput type="number" min="1" formControlName="capacity" />
-      </mat-form-field>
+      <app-number-field class="flex-1" label="Inscritos" [min]="0" formControlName="participants" />
+      <app-number-field class="flex-1" label="Capacidade" [min]="1" formControlName="capacity" />
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Status</mat-label>
-      <mat-select formControlName="status">
-        @for (status of statuses; track status.value) {
-          <mat-option [value]="status.value">{{ status.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

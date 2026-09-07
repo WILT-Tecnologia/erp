@@ -1,43 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar usuário' : 'Novo usuário'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome</mat-label>
-      <input matInput formControlName="name" placeholder="Nome completo" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>E-mail</mat-label>
-      <input matInput type="email" formControlName="email" placeholder="email@igreja.org" />
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Telefone</mat-label>
-      <input matInput formControlName="phone" placeholder="(00) 00000-0000" />
-    </mat-form-field>
+    <app-text-field label="Nome" placeholder="Nome completo" formControlName="name" />
+    <app-email-field label="E-mail" placeholder="email@igreja.org" formControlName="email" />
+    <app-text-field label="Telefone" placeholder="(00) 00000-0000" formControlName="phone" />
 
     <div class="flex gap-3">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Cargo</mat-label>
-        <mat-select formControlName="role">
-          @for (role of roles; track role) {
-            <mat-option [value]="role">{{ role }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          @for (status of statuses; track status) {
-            <mat-option [value]="status">{{ status }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <app-select-field class="flex-1" label="Cargo" [options]="roleOptions" formControlName="role" />
+      <app-select-field class="flex-1" label="Status" [options]="statusOptions" formControlName="status" />
     </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Organização</mat-label>
-      <input matInput formControlName="organization" placeholder="Igreja Central Demo" />
-    </mat-form-field>
+    <app-text-field label="Organização" placeholder="Igreja Central Demo" formControlName="organization" />
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

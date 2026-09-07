@@ -1,0 +1,46 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <span class="text-xs text-on-surface-variant">{{ label() }}</span>
+  }
+  <div
+    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-outline-variant p-6 text-center"
+    [class.border-primary]="isDragging()"
+    (dragover)="handleDragOver($event)"
+    (dragleave)="handleDragLeave()"
+    (drop)="handleDrop($event)"
+  >
+    <mat-icon class="text-on-surface-variant">upload_file</mat-icon>
+    <span class="text-sm text-on-surface-variant">Arraste arquivos aqui ou</span>
+    <button mat-stroked-button type="button" [disabled]="uploadDisabled()" (click)="fileInput.click()">
+      Selecionar arquivo{{ multiple() ? 's' : '' }}
+    </button>
+    <input
+      #fileInput
+      type="file"
+      hidden
+      [attr.accept]="accept() ?? null"
+      [multiple]="multiple()"
+      [disabled]="uploadDisabled()"
+      (change)="handleFileInput($event)"
+      (blur)="onTouched()"
+    />
+  </div>
+  @if (files().length > 0) {
+    <mat-chip-set>
+      @for (file of files(); track file.name; let i = $index) {
+        <mat-chip (removed)="removeFile(i)">
+          {{ file.name }}
+          <button matChipRemove type="button">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      }
+    </mat-chip-set>
+  }
+  @if (hint() && !shouldShowError) {
+    <div class="text-xs text-on-surface-variant">{{ hint() }}</div>
+  }
+  @if (shouldShowError) {
+    <div class="text-xs text-error">{{ errorMessage }}</div>
+  }
+</div>

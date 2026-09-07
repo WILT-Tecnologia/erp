@@ -2,21 +2,26 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
-import { type Congregation, type CongregationFormValue } from './congregation.model';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { type Congregation, type CongregationFormValue, type CongregationStatus } from './congregation.model';
 
 export interface CongregationFormDialogData {
   congregation?: Congregation;
 }
 
+const STATUS_OPTIONS: SelectFieldOption<CongregationStatus>[] = [
+  { value: 'active', label: 'Ativa' },
+  { value: 'inactive', label: 'Inativa' },
+];
+
 @Component({
   selector: 'app-congregation-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, TextFieldComponent, NumberFieldComponent, SelectFieldComponent],
   templateUrl: './congregation-form-dialog.component.html',
 })
 export class CongregationFormDialogComponent {
@@ -27,6 +32,7 @@ export class CongregationFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<CongregationFormDialogComponent['buildForm']>;
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;

@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
+import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { type TenantUser, type TenantUserRole, type TenantUserStatus } from './tenant-user.model';
 
 export interface TenantUserFormDialogData {
@@ -16,10 +16,14 @@ export interface TenantUserFormDialogData {
 const ROLES: TenantUserRole[] = ['Administrador', 'Gestor', 'Pastor', 'Financeiro', 'Operador'];
 const STATUSES: TenantUserStatus[] = ['Ativo', 'Inativo', 'Suspenso'];
 
+function toOptions<T extends string>(values: T[]): SelectFieldOption<T>[] {
+  return values.map((value) => ({ value, label: value }));
+}
+
 @Component({
   selector: 'app-tenant-user-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, TextFieldComponent, EmailFieldComponent, SelectFieldComponent],
   templateUrl: './tenant-user-form-dialog.component.html',
 })
 export class TenantUserFormDialogComponent {
@@ -30,8 +34,8 @@ export class TenantUserFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<TenantUserFormDialogComponent['buildForm']>;
-  readonly roles = ROLES;
-  readonly statuses = STATUSES;
+  readonly roleOptions = toOptions(ROLES);
+  readonly statusOptions = toOptions(STATUSES);
 
   constructor() {
     const data = this.data;

@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 import { type Admin } from '../../core/auth/admin.model';
 import { Modal } from '../../layout/modal/modal';
+import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 
 export interface AdminFormDialogData {
   admin?: Admin;
@@ -15,7 +15,7 @@ export interface AdminFormDialogData {
 @Component({
   selector: 'app-admin-form-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, Modal, MatButtonModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, Modal, MatButtonModule, TextFieldComponent, EmailFieldComponent],
   templateUrl: './admin-form-dialog.component.html',
 })
 export class AdminFormDialogComponent {

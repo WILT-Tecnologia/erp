@@ -1,0 +1,11 @@
+<div class="flex flex-col gap-1">
+  <div class="flex gap-3">
+    <app-date-field class="flex-1" [label]="startLabel()" [formControl]="startControl" [appearance]="appearance()" />
+    <app-date-field class="flex-1" [label]="endLabel()" [formControl]="endControl" [appearance]="appearance()" />
+  </div>
+  @if (rangeInvalid()) {
+    <div class="text-xs text-error">A data final não pode ser anterior à data inicial.</div>
+  } @else if (shouldShowError) {
+    <div class="text-xs text-error">{{ errorMessage }}</div>
+  }
+</div>

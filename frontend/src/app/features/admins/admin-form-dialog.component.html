@@ -1,24 +1,18 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar administrador' : 'Novo administrador'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>E-mail</mat-label>
-      <input matInput type="email" formControlName="email" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ isEdit ? 'Nova senha (opcional)' : 'Senha' }}</mat-label>
-      <input matInput type="password" formControlName="password" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Confirmar senha</mat-label>
-      <input matInput type="password" formControlName="password_confirmation" />
-      @if (form.controls.password_confirmation.hasError('mismatch')) {
-        <mat-error>As senhas não coincidem.</mat-error>
-      }
-    </mat-form-field>
+    <app-text-field label="Nome" formControlName="name" />
+    <app-email-field label="E-mail" formControlName="email" />
+    <app-text-field
+      [label]="isEdit ? 'Nova senha (opcional)' : 'Senha'"
+      type="password"
+      formControlName="password"
+    />
+    <app-text-field
+      label="Confirmar senha"
+      type="password"
+      formControlName="password_confirmation"
+      [errorMessages]="{ mismatch: () => 'As senhas não coincidem.' }"
+    />
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>
       <button mat-flat-button color="primary" type="submit">Salvar</button>

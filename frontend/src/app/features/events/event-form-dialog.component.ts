@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { provideNativeDateAdapter } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 
 import { Modal } from '../../layout/modal/modal';
+import { DateFieldComponent } from '../../shared/components/fields/date-field/date-field.component';
+import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
+import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
+import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { toIsoDate } from '../../shared/utils/date.util';
 import { type Event, type EventCategory, type EventFormValue, type EventStatus } from './event.model';
 
 export interface EventFormDialogData {
@@ -17,19 +17,17 @@ export interface EventFormDialogData {
 
 const CATEGORIES: EventCategory[] = ['Culto', 'Conferência', 'Retiro', 'Educação', 'Música', 'Batismo', 'Seminário'];
 
-const STATUSES: { value: EventStatus; label: string }[] = [
+const CATEGORY_OPTIONS: SelectFieldOption<EventCategory>[] = CATEGORIES.map((category) => ({
+  value: category,
+  label: category,
+}));
+
+const STATUS_OPTIONS: SelectFieldOption<EventStatus>[] = [
   { value: 'scheduled', label: 'Agendado' },
   { value: 'ongoing', label: 'Em andamento' },
   { value: 'completed', label: 'Concluído' },
   { value: 'cancelled', label: 'Cancelado' },
 ];
-
-function toIsoDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 @Component({
   selector: 'app-event-form-dialog',
@@ -38,12 +36,11 @@ function toIsoDate(date: Date): string {
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
+    TextFieldComponent,
+    NumberFieldComponent,
+    DateFieldComponent,
+    SelectFieldComponent,
   ],
-  providers: [provideNativeDateAdapter()],
   templateUrl: './event-form-dialog.component.html',
 })
 export class EventFormDialogComponent {
@@ -54,8 +51,8 @@ export class EventFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<EventFormDialogComponent['buildForm']>;
-  readonly categories = CATEGORIES;
-  readonly statuses = STATUSES;
+  readonly categoryOptions = CATEGORY_OPTIONS;
+  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;

@@ -1,0 +1,13 @@
+<div class="flex flex-col gap-1">
+  @if (label()) {
+    <span class="text-xs text-on-surface-variant">{{ label() }}</span>
+  }
+  <mat-radio-group [formControl]="innerControl" [class.flex]="orientation() === 'horizontal'" class="gap-4" (blur)="onTouched()">
+    @for (option of options(); track option.value) {
+      <mat-radio-button [value]="option.value">{{ option.label }}</mat-radio-button>
+    }
+  </mat-radio-group>
+  @if (shouldShowError) {
+    <div class="text-xs text-error">{{ errorMessage }}</div>
+  }
+</div>
