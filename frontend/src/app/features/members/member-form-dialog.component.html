@@ -1,9 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar membro' : 'Novo membro'" (closed)="cancel()">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome completo</mat-label>
-      <input matInput formControlName="name" />
-    </mat-form-field>
+    <app-text-field label="Nome completo" formControlName="name" />
 
     <mat-form-field appearance="outline">
       <mat-label>E-mail</mat-label>
@@ -25,14 +22,7 @@
         <mat-label>Departamento</mat-label>
         <input matInput formControlName="department" />
       </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="active">Ativo</mat-option>
-          <mat-option value="inactive">Inativo</mat-option>
-          <mat-option value="visitor">Visitante</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
     </div>
 
     <mat-form-field appearance="outline">
