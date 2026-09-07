@@ -13,13 +13,13 @@
     </button>
   }
 
-  <nav class="flex items-center gap-1 text-sm flex-1 min-w-0 overflow-hidden">
+  <nav class="flex! items-center! gap-1! text-sm! flex-1! min-w-0! overflow-hidden!">
     @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
       @if (!last && crumb.link) {
-        <a [routerLink]="crumb.link" class="text-on-surface/60 hover:text-on-surface truncate">{{ crumb.label }}</a>
-        <mat-icon class="text-base! w-4! h-4! text-on-surface/40">chevron_right</mat-icon>
+        <a [routerLink]="crumb.link" class="text-on-surface/60! hover:text-on-surface! truncate!">{{ crumb.label }}</a>
+        <mat-icon class="text-base! text-on-surface/40">chevron_right</mat-icon>
       } @else {
-        <span class="text-on-surface font-medium truncate">{{ crumb.label }}</span>
+        <span class="text-on-surface! font-medium! truncate!">{{ crumb.label }}</span>
       }
     }
   </nav>
@@ -31,7 +31,7 @@
   <button
     mat-icon-button
     (click)="toggleTheme()"
-    [matTooltip]="themeService.resolvedScheme() === 'dark' ? 'Mudar para tema claro' : 'Mudar para tema escuro'"
+    [matTooltip]="themeService.resolvedScheme() === 'dark' ? 'Escuro' : 'Claro'"
   >
     <mat-icon>{{ themeService.resolvedScheme() === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
   </button>

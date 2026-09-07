@@ -1,17 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, DestroyRef, inject, input, type OnInit, output } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatMenuModule, type MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { filter } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 import { AccordionGroupService } from './accordion-group.service';
 import { resolveNavLink, type SidebarNavItem } from './sidebar-nav';
-
-const HOVER_CLOSE_DELAY_MS = 150;
 
 @Component({
   selector: 'app-sidebar-menu-item',
@@ -49,7 +47,28 @@ export class SidebarMenuItemComponent implements OnInit {
 
   readonly expanded = computed(() => this.siblings.isOpen(this.item().title));
 
-  private closeTimeout: ReturnType<typeof setTimeout> | undefined;
+  /** Current router URL as a signal, so `isActive` recomputes on every navigation. */
+  private readonly currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  /** True while the user is on this item's own route or one of its descendants. */
+  readonly isActive = computed(() => {
+    this.currentUrl();
+    const link = this.link();
+    if (!link) return false;
+
+    return this.router.isActive(this.router.createUrlTree(link), {
+      paths: 'subset',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored',
+    });
+  });
 
   constructor() {
     this.router.events
@@ -66,6 +85,8 @@ export class SidebarMenuItemComponent implements OnInit {
 
   toggle(event: Event): void {
     event.stopPropagation();
+    /** Keeps the accordion open while the user is on a route inside it — only closable once they navigate away. */
+    if (this.expanded() && this.isActive()) return;
     this.siblings.toggle(this.item().title);
   }
 
@@ -73,35 +94,8 @@ export class SidebarMenuItemComponent implements OnInit {
     return resolveNavLink(this.basePath(), child.path, this.organizationId());
   }
 
-  /** Collapsed-rail flyout: open immediately on hover, no click required. */
-  openOnHover(trigger: MatMenuTrigger): void {
-    this.cancelClose();
-    trigger.openMenu();
-  }
-
-  /** Collapsed-rail flyout: close shortly after the pointer leaves, canceled if it returns in time. */
-  scheduleClose(trigger: MatMenuTrigger): void {
-    this.cancelClose();
-    this.closeTimeout = setTimeout(() => trigger.closeMenu(), HOVER_CLOSE_DELAY_MS);
-  }
-
-  cancelClose(): void {
-    if (this.closeTimeout === undefined) return;
-    clearTimeout(this.closeTimeout);
-    this.closeTimeout = undefined;
-  }
-
   private updateExpanded(): void {
-    const link = this.link();
-    if (!this.hasChildren() || !link) return;
-
-    const isActive = this.router.isActive(this.router.createUrlTree(link), {
-      paths: 'subset',
-      queryParams: 'ignored',
-      fragment: 'ignored',
-      matrixParams: 'ignored',
-    });
-
-    if (isActive) this.siblings.open(this.item().title);
+    if (!this.hasChildren()) return;
+    if (this.isActive()) this.siblings.open(this.item().title);
   }
 }

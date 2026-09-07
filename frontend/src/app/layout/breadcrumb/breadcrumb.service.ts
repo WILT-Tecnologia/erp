@@ -34,17 +34,21 @@ export class BreadcrumbService {
     const trail: Breadcrumb[] = [];
     let route: ActivatedRoute | null = this.router.routerState.root;
     let path = '';
+    let organizationCrumbAdded = false;
 
     while (route) {
       const segment = route.snapshot?.url.map((s) => s.path).join('/');
       if (segment) path += `/${segment}`;
 
+      // `organizationId` inherits down through every componentless descendant route
+      // (Angular router behavior), so only treat the first occurrence as the owner.
       const organizationId = route.snapshot?.paramMap.get('organizationId');
-      if (organizationId) {
+      if (organizationId && !organizationCrumbAdded) {
         trail.push({
-          label: this.organizationContext.organization()?.name ?? `Organização ${organizationId}`,
+          label: this.organizationContext.organization()?.name.toUpperCase() ?? `Organização ${organizationId}`,
           link: [path],
         });
+        organizationCrumbAdded = true;
       } else {
         const label = route.snapshot?.title;
         if (label) trail.push({ label, link: [path] });

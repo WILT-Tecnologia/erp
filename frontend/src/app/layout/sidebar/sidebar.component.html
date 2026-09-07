@@ -1,5 +1,7 @@
-<nav class="flex flex-col h-full! w-full bg-surface">
-  <div class="h-25! flex! items-center! gap-2! p-4! font-medium! text-lg! whitespace-nowrap overflow-hidden shrink-0">
+<nav class="flex! flex-col! h-full! w-full! bg-surface!">
+  <div
+    class="h-25! flex! items-center! gap-2! p-4! font-medium! text-lg! whitespace-nowrap! overflow-hidden! shrink-0!"
+  >
     @if (!collapsed()) {
       <span>ERP Sistema</span>
     } @else {
@@ -7,9 +9,9 @@
     }
   </div>
 
-  <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
+  <div class="flex-1! min-h-0! overflow-y-auto! overflow-x-hidden!">
     @if (collapsed()) {
-      <mat-nav-list class="flex flex-col w-full py-2">
+      <mat-nav-list class="flex! flex-col! w-full! py-2!">
         @for (entry of collapsedEntries(); track entry.section.key) {
           <app-sidebar-menu-item
             [item]="entry.item"
@@ -27,7 +29,7 @@
             <mat-divider></mat-divider>
           }
           <mat-nav-list
-            class="flex flex-col w-full px-3! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium gap-2!"
+            class="flex! flex-col! w-full! px-2.5! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium! gap-2!"
           >
             @for (item of section.items; track item.title) {
               <app-sidebar-menu-item
@@ -41,7 +43,7 @@
           </mat-nav-list>
         } @else if (sectionDisabled(section)) {
           <div
-            class="flex! items-center! gap-2! w-full! px-4! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium! opacity-40! cursor-not-allowed!"
+            class="flex! items-center! gap-2! w-full! px-2.5! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium! opacity-40! cursor-not-allowed!"
             matTooltip="Selecione uma organização para acessar"
             matTooltipPosition="right"
           >
@@ -71,7 +73,7 @@
               [style.grid-template-rows]="isSectionOpen(section.key) ? '1fr' : '0fr'"
             >
               <div class="min-h-0 overflow-hidden">
-                <mat-nav-list class="flex flex-col w-full pb-">
+                <mat-nav-list class="flex! flex-col! w-full! pb-4 duration-300! ease-in-out!">
                   @for (item of section.items; track item.title) {
                     <app-sidebar-menu-item
                       [item]="item"
