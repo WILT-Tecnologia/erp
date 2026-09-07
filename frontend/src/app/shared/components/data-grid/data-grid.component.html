@@ -5,8 +5,19 @@
         <mat-icon matPrefix>search</mat-icon>
         <input matInput [ngModel]="searchTerm" (ngModelChange)="onSearchChange($event)" placeholder="Buscar..." />
         @if (searchTerm) {
-          <button (click)="onClearSearch()" mat-icon-button>
-            <mat-icon>close</mat-icon>
+          <button
+            (click)="onClearSearch()"
+            mat-icon-button
+            aria-label="Limpar busca"
+            class="ml-auto! shrink-0!"
+            style="
+              --mdc-icon-button-state-layer-size: 24px;
+              --mat-icon-button-state-layer-size: 24px;
+              --mat-icon-button-touch-target-display: none;
+              padding: 3px;
+            "
+          >
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px;">close</mat-icon>
           </button>
         }
       </div>
@@ -61,7 +72,7 @@
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
-        class="group hover:bg-[rgba(196,196,196,0.2)]! transition-colors! border-b! border-b-outline!"
+        class="group hover:bg-[rgba(196,196,196,0.2)]! transition-colors!"
       ></tr>
 
       <tr class="mat-row" *matNoDataRow>
