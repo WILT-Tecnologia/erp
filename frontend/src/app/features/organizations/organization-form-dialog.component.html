@@ -1,35 +1,78 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar organização' : 'Nova organização'" (closed)="cancel()">
-    <div class="grid grid-cols-2 gap-4">
-      <app-text-field label="Nome" formControlName="name" />
-      <app-text-field label="Slug" placeholder="igreja-central" formControlName="slug" />
-    </div>
+    <mat-tab-group class="min-w-105">
+      <mat-tab label="Geral">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Identificação</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-text-field label="Nome" [maxLength]="150" formControlName="name" />
+              <app-text-field
+                label="Slug"
+                placeholder="igreja-central"
+                hint="Apenas letras minúsculas, números e hífen."
+                [errorMessages]="slugErrorMessages"
+                formControlName="slug"
+              />
+            </div>
 
-    <app-text-field label="Razão social" formControlName="legal_name" />
+            <app-text-field label="Razão social" [maxLength]="150" formControlName="legal_name" />
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
-      <app-email-field label="E-mail" formControlName="email" />
-    </div>
+            <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
+          </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-text-field label="Telefone" formControlName="phone" />
-      <app-text-field label="WhatsApp" formControlName="whatsapp" />
-    </div>
+          <div class="box-form">
+            <h3 class="box-form-title">Sobre a organização</h3>
+            <app-description-field label="Descrição" [rows]="3" [maxLength]="255" formControlName="description" />
+          </div>
+        </div>
+      </mat-tab>
 
-    <app-description-field label="Descrição" [rows]="3" formControlName="description" />
+      <mat-tab label="Contato">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form">
+            <h3 class="box-form-title">Canais de contato</h3>
+            <app-email-field label="E-mail" formControlName="email" />
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
-      <app-text-field label="Idioma" formControlName="language" />
-    </div>
+            <div class="grid grid-cols-2 gap-4">
+              <app-masked-field label="Telefone" mask="(00) 0000-0000||(00) 00000-0000" formControlName="phone" />
+              <app-masked-field
+                label="WhatsApp"
+                mask="(00) 0000-0000||(00) 00000-0000"
+                [errorMessages]="whatsappErrorMessages"
+                formControlName="whatsapp"
+              />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-    <app-text-field label="Fuso horário" formControlName="timezone" />
+      <mat-tab label="Configurações">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Status e localização</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+              <app-text-field label="Idioma" formControlName="language" />
+            </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-select-field label="Plano" [options]="planOptions" formControlName="plan_id" />
-      <app-select-field label="Administrador responsável" [options]="adminOptions" formControlName="owner_admin_id" />
-    </div>
+            <app-text-field label="Fuso horário" formControlName="timezone" />
+          </div>
+
+          <div class="box-form">
+            <h3 class="box-form-title">Vínculos</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-select-field label="Plano" [options]="planOptions" formControlName="plan_id" />
+              <app-select-field
+                label="Administrador responsável"
+                [options]="adminOptions"
+                formControlName="owner_admin_id"
+              />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

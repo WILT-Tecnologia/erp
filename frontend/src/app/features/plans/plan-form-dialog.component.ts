@@ -6,23 +6,20 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { Modal } from '../../layout/modal/modal';
+import { CurrencyFieldComponent } from '../../shared/components/fields/currency-field/currency-field.component';
 import { DescriptionFieldComponent } from '../../shared/components/fields/description-field/description-field.component';
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
-import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
-import { type Plan, type PlanStatus } from './plan.model';
+import { parseCurrencyString, toCurrencyString } from '../../shared/utils/currency.util';
+import { type Plan } from './plan.model';
 
 export interface PlanFormDialogData {
   plan?: Plan;
 }
-
-const STATUS_OPTIONS: SelectFieldOption<PlanStatus>[] = [
-  { value: 'active', label: 'Ativo' },
-  { value: 'inactive', label: 'Inativo' },
-];
 
 @Component({
   selector: 'app-plan-form-dialog',
@@ -35,10 +32,11 @@ const STATUS_OPTIONS: SelectFieldOption<PlanStatus>[] = [
     MatInputModule,
     MatChipsModule,
     MatIconModule,
+    MatTabsModule,
     TextFieldComponent,
     NumberFieldComponent,
+    CurrencyFieldComponent,
     DescriptionFieldComponent,
-    SelectFieldComponent,
     SwitchFieldComponent,
   ],
   templateUrl: './plan-form-dialog.component.html',
@@ -51,7 +49,6 @@ export class PlanFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<PlanFormDialogComponent['buildForm']>;
-  readonly statusOptions = STATUS_OPTIONS;
 
   constructor() {
     const data = this.data;
@@ -65,8 +62,8 @@ export class PlanFormDialogComponent {
       name: [this.data.plan?.name ?? '', Validators.required],
       slug: [this.data.plan?.slug ?? '', [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)]],
       description: [this.data.plan?.description ?? ''],
-      price_monthly: [this.data.plan?.price_monthly ?? 0, [Validators.required, Validators.min(0)]],
-      price_yearly: [this.data.plan?.price_yearly ?? 0, [Validators.required, Validators.min(0)]],
+      price_monthly: [toCurrencyString(this.data.plan?.price_monthly), Validators.required],
+      price_yearly: [toCurrencyString(this.data.plan?.price_yearly), Validators.required],
       trial_days: [this.data.plan?.trial_days ?? 14, [Validators.required, Validators.min(0)]],
       max_users: [this.data.plan?.max_users ?? 1, [Validators.required, Validators.min(1)]],
       max_members: [this.data.plan?.max_members ?? 1, [Validators.required, Validators.min(1)]],
@@ -74,7 +71,7 @@ export class PlanFormDialogComponent {
       features: this.fb.nonNullable.control<string[]>(this.data.plan?.features ?? []),
       is_public: [this.data.plan?.is_public ?? true],
       sort_order: [this.data.plan?.sort_order ?? 10, [Validators.required, Validators.min(0)]],
-      status: [this.data.plan?.status ?? 'active', Validators.required],
+      status: this.fb.nonNullable.control<boolean>(this.data.plan?.status !== 'inactive'),
     });
   }
 
@@ -97,7 +94,13 @@ export class PlanFormDialogComponent {
       this.form.markAllAsTouched();
       return;
     }
-    this.dialogRef.close(this.form.getRawValue());
+    const value = this.form.getRawValue();
+    this.dialogRef.close({
+      ...value,
+      price_monthly: parseCurrencyString(value.price_monthly),
+      price_yearly: parseCurrencyString(value.price_yearly),
+      status: value.status ? 'active' : 'inactive',
+    });
   }
 
   cancel(): void {

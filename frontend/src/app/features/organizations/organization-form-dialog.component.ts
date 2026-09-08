@@ -2,6 +2,7 @@ import { Component, inject, type OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { type Admin } from '../../core/auth/admin.model';
 import { Modal } from '../../layout/modal/modal';
@@ -10,6 +11,7 @@ import { EmailFieldComponent } from '../../shared/components/fields/email-field/
 import { MaskedFieldComponent } from '../../shared/components/fields/masked-field/masked-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { cellphoneValidator, SLUG_PATTERN } from '../../shared/utils/validators.util';
 import { AdminService } from '../admins/admin.service';
 import { type Plan } from '../plans/plan.model';
 import { PlanService } from '../plans/plan.service';
@@ -25,6 +27,14 @@ const STATUS_OPTIONS: SelectFieldOption<OrganizationStatus>[] = [
   { value: 'inactive', label: 'Inativa' },
 ];
 
+const SLUG_ERROR_MESSAGES = {
+  pattern: () => 'Use apenas letras minúsculas, números e hífen, sem espaços, acentos ou hífens duplicados.',
+};
+
+const WHATSAPP_ERROR_MESSAGES = {
+  cellphone: () => 'Informe um número de celular válido, com DDD.',
+};
+
 @Component({
   selector: 'app-organization-form-dialog',
   standalone: true,
@@ -32,6 +42,7 @@ const STATUS_OPTIONS: SelectFieldOption<OrganizationStatus>[] = [
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
+    MatTabsModule,
     TextFieldComponent,
     EmailFieldComponent,
     MaskedFieldComponent,
@@ -51,6 +62,8 @@ export class OrganizationFormDialogComponent implements OnInit {
   readonly isEdit: boolean;
   readonly form: ReturnType<OrganizationFormDialogComponent['buildForm']>;
   readonly statusOptions = STATUS_OPTIONS;
+  readonly slugErrorMessages = SLUG_ERROR_MESSAGES;
+  readonly whatsappErrorMessages = WHATSAPP_ERROR_MESSAGES;
 
   plans: Plan[] = [];
   admins: Admin[] = [];
@@ -81,14 +94,14 @@ export class OrganizationFormDialogComponent implements OnInit {
   private buildForm() {
     const organization = this.data.organization;
     return this.fb.nonNullable.group({
-      name: [organization?.name ?? '', Validators.required],
-      slug: [organization?.slug ?? '', [Validators.required, Validators.pattern(/^[a-z0-9-]+$/)]],
-      legal_name: [organization?.legal_name ?? ''],
+      name: [organization?.name ?? '', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+      slug: [organization?.slug ?? '', [Validators.required, Validators.pattern(SLUG_PATTERN)]],
+      legal_name: [organization?.legal_name ?? '', [Validators.minLength(3), Validators.maxLength(150)]],
       cnpj: [organization?.cnpj ?? ''],
       email: [organization?.email ?? '', Validators.email],
       phone: [organization?.phone ?? ''],
-      whatsapp: [organization?.whatsapp ?? ''],
-      description: [organization?.description ?? ''],
+      whatsapp: [organization?.whatsapp ?? '', cellphoneValidator],
+      description: [organization?.description ?? '', Validators.maxLength(255)],
       status: [organization?.status ?? 'active', Validators.required],
       timezone: [organization?.timezone ?? 'America/Sao_Paulo', Validators.required],
       language: [organization?.language ?? 'pt-BR', Validators.required],

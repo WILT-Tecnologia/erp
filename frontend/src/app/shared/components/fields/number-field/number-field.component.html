@@ -10,6 +10,7 @@
     [min]="min() ?? null"
     [max]="max() ?? null"
     [step]="step()"
+    [required]="isRequired"
     (blur)="onTouched()"
   />
   @if (hint() && !shouldShowError) {

@@ -2,7 +2,14 @@
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }
-  <input matInput [formControl]="searchControl" [matAutocomplete]="auto" [placeholder]="placeholder()" (blur)="onTouched()" />
+  <input
+    matInput
+    [formControl]="searchControl"
+    [matAutocomplete]="auto"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    (blur)="onTouched()"
+  />
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="handleOptionSelected($event)">
     @for (option of filteredOptions(); track option.value) {
       <mat-option [value]="option.value">{{ option.label }}</mat-option>

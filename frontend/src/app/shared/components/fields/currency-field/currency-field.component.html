@@ -2,18 +2,19 @@
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }
-  <mat-select
+  <input
+    matInput
     [formControl]="innerControl"
-    [multiple]="multiple()"
-    [compareWith]="compareWith()"
+    mask="separator.2"
+    thousandSeparator="."
+    decimalMarker=","
+    prefix="R$ "
+    [allowNegativeNumbers]="false"
+    [dropSpecialCharacters]="false"
     [placeholder]="placeholder()"
     [required]="isRequired"
     (blur)="onTouched()"
-  >
-    @for (option of options(); track option.value) {
-      <mat-option [value]="option.value">{{ option.label }}</mat-option>
-    }
-  </mat-select>
+  />
   @if (hint() && !shouldShowError) {
     <mat-hint>{{ hint() }}</mat-hint>
   }

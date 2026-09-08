@@ -9,6 +9,7 @@
     [placeholder]="placeholder()"
     [min]="min() ?? null"
     [max]="max() ?? null"
+    [required]="isRequired"
     (blur)="onTouched()"
   />
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

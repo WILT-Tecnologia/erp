@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, DestroyRef, Directive, inject, input, type OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { type ControlValueAccessor, FormControl, NgControl, type ValidationErrors } from '@angular/forms';
+import { type ControlValueAccessor, FormControl, NgControl, type ValidationErrors, Validators } from '@angular/forms';
 
 import { type FieldErrorMap, resolveFieldError } from './field-error/field-error.util';
 
@@ -81,6 +81,10 @@ export abstract class BaseFieldComponent<T = string> implements ControlValueAcce
 
   get shouldShowError(): boolean {
     return this.touched() && !!this.errorMessage;
+  }
+
+  get isRequired(): boolean {
+    return this.ngControl?.control?.hasValidator(Validators.required) ?? false;
   }
 
   writeValue(value: T | null): void {

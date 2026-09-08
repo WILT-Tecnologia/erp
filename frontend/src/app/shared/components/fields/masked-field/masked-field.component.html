@@ -1,4 +1,4 @@
-<mat-form-field [appearance]="appearance()">
+<mat-form-field [appearance]="appearance()" floatLabel="always">
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }
@@ -9,6 +9,7 @@
     [showMaskTyped]="true"
     [dropSpecialCharacters]="dropSpecialCharacters()"
     [placeholder]="placeholder()"
+    [required]="isRequired"
     (blur)="onTouched()"
   />
   @if (hint() && !shouldShowError) {

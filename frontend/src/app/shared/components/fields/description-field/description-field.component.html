@@ -10,6 +10,7 @@
       [formControl]="innerControl"
       [placeholder]="placeholder()"
       [attr.maxlength]="maxLength() ?? null"
+      [required]="isRequired"
       (blur)="onTouched()"
     ></textarea>
   } @else {
@@ -19,6 +20,7 @@
       [formControl]="innerControl"
       [placeholder]="placeholder()"
       [attr.maxlength]="maxLength() ?? null"
+      [required]="isRequired"
       (blur)="onTouched()"
     ></textarea>
   }

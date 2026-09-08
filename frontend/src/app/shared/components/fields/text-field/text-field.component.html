@@ -9,6 +9,7 @@
     [formControl]="innerControl"
     [placeholder]="placeholder()"
     [attr.maxlength]="maxLength() ?? null"
+    [required]="isRequired"
     (blur)="onTouched()"
   />
   <ng-content select="[matSuffix]"></ng-content>

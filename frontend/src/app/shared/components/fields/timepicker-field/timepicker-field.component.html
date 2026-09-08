@@ -2,7 +2,14 @@
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }
-  <input matInput [matTimepicker]="picker" [formControl]="innerControl" [placeholder]="placeholder()" (blur)="onTouched()" />
+  <input
+    matInput
+    [matTimepicker]="picker"
+    [formControl]="innerControl"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    (blur)="onTouched()"
+  />
   <mat-timepicker-toggle matIconSuffix [for]="picker"></mat-timepicker-toggle>
   <mat-timepicker #picker [interval]="interval()"></mat-timepicker>
   @if (hint() && !shouldShowError) {

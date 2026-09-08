@@ -9,7 +9,9 @@ import { BaseFieldComponent } from '../base-field.component';
   standalone: true,
   imports: [ReactiveFormsModule, MatSlideToggleModule],
   template: `
-    <mat-slide-toggle [formControl]="innerControl" (blur)="onTouched()">{{ label() }}</mat-slide-toggle>
+    <mat-slide-toggle [formControl]="innerControl" (blur)="onTouched()">
+      {{ label() }}@if (isRequired) {<span class="text-error"> *</span>}
+    </mat-slide-toggle>
     @if (shouldShowError) {
       <div class="mat-mdc-form-field-error text-xs text-error mt-1">{{ errorMessage }}</div>
     }

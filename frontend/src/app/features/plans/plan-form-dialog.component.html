@@ -1,52 +1,96 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar plano' : 'Novo plano'" (closed)="cancel()">
-    <div class="grid grid-cols-2 gap-4">
-      <app-text-field label="Nome" formControlName="name" />
-      <app-text-field label="Slug" placeholder="pro" formControlName="slug" />
-    </div>
+    <mat-tab-group class="min-w-105" mat-stretch-tabs="false">
+      <mat-tab label="Geral">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Identificação</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-text-field label="Nome" formControlName="name" />
+              <app-text-field label="Slug" placeholder="pro" formControlName="slug" />
+            </div>
+          </div>
 
-    <app-description-field label="Descrição" [rows]="2" formControlName="description" />
+          <div class="box-form">
+            <h3 class="box-form-title">Sobre o plano</h3>
+            <app-description-field label="Descrição" [rows]="2" formControlName="description" />
+          </div>
+        </div>
+      </mat-tab>
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-number-field label="Preço mensal" [min]="0" [step]="0.01" formControlName="price_monthly" />
-      <app-number-field label="Preço anual" [min]="0" [step]="0.01" formControlName="price_yearly" />
-    </div>
+      <mat-tab label="Preços e limites">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Preços</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-currency-field label="Preço mensal" formControlName="price_monthly" />
+              <app-currency-field label="Preço anual" formControlName="price_yearly" />
+            </div>
+          </div>
 
-    <div class="grid grid-cols-3 gap-4">
-      <app-number-field label="Máx. usuários" [min]="1" formControlName="max_users" />
-      <app-number-field label="Máx. membros" [min]="1" formControlName="max_members" />
-      <app-number-field label="Armaz. (GB)" [min]="1" formControlName="max_storage_gb" />
-    </div>
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Limites de uso</h3>
+            <div class="grid grid-cols-3 gap-4">
+              <app-number-field label="Máx. usuários" [min]="1" formControlName="max_users" />
+              <app-number-field label="Máx. membros" [min]="1" formControlName="max_members" />
+              <app-number-field label="Armaz. (GB)" [min]="1" formControlName="max_storage_gb" />
+            </div>
+          </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <app-number-field label="Dias de teste" [min]="0" [max]="365" formControlName="trial_days" />
-      <app-number-field label="Posição" [min]="0" formControlName="sort_order" />
-    </div>
+          <div class="box-form">
+            <h3 class="box-form-title">Regras comerciais</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-number-field label="Dias de teste" [min]="0" [max]="365" formControlName="trial_days" />
+              <app-number-field label="Posição" [min]="0" formControlName="sort_order" />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
 
-    <div class="flex flex-col gap-2">
-      <span class="text-sm text-on-surface/70">Funcionalidades</span>
-      <mat-form-field appearance="fill">
-        <mat-label>Adicionar funcionalidade</mat-label>
-        <input matInput #featureInput (keydown.enter)="$event.preventDefault(); addFeature(featureInput)" />
-      </mat-form-field>
-      @if (form.controls.features.value.length > 0) {
-        <mat-chip-set>
-          @for (feature of form.controls.features.value; track feature; let i = $index) {
-            <mat-chip (removed)="removeFeature(i)">
-              {{ feature }}
-              <button matChipRemove>
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip>
-          }
-        </mat-chip-set>
-      }
-    </div>
+      <mat-tab label="Funcionalidades">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form">
+            <h3 class="box-form-title">Funcionalidades incluídas</h3>
+            <mat-form-field appearance="fill">
+              <mat-label>Adicionar funcionalidade</mat-label>
+              <input matInput #featureInput (keydown.enter)="$event.preventDefault(); addFeature(featureInput)" />
+            </mat-form-field>
+            @if (form.controls.features.value.length > 0) {
+              <mat-chip-set>
+                @for (feature of form.controls.features.value; track feature; let i = $index) {
+                  <mat-chip (removed)="removeFeature(i)">
+                    {{ feature }}
+                    <button matChipRemove>
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip>
+                }
+              </mat-chip-set>
+            }
+          </div>
+        </div>
+      </mat-tab>
 
-    <div class="grid grid-cols-2 gap-4 items-center">
-      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
-      <app-switch-field label="Público" formControlName="is_public" />
-    </div>
+      <mat-tab label="Configurações">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Situação</h3>
+            <div class="grid grid-cols-1 gap-4 items-center">
+              <app-switch-field
+                [label]="form.controls.status.value ? 'Ativado' : 'Desativado'"
+                formControlName="status"
+              />
+            </div>
+          </div>
+          <div class="box-form">
+            <h3 class="box-form-title">Visibilidade</h3>
+            <div class="grid grid-cols-1 gap-4 items-center">
+              <app-switch-field label="Público" formControlName="is_public" />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
 
     <div modal-footer>
       <button mat-button type="button" (click)="cancel()">Cancelar</button>

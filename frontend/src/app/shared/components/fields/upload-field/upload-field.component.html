@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-2">
   @if (label()) {
-    <span class="text-xs text-on-surface-variant">{{ label() }}</span>
+    <span class="text-xs text-on-surface-variant">{{ label() }}@if (isRequired) {<span class="text-error"> *</span>}</span>
   }
   <div
     class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-outline-variant p-6 text-center"

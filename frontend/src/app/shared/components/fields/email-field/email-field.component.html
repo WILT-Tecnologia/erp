@@ -3,7 +3,15 @@
     <mat-label>{{ label() }}</mat-label>
   }
   <ng-content select="[matPrefix]"></ng-content>
-  <input matInput type="email" [formControl]="innerControl" [placeholder]="placeholder()" autocomplete="email" (blur)="onTouched()" />
+  <input
+    matInput
+    type="email"
+    [formControl]="innerControl"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    autocomplete="email"
+    (blur)="onTouched()"
+  />
   <ng-content select="[matSuffix]"></ng-content>
   @if (hint() && !shouldShowError) {
     <mat-hint>{{ hint() }}</mat-hint>
