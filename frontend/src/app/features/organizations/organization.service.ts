@@ -16,6 +16,12 @@ export class OrganizationService {
     return this.http.get<ApiCollection<Organization>>(this.baseUrl).pipe(map((response) => response.data));
   }
 
+  checkSlugAvailable(slug: string): Observable<boolean> {
+    return this.http
+      .get<{ available: boolean }>(`${environment.apiUrl}${API_ENDPOINTS.organizations.checkSlug(slug)}`)
+      .pipe(map((response) => response.available));
+  }
+
   get(id: string): Observable<Organization> {
     return this.http.get<ApiResource<Organization>>(`${this.baseUrl}/${id}`).pipe(map((response) => response.data));
   }
@@ -32,6 +38,12 @@ export class OrganizationService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  forceDelete(id: string, confirmation: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}${API_ENDPOINTS.organizations.force(id)}`, {
+      body: { confirmation },
+    });
   }
 
   suspend(id: string): Observable<Organization> {

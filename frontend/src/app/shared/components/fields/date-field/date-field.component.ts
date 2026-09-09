@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,7 +18,7 @@ import { BaseFieldComponent } from '../base-field.component';
   selector: 'app-date-field',
   standalone: true,
   imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule],
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
   templateUrl: './date-field.component.html',
   host: { style: 'display: contents' },
 })

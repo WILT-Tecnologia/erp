@@ -1,5 +1,5 @@
-<div class="flex items-center justify-center min-h-screen bg-surface-variant/30 px-4">
-  <mat-card class="w-full max-w-md p-8 sm:p-10">
+<div class="flex items-center justify-center min-h-screen bg-surface-variant/70 px-4">
+  <mat-card class="w-full max-w-2xl p-8 sm:p-10" appearance="outlined">
     <div class="flex flex-col items-center text-center gap-3 mb-2">
       <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary">
         <mat-icon class="w-7! h-7! text-3xl!">apps</mat-icon>
@@ -20,21 +20,20 @@
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5 mt-6">
         <app-email-field
           label="E-mail"
-          placeholder="voce@empresa.com"
+          placeholder="jhondoe@empresa.com"
           formControlName="email"
           [errorMessages]="{ required: () => 'Informe seu e-mail.' }"
-        >
-          <mat-icon matPrefix class="text-base! text-on-surface/40 mr-2">mail</mat-icon>
-        </app-email-field>
+          [disabled]="submitting()"
+        />
 
         <app-text-field
           label="Senha"
           [type]="hidePassword() ? 'password' : 'text'"
-          placeholder="Sua senha"
+          placeholder="•••••••••••••••"
           formControlName="password"
+          [disabled]="submitting()"
           [errorMessages]="{ required: () => 'Informe sua senha.' }"
         >
-          <mat-icon matPrefix class="text-base! text-on-surface/40 mr-2">lock</mat-icon>
           <button
             mat-icon-button
             matSuffix
@@ -47,10 +46,12 @@
         </app-text-field>
 
         <button mat-flat-button color="primary" type="submit" [disabled]="submitting()" class="mt-2! h-11! text-base!">
-          @if (submitting()) {
-            <mat-spinner diameter="20" class="inline-block mr-2"></mat-spinner>
-          }
-          Entrar
+          <div class="flex justify-center items-center gap-2">
+            @if (submitting()) {
+              <mat-spinner diameter="15" class="inline-block"></mat-spinner>
+            }
+            Acessar
+          </div>
         </button>
       </form>
     </mat-card-content>

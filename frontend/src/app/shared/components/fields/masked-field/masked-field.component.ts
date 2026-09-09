@@ -16,4 +16,5 @@ import { BaseFieldComponent } from '../base-field.component';
 export class MaskedFieldComponent extends BaseFieldComponent<string> {
   readonly mask = input.required<string>();
   readonly dropSpecialCharacters = input(true);
+  override readonly floatLabel = input<'always' | 'auto'>('always');
 }

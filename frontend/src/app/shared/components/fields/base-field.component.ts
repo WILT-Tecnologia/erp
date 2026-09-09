@@ -1,6 +1,18 @@
-import { ChangeDetectorRef, DestroyRef, Directive, inject, input, type OnInit, signal } from '@angular/core';
+import {
+  type AfterContentInit,
+  ChangeDetectorRef,
+  ContentChildren,
+  DestroyRef,
+  Directive,
+  inject,
+  input,
+  type OnInit,
+  type QueryList,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { type ControlValueAccessor, FormControl, NgControl, type ValidationErrors, Validators } from '@angular/forms';
+import { MatPrefix, MatSuffix } from '@angular/material/form-field';
 
 import { type FieldErrorMap, resolveFieldError } from './field-error/field-error.util';
 
@@ -25,19 +37,37 @@ import { type FieldErrorMap, resolveFieldError } from './field-error/field-error
  * classes it knows are directives/components.
  */
 @Directive()
-export abstract class BaseFieldComponent<T = string> implements ControlValueAccessor, OnInit {
+export abstract class BaseFieldComponent<T = string> implements ControlValueAccessor, OnInit, AfterContentInit {
   protected readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly destroyRef = inject(DestroyRef);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
-  protected readonly innerControl = new FormControl<T | null>(null);
   private readonly touched = signal(false);
   private readonly controlErrors = signal<ValidationErrors | null>(null);
+
+  /**
+   * Prefix/suffix projected by the consumer (e.g. `<mat-icon matPrefix/>`).
+   * These are rendered *into* `<mat-form-field>` through `<ng-content>`, so
+   * MatFormField's own `@ContentChildren` can't see them (double projection)
+   * and never activates its `.mat-mdc-form-field-icon-prefix/suffix` wrappers.
+   * The field template mirrors them with a hidden `matIconPrefix`/`matIconSuffix`
+   * marker to force Material to create the real prefix/suffix slots.
+   */
+  @ContentChildren(MatPrefix, { descendants: true })
+  protected readonly prefixes!: QueryList<MatPrefix>;
+  @ContentChildren(MatSuffix, { descendants: true })
+  protected readonly suffixes!: QueryList<MatSuffix>;
+
+  protected readonly hasIconPrefix = signal(false);
+  protected readonly hasIconSuffix = signal(false);
+
+  protected readonly innerControl = new FormControl<T | null>(null);
 
   readonly label = input('');
   readonly hint = input('');
   readonly placeholder = input('');
   readonly appearance = input<'outline' | 'fill'>('fill');
+  readonly floatLabel = input<'always' | 'auto'>('auto');
   readonly errorMessages = input<Partial<FieldErrorMap>>({});
 
   protected onChange: (value: T | null) => void = () => undefined;
@@ -48,6 +78,17 @@ export abstract class BaseFieldComponent<T = string> implements ControlValueAcce
       this.ngControl.valueAccessor = this;
     }
     this.innerControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => this.onChange(value));
+  }
+
+  ngAfterContentInit(): void {
+    const update = () => {
+      this.hasIconPrefix.set(this.prefixes.toArray().some((prefix) => !prefix._isText));
+      this.hasIconSuffix.set(this.suffixes.toArray().some((suffix) => !suffix._isText));
+      this.changeDetectorRef.detectChanges();
+    };
+    update();
+    this.prefixes.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(update);
+    this.suffixes.changes.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(update);
   }
 
   ngOnInit(): void {

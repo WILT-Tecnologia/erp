@@ -1,4 +1,10 @@
-<mat-form-field [appearance]="appearance()">
+<mat-form-field
+  [appearance]="appearance()"
+  [floatLabel]="floatLabel()"
+  class="w-full!"
+  [class.has-projected-prefix]="hasIconPrefix()"
+  [class.has-projected-suffix]="hasIconSuffix()"
+>
   @if (label()) {
     <mat-label>{{ label() }}</mat-label>
   }

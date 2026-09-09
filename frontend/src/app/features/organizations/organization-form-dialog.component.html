@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar organização' : 'Nova organização'" (closed)="cancel()">
-    <mat-tab-group class="min-w-105">
+    <mat-tab-group class="min-w-105" mat-stretch-tabs="false">
       <mat-tab label="Geral">
         <div class="flex flex-col gap-4 pt-4">
           <div class="box-form border-b border-b-outline-variant">
@@ -13,12 +13,18 @@
                 hint="Apenas letras minúsculas, números e hífen."
                 [errorMessages]="slugErrorMessages"
                 formControlName="slug"
+                [suffixIcon]="slugSuffixIcon()"
+                [suffixClass]="slugSuffixClass()"
+                [suffixTooltip]="slugSuffixTooltip()"
               />
             </div>
 
             <app-text-field label="Razão social" [maxLength]="150" formControlName="legal_name" />
 
-            <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
+            <div class="grid grid-cols-2 gap-4">
+              <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
+              <app-date-field label="Data de fundação" formControlName="founded_at" />
+            </div>
           </div>
 
           <div class="box-form">
@@ -47,16 +53,41 @@
         </div>
       </mat-tab>
 
+      <mat-tab label="Acesso" [disabled]="isEdit">
+        @if (!isEdit) {
+          <div class="flex flex-col gap-4 pt-4">
+            <div class="box-form">
+              <h3 class="box-form-title">Primeiro usuário do tenant</h3>
+              <div formGroupName="first_user" class="grid grid-cols-2 gap-4">
+                <app-text-field label="Nome" formControlName="name" />
+                <app-email-field label="E-mail" formControlName="email" />
+                <app-text-field label="Senha" type="password" formControlName="password" />
+                <app-text-field
+                  label="Confirmar senha"
+                  type="password"
+                  [errorMessages]="passwordConfirmationErrorMessages"
+                  formControlName="password_confirmation"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </mat-tab>
+
       <mat-tab label="Configurações">
         <div class="flex flex-col gap-4 pt-4">
           <div class="box-form border-b border-b-outline-variant">
-            <h3 class="box-form-title">Status e localização</h3>
-            <div class="grid grid-cols-2 gap-4">
+            <h3 class="box-form-title">Situação</h3>
+            <div class="grid grid-cols-1 gap-4">
               <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
-              <app-text-field label="Idioma" formControlName="language" />
             </div>
-
-            <app-text-field label="Fuso horário" formControlName="timezone" />
+          </div>
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Localização</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <app-autocomplete-field label="Idioma" [options]="languageOptions" formControlName="language" />
+              <app-autocomplete-field label="Fuso horário" [options]="timezoneOptions" formControlName="timezone" />
+            </div>
           </div>
 
           <div class="box-form">

@@ -37,9 +37,11 @@ export interface OrganizationFormValue {
   phone?: string;
   whatsapp?: string;
   description?: string;
+  founded_at?: string;
   status: OrganizationStatus;
   timezone: string;
   language: string;
   plan_id?: string;
   owner_admin_id?: string;
+  first_user?: { name: string; email: string; password: string; password_confirmation: string };
 }

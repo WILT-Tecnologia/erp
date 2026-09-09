@@ -95,14 +95,36 @@ export class OrganizationsPageComponent implements OnInit {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Excluir organização', message: `Deseja excluir ${organization.name}?` },
     });
-    ref.afterClosed().subscribe((confirmed) => {
-      if (!confirmed) return;
+    ref.afterClosed().subscribe((result) => {
+      if (!result?.confirmed) return;
       this.organizationService.delete(organization.slug).subscribe({
         next: () => {
           this.notification.success('Organização excluída.');
           this.load();
         },
-        error: () => this.notification.error('Erro ao excluir organização.'),
+        error: (error) => this.notification.error(error.error?.message ?? 'Erro ao excluir organização.'),
+      });
+    });
+  }
+
+  forceRemove(organization: Organization): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      width: '480px',
+      data: {
+        title: 'Excluir permanentemente',
+        message: `Esta ação remove ${organization.name} e o schema do banco de dados permanentemente e não pode ser desfeita. Digite "${organization.slug}" para confirmar.`,
+        confirmLabel: 'Excluir permanentemente',
+        requireText: organization.slug,
+      },
+    });
+    ref.afterClosed().subscribe((result) => {
+      if (!result?.confirmed || !result.confirmation) return;
+      this.organizationService.forceDelete(organization.slug, result.confirmation).subscribe({
+        next: () => {
+          this.notification.success('Organização e schema removidos permanentemente.');
+          this.load();
+        },
+        error: (error) => this.notification.error(error.error?.message ?? 'Erro ao excluir permanentemente.'),
       });
     });
   }
