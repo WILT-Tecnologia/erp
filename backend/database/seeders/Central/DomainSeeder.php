@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders\Central;
 
 use App\Models\Central\Domain;
@@ -8,9 +7,6 @@ use Illuminate\Database\Seeder;
 
 class DomainSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         if (app()->environment('production')) {
@@ -26,8 +22,8 @@ class DomainSeeder extends Seeder
         Domain::updateOrCreate(
             ['domain' => 'igrejacentral.local'],
             [
-                'tenant_id' => $org->id,
-                'is_primary' => true,
+                'tenant_id'   => $org->id,
+                'is_primary'  => true,
                 'is_verified' => true,
                 'verified_at' => now(),
             ]
@@ -36,7 +32,7 @@ class DomainSeeder extends Seeder
         Domain::updateOrCreate(
             ['domain' => 'central.igreja.test'],
             [
-                'tenant_id' => $org->id,
+                'tenant_id'  => $org->id,
                 'is_primary' => false,
             ]
         );

@@ -2,7 +2,6 @@
 
 namespace App\Models\Central;
 
-use Database\Factories\Central\DomainFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -71,8 +70,8 @@ class Domain extends BaseDomain
 
     /* ---------- Factory ---------- */
 
-    protected static function newFactory(): DomainFactory
+    protected static function newFactory(): \Database\Factories\Central\DomainFactory
     {
-        return DomainFactory::new();
+        return \Database\Factories\Central\DomainFactory::new();
     }
 }
