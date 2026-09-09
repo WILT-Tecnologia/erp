@@ -36,6 +36,7 @@ Route::prefix('admin')->group(function () {
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('plans', PlanController::class);
 
+        Route::get('organizations/check-slug/{slug}', [OrganizationController::class, 'checkSlug']);
         Route::apiResource('organizations', OrganizationController::class);
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);

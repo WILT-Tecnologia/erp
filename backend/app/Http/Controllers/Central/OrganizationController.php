@@ -40,6 +40,28 @@ class OrganizationController extends Controller
     }
 
     /**
+     * Verifica se um slug já está em uso.
+     * Considera também organizações soft-deleted, espelhando a
+     * regra unique:organizations,slug do StoreOrganizationRequest.
+     */
+    public function checkSlug(string $slug): JsonResponse
+    {
+        $validated = validator([
+            'slug' => $slug,
+        ], [
+            'slug' => ['required', 'string', 'alpha_dash', 'max:255'],
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['available' => false]);
+        }
+
+        $available = ! Organization::where('slug', $slug)->exists();
+
+        return response()->json(['available' => $available]);
+    }
+
+    /**
      * Cria uma nova organização e provisiona seu schema.
      */
     public function store(

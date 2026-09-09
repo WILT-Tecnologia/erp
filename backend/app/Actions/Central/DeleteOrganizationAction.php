@@ -23,10 +23,14 @@ class DeleteOrganizationAction
     /**
      * Drop definitivo: remove o schema do Postgres e o registro.
      * Use apenas após confirmação explícita.
+     *
+     * O forceDelete dispara o evento TenantDeleted, que roda o job
+     * DeleteDatabase (DROP SCHEMA). O manager é idempotente, então o drop
+     * só acontece se o schema realmente existir (sem 500 de "schema não
+     * existe" vindo do drop duplicado).
      */
     public function forceDelete(Organization $organization): void
     {
-        $organization->database()->manager()->deleteDatabase($organization);
         $organization->forceDelete();
     }
 }
