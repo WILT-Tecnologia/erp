@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             \Database\Seeders\Central\AdminSeeder::class,
             \Database\Seeders\Central\PlanSeeder::class,
             \Database\Seeders\Central\OrganizationSeeder::class,
+            \Database\Factories\Central\DomainFactory::class,
         ]);
     }
 }
