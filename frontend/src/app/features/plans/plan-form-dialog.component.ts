@@ -14,6 +14,7 @@ import { DescriptionFieldComponent } from '../../shared/components/fields/descri
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { parseCurrencyString, toCurrencyString } from '../../shared/utils/currency.util';
 import { type Plan } from './plan.model';
 
@@ -46,6 +47,7 @@ export class PlanFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<PlanFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<PlanFormDialogComponent['buildForm']>;
@@ -92,6 +94,7 @@ export class PlanFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();

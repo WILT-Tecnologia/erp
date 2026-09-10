@@ -34,4 +34,28 @@
     font-size: 1rem;
     color: light-dark(#1a1a1a, #ffffff);
   }
+
+  .snackbar-success {
+    @include mat.snack-bar-overrides((
+      container-color: #16a34a,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
+
+  .snackbar-error {
+    @include mat.snack-bar-overrides((
+      container-color: #dc2626,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
+
+  .snackbar-warning {
+    @include mat.snack-bar-overrides((
+      container-color: #ca8a04,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
 }

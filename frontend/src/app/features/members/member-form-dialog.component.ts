@@ -12,6 +12,7 @@ import {
   type SelectFieldOption,
 } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type Member, type MemberFormValue, type MemberStatus } from './member.model';
 
 export interface MemberFormDialogData {
@@ -44,6 +45,7 @@ export class MemberFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MemberFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<MemberFormDialogComponent['buildForm']>;
@@ -80,6 +82,7 @@ export class MemberFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value: MemberFormValue = this.form.getRawValue();

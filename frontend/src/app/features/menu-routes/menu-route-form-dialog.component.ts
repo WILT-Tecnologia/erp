@@ -9,6 +9,7 @@ import { NumberFieldComponent } from '../../shared/components/fields/number-fiel
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type MenuRoute } from './menu-route.model';
 
 export interface MenuRouteFormDialogData {
@@ -36,6 +37,7 @@ export class MenuRouteFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MenuRouteFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<MenuRouteFormDialogComponent['buildForm']>;
@@ -70,6 +72,7 @@ export class MenuRouteFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();

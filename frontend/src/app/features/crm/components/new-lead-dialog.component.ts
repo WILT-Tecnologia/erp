@@ -8,6 +8,7 @@ import { EmailFieldComponent } from '../../../shared/components/fields/email-fie
 import { NumberFieldComponent } from '../../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../../shared/services/notification.service';
 import { ASSIGNEES, type ContactFormValue, type ContactStage, STAGES } from '../contact.model';
 
 export interface NewLeadDialogData {
@@ -36,6 +37,7 @@ export class NewLeadDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<NewLeadDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly stageOptions = STAGE_OPTIONS;
   readonly assigneeOptions = ASSIGNEE_OPTIONS;
@@ -53,6 +55,7 @@ export class NewLeadDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
 

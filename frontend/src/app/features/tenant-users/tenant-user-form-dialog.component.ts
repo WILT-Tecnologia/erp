@@ -7,6 +7,7 @@ import { Modal } from '../../layout/modal/modal';
 import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type TenantUser, type TenantUserRole, type TenantUserStatus } from './tenant-user.model';
 
 export interface TenantUserFormDialogData {
@@ -31,6 +32,7 @@ export class TenantUserFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<TenantUserFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<TenantUserFormDialogComponent['buildForm']>;
@@ -59,6 +61,7 @@ export class TenantUserFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     this.dialogRef.close(this.form.getRawValue());

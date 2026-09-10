@@ -7,6 +7,7 @@ import { Modal } from '../../layout/modal/modal';
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type Congregation, type CongregationFormValue, type CongregationStatus } from './congregation.model';
 
 export interface CongregationFormDialogData {
@@ -29,6 +30,7 @@ export class CongregationFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<CongregationFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<CongregationFormDialogComponent['buildForm']>;
@@ -59,6 +61,7 @@ export class CongregationFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value: CongregationFormValue = this.form.getRawValue();

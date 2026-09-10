@@ -8,6 +8,7 @@ import { DescriptionFieldComponent } from '../../shared/components/fields/descri
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type Department, type DepartmentStatus } from './department.model';
 
 export interface DepartmentFormDialogData {
@@ -38,6 +39,7 @@ export class DepartmentFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<DepartmentFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<DepartmentFormDialogComponent['buildForm']>;
@@ -65,6 +67,7 @@ export class DepartmentFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     this.dialogRef.close(this.form.getRawValue());

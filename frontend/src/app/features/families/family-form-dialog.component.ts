@@ -7,6 +7,7 @@ import { Modal } from '../../layout/modal/modal';
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { type Family, type FamilyFormValue, type FamilyStatus } from './family.model';
 
 export interface FamilyFormDialogData {
@@ -29,6 +30,7 @@ export class FamilyFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<FamilyFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<FamilyFormDialogComponent['buildForm']>;
@@ -56,6 +58,7 @@ export class FamilyFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value: FamilyFormValue = this.form.getRawValue();

@@ -7,6 +7,7 @@ import { type Admin } from '../../core/auth/admin.model';
 import { Modal } from '../../layout/modal/modal';
 import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 
 export interface AdminFormDialogData {
   admin?: Admin;
@@ -23,6 +24,7 @@ export class AdminFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<AdminFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<AdminFormDialogComponent['buildForm']>;
@@ -46,6 +48,7 @@ export class AdminFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();

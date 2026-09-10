@@ -31,6 +31,7 @@ import { type Plan } from '../plans/plan.model';
 import { PlanService } from '../plans/plan.service';
 import { type Organization, type OrganizationStatus } from './organization.model';
 import { OrganizationService } from './organization.service';
+import { NotificationService } from '../../shared/services/notification.service';
 
 export interface OrganizationFormDialogData {
   organization?: Organization;
@@ -86,6 +87,7 @@ export class OrganizationFormDialogComponent implements OnInit {
   private readonly planService = inject(PlanService);
   private readonly adminService = inject(AdminService);
   private readonly organizationService = inject(OrganizationService);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<OrganizationFormDialogComponent['buildForm']>;
@@ -189,11 +191,13 @@ export class OrganizationFormDialogComponent implements OnInit {
     if (!this.isEdit && !this.slugValidated()) {
       this.form.markAllAsTouched();
       this.slugStatus.set({ message: 'Valide a disponibilidade do slug antes de salvar.', type: 'warning' });
+      this.notification.warning('Valide a disponibilidade do slug antes de salvar.');
       return;
     }
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();

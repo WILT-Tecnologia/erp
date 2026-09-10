@@ -8,6 +8,7 @@ import { DateFieldComponent } from '../../shared/components/fields/date-field/da
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { toIsoDate } from '../../shared/utils/date.util';
 import { type Event, type EventCategory, type EventFormValue, type EventStatus } from './event.model';
 
@@ -48,6 +49,7 @@ export class EventFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<EventFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<EventFormDialogComponent['buildForm']>;
@@ -78,6 +80,7 @@ export class EventFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();

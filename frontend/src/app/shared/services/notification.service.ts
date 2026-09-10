@@ -12,4 +12,8 @@ export class NotificationService {
   error(message: string): void {
     this.snackBar.open(message, 'Fechar', { duration: 5000, panelClass: 'snackbar-error' });
   }
+
+  warning(message: string): void {
+    this.snackBar.open(message, 'Fechar', { duration: 4000, panelClass: 'snackbar-warning' });
+  }
 }

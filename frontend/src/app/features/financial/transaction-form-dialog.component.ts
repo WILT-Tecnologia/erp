@@ -9,6 +9,7 @@ import { DateFieldComponent } from '../../shared/components/fields/date-field/da
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { NotificationService } from '../../shared/services/notification.service';
 import { fromIsoDate, toIsoDate } from '../../shared/utils/date.util';
 import { type Transaction, type TransactionStatus } from './transaction.model';
 
@@ -59,6 +60,7 @@ export class TransactionFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<TransactionFormDialogComponent>);
+  private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
   readonly form: ReturnType<TransactionFormDialogComponent['buildForm']>;
@@ -91,6 +93,7 @@ export class TransactionFormDialogComponent {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.notification.warning('Preencha todos os campos obrigatórios antes de salvar.');
       return;
     }
     const value = this.form.getRawValue();
