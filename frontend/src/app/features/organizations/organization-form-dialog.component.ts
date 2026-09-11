@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -69,6 +70,7 @@ function confirmPasswordValidator(control: AbstractControl): ValidationErrors | 
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
+    MatFormFieldModule,
     MatIconModule,
     MatTabsModule,
     TextFieldComponent,
