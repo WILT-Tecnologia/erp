@@ -63,17 +63,37 @@
                 <app-email-field label="E-mail" formControlName="email" />
                 <app-text-field
                   label="Senha"
-                  type="password"
+                  [type]="hidePassword() ? 'password' : 'text'"
                   formControlName="password"
                   [hint]="passwordHint"
                   [errorMessages]="{ pattern: () => passwordHint }"
-                />
+                >
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                    [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+                    (click)="hidePassword.set(!hidePassword())"
+                  >
+                    <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                </app-text-field>
                 <app-text-field
                   label="Confirmar senha"
-                  type="password"
+                  [type]="hidePasswordConfirmation() ? 'password' : 'text'"
                   [errorMessages]="passwordConfirmationErrorMessages"
                   formControlName="password_confirmation"
-                />
+                >
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                    [attr.aria-label]="hidePasswordConfirmation() ? 'Mostrar senha' : 'Ocultar senha'"
+                    (click)="hidePasswordConfirmation.set(!hidePasswordConfirmation())"
+                  >
+                    <mat-icon>{{ hidePasswordConfirmation() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                </app-text-field>
               </div>
             </div>
           </div>

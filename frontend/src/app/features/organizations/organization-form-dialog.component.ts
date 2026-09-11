@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -68,6 +69,7 @@ function confirmPasswordValidator(control: AbstractControl): ValidationErrors | 
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
+    MatIconModule,
     MatTabsModule,
     TextFieldComponent,
     EmailFieldComponent,
@@ -98,6 +100,8 @@ export class OrganizationFormDialogComponent implements OnInit {
   readonly whatsappErrorMessages = WHATSAPP_ERROR_MESSAGES;
   readonly passwordConfirmationErrorMessages = PASSWORD_CONFIRMATION_ERROR_MESSAGES;
   readonly passwordHint = PASSWORD_HINT;
+  readonly hidePassword = signal(true);
+  readonly hidePasswordConfirmation = signal(true);
 
   readonly slugValidated = signal(false);
   readonly slugStatus = signal<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
