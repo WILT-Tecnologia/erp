@@ -9,6 +9,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { filter, map } from 'rxjs';
 
 import { AccordionGroupService } from './accordion-group.service';
+import { SidebarFlyoutItemComponent } from './sidebar-flyout-item.component';
 import { resolveNavLink, type SidebarNavItem } from './sidebar-nav';
 
 @Component({
@@ -23,6 +24,7 @@ import { resolveNavLink, type SidebarNavItem } from './sidebar-nav';
     MatListModule,
     MatMenuModule,
     SidebarMenuItemComponent,
+    SidebarFlyoutItemComponent,
   ],
   providers: [AccordionGroupService],
   templateUrl: './sidebar-menu-item.component.html',
@@ -88,10 +90,6 @@ export class SidebarMenuItemComponent implements OnInit {
     /** Keeps the accordion open while the user is on a route inside it — only closable once they navigate away. */
     if (this.expanded() && this.isActive()) return;
     this.siblings.toggle(this.item().title);
-  }
-
-  resolveChildLink(child: SidebarNavItem): string[] | null {
-    return resolveNavLink(this.basePath(), child.path, this.organizationId());
   }
 
   private updateExpanded(): void {

@@ -1,0 +1,26 @@
+@if (item().children?.length) {
+  <button mat-menu-item [matMenuTriggerFor]="subMenu">
+    <mat-icon>{{ item().icon }}</mat-icon>
+    <span>{{ item().title }}</span>
+  </button>
+  <mat-menu #subMenu="matMenu">
+    @for (child of item().children; track child.title) {
+      <app-sidebar-flyout-item
+        [item]="child"
+        [basePath]="basePath()"
+        [organizationId]="organizationId()"
+        (linkClick)="linkClick.emit()"
+      />
+    }
+  </mat-menu>
+} @else if (link(); as resolvedLink) {
+  <button mat-menu-item [routerLink]="resolvedLink" (click)="linkClick.emit()">
+    <mat-icon>{{ item().icon }}</mat-icon>
+    <span>{{ item().title }}</span>
+  </button>
+} @else {
+  <button mat-menu-item disabled>
+    <mat-icon>{{ item().icon }}</mat-icon>
+    <span>{{ item().title }}</span>
+  </button>
+}

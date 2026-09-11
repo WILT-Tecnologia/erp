@@ -1,15 +1,15 @@
 @if (disabled()) {
-  <div
-    class="flex! items-center! gap-1! w-full! text-on-surface/90! opacity-40! cursor-not-allowed!"
+  <mat-list-item
+    class="w-full! text-on-surface/90! opacity-40! cursor-not-allowed!"
     matTooltip="Selecione uma organização para acessar"
     matTooltipPosition="right"
     [class]="isActive() ? 'bg-primary/10! text-primary!' : ''"
   >
-    <mat-icon>{{ item().icon }}</mat-icon>
+    <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
     @if (!collapsed()) {
-      <span class="truncate!">{{ item().title }}</span>
+      <span matListItemTitle class="truncate!">{{ item().title }}</span>
     }
-  </div>
+  </mat-list-item>
 } @else if (hasChildren()) {
   @if (collapsed()) {
     <button
@@ -25,7 +25,14 @@
     </button>
 
     <mat-menu #childMenu="matMenu">
-      <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: item().children }" />
+      @for (child of item().children; track child.title) {
+        <app-sidebar-flyout-item
+          [item]="child"
+          [basePath]="basePath()"
+          [organizationId]="organizationId()"
+          (linkClick)="linkClick.emit()"
+        />
+      }
     </mat-menu>
   } @else {
     <button
@@ -84,29 +91,3 @@
     }
   </a>
 }
-
-<ng-template #menuItems let-items>
-  @for (child of items; track child.title) {
-    @if (child.children?.length) {
-      <button mat-menu-item [matMenuTriggerFor]="subMenu">
-        <mat-icon>{{ child.icon }}</mat-icon>
-        <span>{{ child.title }}</span>
-      </button>
-      <mat-menu #subMenu="matMenu">
-        <ng-container *ngTemplateOutlet="menuItems; context: { $implicit: child.children }" />
-      </mat-menu>
-    } @else {
-      @if (resolveChildLink(child); as childLink) {
-        <button mat-menu-item [routerLink]="childLink" (click)="linkClick.emit()">
-          <mat-icon>{{ child.icon }}</mat-icon>
-          <span>{{ child.title }}</span>
-        </button>
-      } @else {
-        <button mat-menu-item disabled>
-          <mat-icon>{{ child.icon }}</mat-icon>
-          <span>{{ child.title }}</span>
-        </button>
-      }
-    }
-  }
-</ng-template>
