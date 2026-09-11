@@ -40,9 +40,9 @@ export class OrganizationService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  forceDelete(id: string, confirmation: string): Observable<void> {
+  forceDelete(id: string, password: string): Observable<void> {
     return this.http.delete<void>(`${environment.apiUrl}${API_ENDPOINTS.organizations.force(id)}`, {
-      body: { confirmation },
+      body: { password },
     });
   }
 

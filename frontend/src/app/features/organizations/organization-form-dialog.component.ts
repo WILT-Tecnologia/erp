@@ -25,7 +25,7 @@ import {
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { LANGUAGE_OPTIONS, TIMEZONE_OPTIONS } from '../../shared/constants/locale.constants';
 import { toIsoDate } from '../../shared/utils/date.util';
-import { cellphoneValidator, SLUG_PATTERN } from '../../shared/utils/validators.util';
+import { cellphoneValidator, PASSWORD_HINT, PASSWORD_PATTERN, SLUG_PATTERN } from '../../shared/utils/validators.util';
 import { AdminService } from '../admins/admin.service';
 import { type Plan } from '../plans/plan.model';
 import { PlanService } from '../plans/plan.service';
@@ -97,6 +97,7 @@ export class OrganizationFormDialogComponent implements OnInit {
   readonly slugErrorMessages = SLUG_ERROR_MESSAGES;
   readonly whatsappErrorMessages = WHATSAPP_ERROR_MESSAGES;
   readonly passwordConfirmationErrorMessages = PASSWORD_CONFIRMATION_ERROR_MESSAGES;
+  readonly passwordHint = PASSWORD_HINT;
 
   readonly slugValidated = signal(false);
   readonly slugStatus = signal<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
@@ -181,7 +182,7 @@ export class OrganizationFormDialogComponent implements OnInit {
       first_user: this.fb.nonNullable.group({
         name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
+        password: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
         password_confirmation: ['', [Validators.required, confirmPasswordValidator]],
       }),
     });

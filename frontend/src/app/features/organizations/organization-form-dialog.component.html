@@ -61,7 +61,13 @@
               <div formGroupName="first_user" class="grid grid-cols-2 gap-4">
                 <app-text-field label="Nome" formControlName="name" />
                 <app-email-field label="E-mail" formControlName="email" />
-                <app-text-field label="Senha" type="password" formControlName="password" />
+                <app-text-field
+                  label="Senha"
+                  type="password"
+                  formControlName="password"
+                  [hint]="passwordHint"
+                  [errorMessages]="{ pattern: () => passwordHint }"
+                />
                 <app-text-field
                   label="Confirmar senha"
                   type="password"

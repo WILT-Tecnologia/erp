@@ -21,7 +21,13 @@
 
         <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()" class="flex max-w-md flex-col gap-4">
           <h2 class="text-lg font-medium">Alterar senha</h2>
-          <app-text-field label="Nova senha" type="password" formControlName="newPassword" />
+          <app-text-field
+            label="Nova senha"
+            type="password"
+            formControlName="newPassword"
+            [hint]="passwordHint"
+            [errorMessages]="{ pattern: () => passwordHint }"
+          />
           <app-text-field label="Confirmar senha" type="password" formControlName="confirmPassword" />
           <div>
             <button mat-flat-button color="primary" type="submit">Atualizar senha</button>

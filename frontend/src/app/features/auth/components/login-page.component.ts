@@ -13,6 +13,7 @@ import { TenantResolutionService } from '../../../core/tenant/tenant-resolution.
 import { EmailFieldComponent } from '../../../shared/components/fields/email-field/email-field.component';
 import { TextFieldComponent } from '../../../shared/components/fields/text-field/text-field.component';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { PASSWORD_HINT, PASSWORD_PATTERN } from '../../../shared/utils/validators.util';
 
 @Component({
   selector: 'app-login-page',
@@ -40,10 +41,11 @@ export class LoginPageComponent {
   readonly submitting = signal(false);
   readonly hidePassword = signal(true);
   readonly isTenantHost = this.tenantResolution.isTenantHost();
+  readonly passwordHint = PASSWORD_HINT;
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
   });
 
   submit(): void {

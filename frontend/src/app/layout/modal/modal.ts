@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
-const DEFAULT_WIDTH = '70vw';
+export const DEFAULT_WIDTH = '70vw';
 const FULLSCREEN_WIDTH = '95vw';
 const FULLSCREEN_HEIGHT = '95vh';
 
@@ -19,6 +19,7 @@ export class Modal {
   readonly modalTitle = input<string>('');
   readonly showCloseButton = input(true);
   readonly showFullscreenButton = input(true);
+  readonly width = input(DEFAULT_WIDTH);
   readonly fullscreen = model(false);
 
   readonly closed = output<void>();
@@ -28,7 +29,7 @@ export class Modal {
 
     effect(() => {
       const isFullscreen = this.fullscreen();
-      this.dialogRef?.updateSize(isFullscreen ? FULLSCREEN_WIDTH : DEFAULT_WIDTH, isFullscreen ? FULLSCREEN_HEIGHT : '');
+      this.dialogRef?.updateSize(isFullscreen ? FULLSCREEN_WIDTH : this.width(), isFullscreen ? FULLSCREEN_HEIGHT : '');
       if (isFullscreen) {
         this.dialogRef?.addPanelClass('app-modal-fullscreen');
       } else {

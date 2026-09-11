@@ -2,6 +2,10 @@ import { type AbstractControl, type ValidationErrors } from '@angular/forms';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+export const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,32}$/;
+export const PASSWORD_HINT =
+  'Mínimo de 8 e máximo de 32 caracteres, com letra maiúscula, minúscula, número e caractere especial.';
+
 const CELLPHONE_DIGIT_COUNT = 11;
 const CELLPHONE_NINTH_DIGIT_INDEX = 2;
 

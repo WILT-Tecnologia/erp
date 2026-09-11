@@ -13,6 +13,7 @@ import { TenantContextService } from '../../core/tenant/tenant-context.service';
 import { ThemeService } from '../../core/theme/theme.service';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { NotificationService } from '../../shared/services/notification.service';
+import { PASSWORD_HINT, PASSWORD_PATTERN } from '../../shared/utils/validators.util';
 
 @Component({
   selector: 'app-settings-page',
@@ -57,8 +58,10 @@ export class SettingsPageComponent {
       .slice(0, 2);
   });
 
+  readonly passwordHint = PASSWORD_HINT;
+
   readonly passwordForm = this.fb.nonNullable.group({
-    newPassword: ['', [Validators.required, Validators.minLength(6)]],
+    newPassword: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
     confirmPassword: ['', Validators.required],
   });
 

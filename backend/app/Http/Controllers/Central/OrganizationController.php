@@ -13,6 +13,7 @@ use App\Models\Central\Organization;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rules\Password;
 
 class OrganizationController extends Controller
 {
@@ -157,9 +158,21 @@ class OrganizationController extends Controller
         Organization $organization,
         DeleteOrganizationAction $action,
     ): JsonResponse {
-        $request->validate([
-            'confirmation' => ['required', 'string', 'in:' . $organization->slug],
+        $validator = validator($request->all(), [
+            'password' => ['required', 'string', 'current_password:api-admin', Password::defaults()],
+        ], [
+            'password.required' => 'Informe sua senha.',
+            'password.current_password' => 'Senha incorreta.',
+            'password.min' => 'A senha deve ter entre 8 e 32 caracteres.',
+            'password.max' => 'A senha deve ter entre 8 e 32 caracteres.',
+            'password.mixed' => 'A senha deve conter letras maiúsculas e minúsculas.',
+            'password.numbers' => 'A senha deve conter pelo menos um número.',
+            'password.symbols' => 'A senha deve conter pelo menos um caractere especial.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 422);
+        }
 
         $action->forceDelete($organization);
 

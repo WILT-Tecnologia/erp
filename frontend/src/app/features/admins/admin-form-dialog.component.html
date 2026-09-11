@@ -6,6 +6,8 @@
       [label]="isEdit ? 'Nova senha (opcional)' : 'Senha'"
       type="password"
       formControlName="password"
+      [hint]="passwordHint"
+      [errorMessages]="{ pattern: () => passwordHint }"
     />
     <app-text-field
       label="Confirmar senha"

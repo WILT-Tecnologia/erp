@@ -32,7 +32,8 @@
           placeholder="•••••••••••••••"
           formControlName="password"
           [disabled]="submitting()"
-          [errorMessages]="{ required: () => 'Informe sua senha.' }"
+          [hint]="passwordHint"
+          [errorMessages]="{ required: () => 'Informe sua senha.', pattern: () => passwordHint }"
         >
           <button
             mat-icon-button

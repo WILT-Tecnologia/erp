@@ -8,6 +8,7 @@ import { Modal } from '../../layout/modal/modal';
 import { EmailFieldComponent } from '../../shared/components/fields/email-field/email-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
 import { NotificationService } from '../../shared/services/notification.service';
+import { PASSWORD_HINT, PASSWORD_PATTERN } from '../../shared/utils/validators.util';
 
 export interface AdminFormDialogData {
   admin?: Admin;
@@ -28,6 +29,7 @@ export class AdminFormDialogComponent {
 
   readonly isEdit: boolean;
   readonly form: ReturnType<AdminFormDialogComponent['buildForm']>;
+  readonly passwordHint = PASSWORD_HINT;
 
   constructor() {
     const data = this.data;
@@ -40,8 +42,8 @@ export class AdminFormDialogComponent {
     return this.fb.nonNullable.group({
       name: [this.data.admin?.name ?? '', Validators.required],
       email: [this.data.admin?.email ?? '', [Validators.required, Validators.email]],
-      password: ['', this.isEdit ? [] : [Validators.required, Validators.minLength(8)]],
-      password_confirmation: ['', this.isEdit ? [] : [Validators.required, Validators.minLength(8)]],
+      password: ['', this.isEdit ? [] : [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
+      password_confirmation: ['', this.isEdit ? [] : [Validators.required]],
     });
   }
 
