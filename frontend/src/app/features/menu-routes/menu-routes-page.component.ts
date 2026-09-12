@@ -38,17 +38,17 @@ export class MenuRoutesPageComponent implements OnInit {
   });
 
   readonly columns: GridColumn<MenuRoute>[] = [
+    { key: 'is_active', label: 'Ativo', valueFn: (row) => (row.is_active ? 'Sim' : 'Não') },
     { key: 'title', label: 'Título', sortable: true },
-    { key: 'slug', label: 'Rota', sortable: true, valueFn: (row) => row.slug ?? '—' },
+    { key: 'slug', label: 'Rota', sortable: true, valueFn: (row) => row.slug ?? '—', monospace: true },
     { key: 'category', label: 'Categoria', sortable: true },
-    { key: 'icon', label: 'Ícone', valueFn: (row) => row.icon ?? '—' },
+    { key: 'icon', label: 'Ícone', type: 'icon', valueFn: (row) => row.icon ?? '' },
     {
       key: 'parent',
       label: 'Item pai',
       valueFn: (row) => (row.parent_id ? (this.titleById().get(row.parent_id) ?? '—') : '—'),
     },
     { key: 'sort_order', label: 'Ordem', sortable: true },
-    { key: 'is_active', label: 'Ativo', valueFn: (row) => (row.is_active ? 'Sim' : 'Não') },
   ];
 
   ngOnInit(): void {

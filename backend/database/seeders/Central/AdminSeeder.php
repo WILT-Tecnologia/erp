@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders\Central;
 
 use App\Enums\AdminStatus;
@@ -13,13 +14,13 @@ class AdminSeeder extends Seeder
         Admin::updateOrCreate(
             ['email' => 'admin@saas.local'],
             [
-                'name'              => 'Super Admin',
-                'password'          => Hash::make('password'),
+                'name' => 'Super Admin',
+                'password' => Hash::make('#mpresaPC10'),
                 'email_verified_at' => now(),
-                'status'            => AdminStatus::Active,
-                'is_super_admin'    => true,
-                'locale'            => 'pt-BR',
-                'timezone'          => 'America/Sao_Paulo',
+                'status' => AdminStatus::Active,
+                'is_super_admin' => true,
+                'locale' => 'pt-BR',
+                'timezone' => 'America/Sao_Paulo',
             ]
         );
 

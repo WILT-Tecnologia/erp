@@ -9,6 +9,9 @@ export const API_ENDPOINTS = {
     logout: '/tenant/logout',
     me: '/tenant/me',
   },
+  tenantMenuRoutes: {
+    tree: '/tenant/menu-routes/tree',
+  },
   dashboard: {
     stats: '/admin/dashboard/stats',
   },

@@ -1,0 +1,38 @@
+<app-modal modalTitle="Selecionar ícone" [showFullscreenButton]="false" (closed)="cancel()">
+  <div class="flex flex-col gap-4">
+    <mat-form-field appearance="fill" class="w-full!" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        placeholder="Buscar ícone..."
+      />
+      @if (searchTerm()) {
+        <button matSuffix mat-icon-button aria-label="Limpar busca" (click)="searchTerm.set('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-6 gap-2 h-96 content-start overflow-y-auto! p-1!">
+      @for (name of filteredIcons(); track name) {
+        <button
+          mat-icon-button
+          type="button"
+          [matTooltip]="name"
+          [class.bg-primary-container]="name === data.selected"
+          (click)="select(name)"
+        >
+          <mat-icon>{{ name }}</mat-icon>
+        </button>
+      } @empty {
+        <p class="col-span-6 text-center text-on-surface/60 py-8">Nenhum ícone encontrado.</p>
+      }
+    </div>
+  </div>
+
+  <div modal-footer class="flex gap-2">
+    <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+  </div>
+</app-modal>

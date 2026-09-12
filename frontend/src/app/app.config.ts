@@ -1,5 +1,5 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { type ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { type ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -9,6 +9,8 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 
 import { routes } from './app.routes';
+import { AuthService } from './core/auth/auth.service';
+import { TenantAuthService } from './core/auth/tenant-auth.service';
 import { authInterceptor } from './core/http/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/http/interceptors/error.interceptor';
 import { tenantContextInterceptor } from './core/http/interceptors/tenant-context.interceptor';
@@ -20,6 +22,16 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideClientHydration(),
+    provideAppInitializer(() => {
+      const authService = inject(AuthService);
+      const tenantAuthService = inject(TenantAuthService);
+
+      if (tenantAuthService.isAuthenticated()) {
+        tenantAuthService.fetchMe().subscribe({ error: () => undefined });
+      } else if (authService.isAuthenticated()) {
+        authService.fetchMe().subscribe({ error: () => undefined });
+      }
+    }),
     provideAnimationsAsync(),
     provideHttpClient(
       withFetch(),

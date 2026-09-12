@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Tenant\AuthController;
+use App\Http\Controllers\Tenant\MenuRouteController;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
@@ -26,5 +27,6 @@ Route::middleware([InitializeTenancyByDomain::class])->group(function () {
     Route::middleware('auth:api-tenant')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('menu-routes/tree', [MenuRouteController::class, 'tree']);
     });
 });

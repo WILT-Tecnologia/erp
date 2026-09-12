@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { Modal } from '../../layout/modal/modal';
 import { NumberFieldComponent } from '../../shared/components/fields/number-field/number-field.component';
 import { SelectFieldComponent, type SelectFieldOption } from '../../shared/components/fields/select-field/select-field.component';
 import { SwitchFieldComponent } from '../../shared/components/fields/switch-field/switch-field.component';
 import { TextFieldComponent } from '../../shared/components/fields/text-field/text-field.component';
+import { IconPickerDialogComponent } from '../../shared/components/icon-picker-dialog/icon-picker-dialog.component';
 import { NotificationService } from '../../shared/services/notification.service';
 import { type MenuRoute } from './menu-route.model';
 
@@ -24,7 +24,6 @@ export interface MenuRouteFormDialogData {
     ReactiveFormsModule,
     Modal,
     MatButtonModule,
-    MatIconModule,
     TextFieldComponent,
     NumberFieldComponent,
     SelectFieldComponent,
@@ -37,6 +36,7 @@ export class MenuRouteFormDialogComponent {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<MenuRouteFormDialogComponent>);
+  private readonly dialog = inject(MatDialog);
   private readonly notification = inject(NotificationService);
 
   readonly isEdit: boolean;
@@ -89,5 +89,16 @@ export class MenuRouteFormDialogComponent {
 
   cancel(): void {
     this.dialogRef.close();
+  }
+
+  openIconPicker(): void {
+    const ref = this.dialog.open(IconPickerDialogComponent, {
+      width: '480px',
+      data: { selected: this.form.value.icon || null },
+    });
+    ref.afterClosed().subscribe((name) => {
+      if (!name) return;
+      this.form.patchValue({ icon: name });
+    });
   }
 }

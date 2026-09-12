@@ -19,6 +19,7 @@
     [attr.maxlength]="maxLength() ?? null"
     [attr.minlength]="minLength() ?? null"
     [required]="isRequired"
+    [readonly]="readOnly()"
     (blur)="onTouched()"
   />
 

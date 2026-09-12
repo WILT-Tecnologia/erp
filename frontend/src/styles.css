@@ -82,6 +82,7 @@
   --color-scrim: var(--mat-sys-scrim);
 
   --font-sans: var(--mat-sys-body-medium-font, Poppins, Roboto, sans-serif);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 @utility sidebar {

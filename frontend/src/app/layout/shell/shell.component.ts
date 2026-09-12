@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 
+import { SessionRevalidationService } from '../../core/auth/session-revalidation.service';
 import { STORAGE_KEYS } from '../../core/constants/api-endpoints';
 import { Content } from '../content/content';
 import { HeaderComponent } from '../header/header.component';
@@ -22,6 +23,10 @@ const MOBILE_BREAKPOINT = '(max-width: 767.98px)';
 export class ShellComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
+  constructor(sessionRevalidation: SessionRevalidationService) {
+    sessionRevalidation.start();
+  }
 
   readonly isHandset = toSignal(
     this.breakpointObserver.observe(MOBILE_BREAKPOINT).pipe(map((result) => result.matches)),

@@ -28,4 +28,21 @@ export class TenantContextService {
   readonly organizationSlug = computed(() => this.tenantAuth.organization()?.slug ?? this.orgContext.organizationId());
 
   readonly scope = computed<TenantScope>(() => (this.organizationSlug() ? 'tenant' : 'global'));
+
+  /**
+   * Super admins bypass permission checks entirely (they aren't tenant users
+   * and have no `permissions` list to check against). Scaffolding for
+   * per-route authorization — nothing calls this with a real requirement
+   * yet, since no tenant route declares `data.requiredPermission`.
+   */
+  hasPermission(name: string): boolean {
+    if (this.isSuperAdmin()) return true;
+    return (this.tenantAuth.tenantUser()?.permissions ?? []).includes(name);
+  }
+
+  hasAnyPermission(names: string[]): boolean {
+    if (this.isSuperAdmin()) return true;
+    if (names.length === 0) return true;
+    return names.some((name) => this.hasPermission(name));
+  }
 }

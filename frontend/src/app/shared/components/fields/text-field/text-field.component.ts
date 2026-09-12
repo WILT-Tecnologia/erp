@@ -65,4 +65,5 @@ export class TextFieldComponent extends BaseFieldComponent<string> {
   readonly suffixIcon = input<string | null>(null);
   readonly suffixClass = input<string>('');
   readonly suffixTooltip = input<string>('');
+  readonly readOnly = input(false);
 }
