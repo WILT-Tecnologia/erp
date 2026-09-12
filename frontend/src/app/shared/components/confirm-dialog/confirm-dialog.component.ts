@@ -89,7 +89,7 @@ const COMPACT_WIDTH = 'clamp(320px, 30vw, 480px)';
         }
       </div>
 
-      <div modal-footer>
+      <div modal-footer class="flex gap-2">
         <button mat-button (click)="cancel()">{{ data.cancelLabel ?? 'Cancelar' }}</button>
         <button mat-flat-button color="warn" [disabled]="!canConfirm()" (click)="confirm()">
           {{ data.confirmLabel ?? 'Excluir' }}
