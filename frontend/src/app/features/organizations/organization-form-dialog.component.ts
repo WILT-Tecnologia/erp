@@ -150,8 +150,8 @@ export class OrganizationFormDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.planService.list().subscribe((plans) => (this.plans = plans));
-    this.adminService.list().subscribe((admins) => (this.admins = admins));
+    this.planService.list({ perPage: 100 }).subscribe((response) => (this.plans = response.data));
+    this.adminService.list({ perPage: 100 }).subscribe((response) => (this.admins = response.data));
   }
 
   get planOptions(): SelectFieldOption<string | null>[] {

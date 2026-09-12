@@ -3,6 +3,7 @@ import {
   type AfterViewInit,
   Component,
   ContentChild,
+  DestroyRef,
   EventEmitter,
   inject,
   Input,
@@ -12,6 +13,7 @@ import {
   type TemplateRef,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +24,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSort, MatSortModule, type Sort } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import { GridStateService } from '../../services/grid-state.service';
 import { type GridColumn, type GridPage, type GridSort } from './data-grid.types';
@@ -46,6 +49,8 @@ import { type GridColumn, type GridPage, type GridSort } from './data-grid.types
 })
 export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
   private readonly gridState = inject(GridStateService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly searchSubject = new Subject<string>();
 
   @Input({ required: true }) columns: GridColumn<T>[] = [];
   @Input() data: T[] = [];
@@ -53,6 +58,7 @@ export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
   @Input() persistKey = 'default';
   @Input() serverSide = false;
   @Input() totalCount = 0;
+  @Input() pageIndex = 0;
   @Input() pageSize = 10;
   @Input() pageSizeOptions = [10, 25, 50];
   @Input() showActionsColumn = true;
@@ -75,6 +81,12 @@ export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
     return this.showActionsColumn ? [...keys, 'actions'] : keys;
   }
 
+  constructor() {
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((term) => this.applySearch(term));
+  }
+
   ngOnInit(): void {
     const state = this.gridState.load(this.persistKey);
     if (state?.pageSize) {
@@ -87,9 +99,9 @@ export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort ?? null;
     if (!this.serverSide) {
       this.dataSource.paginator = this.paginator ?? null;
-      this.dataSource.sort = this.sort ?? null;
     }
   }
 
@@ -99,6 +111,10 @@ export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
 
   onSearchChange(term: string): void {
     this.searchTerm = term;
+    this.searchSubject.next(term);
+  }
+
+  private applySearch(term: string): void {
     if (this.serverSide) {
       this.searchChange.emit(term);
     } else {
@@ -122,6 +138,6 @@ export class DataGridComponent<T> implements OnInit, OnChanges, AfterViewInit {
 
   onClearSearch(): void {
     this.searchTerm = '';
-    this.onSearchChange('');
+    this.applySearch('');
   }
 }

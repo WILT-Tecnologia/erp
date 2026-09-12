@@ -7,7 +7,18 @@
     </button>
   </div>
 
-  <app-data-grid [columns]="columns" [data]="plans()" [loading]="loading()" persistKey="plans">
+  <app-data-grid
+    [columns]="columns"
+    [data]="plans()"
+    [loading]="loading()"
+    [serverSide]="true"
+    [totalCount]="totalCount()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    (page)="onPage($event)"
+    (searchChange)="onSearch($event)"
+    persistKey="plans"
+  >
     <ng-template #rowActions let-row>
       <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
         <mat-icon>edit</mat-icon>

@@ -7,7 +7,18 @@
     </button>
   </div>
 
-  <app-data-grid [columns]="columns" [data]="organizations()" [loading]="loading()" persistKey="organizations">
+  <app-data-grid
+    [columns]="columns"
+    [data]="organizations()"
+    [loading]="loading()"
+    [serverSide]="true"
+    [totalCount]="totalCount()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    (page)="onPage($event)"
+    (searchChange)="onSearch($event)"
+    persistKey="organizations"
+  >
     <ng-template #rowActions let-row>
       <button mat-icon-button (click)="openDashboard(row)" matTooltip="Ver painel da organização">
         <mat-icon>dashboard</mat-icon>

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, type Observable } from 'rxjs';
 
@@ -14,13 +14,24 @@ export interface AdminFormValue {
   password_confirmation?: string;
 }
 
+export interface AdminListParams {
+  page?: number;
+  perPage?: number;
+  search?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}${API_ENDPOINTS.admins}`;
 
-  list(): Observable<Admin[]> {
-    return this.http.get<ApiCollection<Admin>>(this.baseUrl).pipe(map((response) => response.data));
+  list(params: AdminListParams = {}): Observable<ApiCollection<Admin>> {
+    let httpParams = new HttpParams();
+    if (params.page) httpParams = httpParams.set('page', params.page);
+    if (params.perPage) httpParams = httpParams.set('per_page', params.perPage);
+    if (params.search) httpParams = httpParams.set('search', params.search);
+
+    return this.http.get<ApiCollection<Admin>>(this.baseUrl, { params: httpParams });
   }
 
   create(payload: AdminFormValue): Observable<Admin> {

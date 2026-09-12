@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
-import { type GridColumn } from '../../shared/components/data-grid/data-grid.types';
+import { type GridColumn, type GridPage } from '../../shared/components/data-grid/data-grid.types';
 import { NotificationService } from '../../shared/services/notification.service';
 import { type MenuRoute } from './menu-route.model';
 import { MenuRouteService } from './menu-route.service';
@@ -24,6 +24,10 @@ export class MenuRoutesPageComponent implements OnInit {
 
   readonly menuRoutes = signal<MenuRoute[]>([]);
   readonly loading = signal(false);
+  readonly totalCount = signal(0);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  private searchTerm = '';
 
   private readonly titleById = computed(() => {
     const map = new Map<string, string>();
@@ -53,13 +57,28 @@ export class MenuRoutesPageComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
-    this.menuRouteService.list().subscribe({
-      next: (menuRoutes) => {
-        this.menuRoutes.set(menuRoutes);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.menuRouteService
+      .list({ page: this.pageIndex() + 1, perPage: this.pageSize(), search: this.searchTerm || undefined })
+      .subscribe({
+        next: (response) => {
+          this.menuRoutes.set(response.data);
+          this.totalCount.set(response.meta?.total ?? response.data.length);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+  }
+
+  onPage(event: GridPage): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex.set(0);
+    this.load();
   }
 
   openCreate(): void {

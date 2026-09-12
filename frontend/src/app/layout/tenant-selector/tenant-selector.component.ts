@@ -23,7 +23,9 @@ export class TenantSelectorComponent implements OnInit {
   readonly organizations = signal<Organization[]>([]);
 
   ngOnInit(): void {
-    this.organizationService.list().subscribe((organizations) => this.organizations.set(organizations));
+    this.organizationService
+      .list({ perPage: 100 })
+      .subscribe((response) => this.organizations.set(response.data));
   }
 
   selectGlobal(): void {

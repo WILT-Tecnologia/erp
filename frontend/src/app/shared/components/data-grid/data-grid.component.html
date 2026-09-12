@@ -26,12 +26,19 @@
     @if (serverSide) {
       <mat-paginator
         [length]="totalCount"
+        [pageIndex]="pageIndex"
         [pageSize]="pageSize"
         [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
         (page)="onPage($event)"
       ></mat-paginator>
     } @else {
-      <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPage($event)"></mat-paginator>
+      <mat-paginator
+        [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="onPage($event)"
+      ></mat-paginator>
     }
 
     <ng-content select="[gridToolbarActions]"></ng-content>

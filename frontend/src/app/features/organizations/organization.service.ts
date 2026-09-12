@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, type Observable } from 'rxjs';
 
@@ -7,13 +7,24 @@ import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
 import { type ApiCollection, type ApiResource } from '../../core/http/api-response.model';
 import { type Organization, type OrganizationFormValue } from './organization.model';
 
+export interface OrganizationListParams {
+  page?: number;
+  perPage?: number;
+  search?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class OrganizationService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}${API_ENDPOINTS.organizations.base}`;
 
-  list(): Observable<Organization[]> {
-    return this.http.get<ApiCollection<Organization>>(this.baseUrl).pipe(map((response) => response.data));
+  list(params: OrganizationListParams = {}): Observable<ApiCollection<Organization>> {
+    let httpParams = new HttpParams();
+    if (params.page) httpParams = httpParams.set('page', params.page);
+    if (params.perPage) httpParams = httpParams.set('per_page', params.perPage);
+    if (params.search) httpParams = httpParams.set('search', params.search);
+
+    return this.http.get<ApiCollection<Organization>>(this.baseUrl, { params: httpParams });
   }
 
   checkSlugAvailable(slug: string): Observable<boolean> {

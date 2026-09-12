@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
-import { type GridColumn } from '../../shared/components/data-grid/data-grid.types';
+import { type GridColumn, type GridPage } from '../../shared/components/data-grid/data-grid.types';
 import { NotificationService } from '../../shared/services/notification.service';
 import { type Organization } from './organization.model';
 import { OrganizationService } from './organization.service';
@@ -33,6 +33,10 @@ export class OrganizationsPageComponent implements OnInit {
 
   readonly organizations = signal<Organization[]>([]);
   readonly loading = signal(false);
+  readonly totalCount = signal(0);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  private searchTerm = '';
 
   readonly columns: GridColumn<Organization>[] = [
     { key: 'name', label: 'Organização', sortable: true },
@@ -48,13 +52,28 @@ export class OrganizationsPageComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
-    this.organizationService.list().subscribe({
-      next: (organizations) => {
-        this.organizations.set(organizations);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.organizationService
+      .list({ page: this.pageIndex() + 1, perPage: this.pageSize(), search: this.searchTerm || undefined })
+      .subscribe({
+        next: (response) => {
+          this.organizations.set(response.data);
+          this.totalCount.set(response.meta?.total ?? response.data.length);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+  }
+
+  onPage(event: GridPage): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex.set(0);
+    this.load();
   }
 
   openDashboard(organization: Organization): void {

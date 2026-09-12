@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { type Admin } from '../../core/auth/admin.model';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
-import { type GridColumn } from '../../shared/components/data-grid/data-grid.types';
+import { type GridColumn, type GridPage } from '../../shared/components/data-grid/data-grid.types';
 import { NotificationService } from '../../shared/services/notification.service';
 import { AdminService } from './admin.service';
 import { AdminFormDialogComponent } from './admin-form-dialog.component';
@@ -24,6 +24,10 @@ export class AdminsPageComponent implements OnInit {
 
   readonly admins = signal<Admin[]>([]);
   readonly loading = signal(false);
+  readonly totalCount = signal(0);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  private searchTerm = '';
 
   readonly columns: GridColumn<Admin>[] = [
     { key: 'name', label: 'Nome', sortable: true },
@@ -36,13 +40,28 @@ export class AdminsPageComponent implements OnInit {
 
   load(): void {
     this.loading.set(true);
-    this.adminService.list().subscribe({
-      next: (admins) => {
-        this.admins.set(admins);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.adminService
+      .list({ page: this.pageIndex() + 1, perPage: this.pageSize(), search: this.searchTerm || undefined })
+      .subscribe({
+        next: (response) => {
+          this.admins.set(response.data);
+          this.totalCount.set(response.meta?.total ?? response.data.length);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+  }
+
+  onPage(event: GridPage): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex.set(0);
+    this.load();
   }
 
   openCreate(): void {
