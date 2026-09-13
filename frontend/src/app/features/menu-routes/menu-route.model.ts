@@ -14,6 +14,7 @@ export interface MenuRoute {
   sort_order: number;
   parent_id: string | null;
   is_active: boolean;
+  parent?: MenuRoute | null;
   permissions: MenuRoutePermission[];
   children: MenuRoute[];
   created_at?: string;

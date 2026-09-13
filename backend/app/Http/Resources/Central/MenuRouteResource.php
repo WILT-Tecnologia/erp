@@ -18,6 +18,7 @@ class MenuRouteResource extends JsonResource
             'sort_order' => $this->sort_order,
             'parent_id' => $this->parent_id,
             'is_active' => $this->is_active,
+            'parent' => new MenuRouteResource($this->whenLoaded('parent')),
             'permissions' => PermissionDefinitionResource::collection($this->whenLoaded('permissions')),
             'children' => MenuRouteResource::collection($this->whenLoaded('children')),
             'children_count' => $this->whenCounted('children'),

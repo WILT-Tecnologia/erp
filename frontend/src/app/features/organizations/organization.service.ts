@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { API_ENDPOINTS } from '../../core/constants/api-endpoints';
 import { type ApiCollection, type ApiResource } from '../../core/http/api-response.model';
 import { type Organization, type OrganizationFormValue } from './organization.model';
+import { type Subscription } from './subscription.model';
 
 export interface OrganizationListParams {
   page?: number;
@@ -67,5 +68,19 @@ export class OrganizationService {
     return this.http
       .post<ApiResource<Organization>>(`${environment.apiUrl}${API_ENDPOINTS.organizations.activate(id)}`, {})
       .pipe(map((response) => response.data));
+  }
+
+  listSubscriptions(
+    organizationSlug: string,
+    params: { page?: number; perPage?: number } = {},
+  ): Observable<ApiCollection<Subscription>> {
+    let httpParams = new HttpParams();
+    if (params.page) httpParams = httpParams.set('page', params.page);
+    if (params.perPage) httpParams = httpParams.set('per_page', params.perPage);
+
+    return this.http.get<ApiCollection<Subscription>>(
+      `${environment.apiUrl}${API_ENDPOINTS.organizations.subscriptions(organizationSlug)}`,
+      { params: httpParams },
+    );
   }
 }

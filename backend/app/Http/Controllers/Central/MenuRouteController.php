@@ -30,7 +30,8 @@ class MenuRouteController extends Controller
             })
             ->when($request->query('search'), fn ($q, $search) => $q->where(function ($q) use ($search) {
                 $q->where('title', 'ilike', "%{$search}%")
-                  ->orWhere('slug', 'ilike', "%{$search}%");
+                  ->orWhere('slug', 'ilike', "%{$search}%")
+                  ->orWhereHas('parent', fn ($q) => $q->where('title', 'ilike', "%{$search}%"));
             }))
             ->orderBy('category')
             ->orderBy('sort_order')

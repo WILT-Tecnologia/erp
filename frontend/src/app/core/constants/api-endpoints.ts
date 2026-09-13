@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
     suspend: (id: string | number) => `/admin/organizations/${id}/suspend`,
     activate: (id: string | number) => `/admin/organizations/${id}/activate`,
     force: (id: string | number) => `/admin/organizations/${id}/force`,
+    subscriptions: (id: string | number) => `/admin/organizations/${id}/subscriptions`,
     tenantContext: (slug: string) => `/admin/organizations/${slug}/tenant-context`,
   },
   plans: '/admin/plans',

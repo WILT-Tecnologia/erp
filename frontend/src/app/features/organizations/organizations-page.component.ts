@@ -12,6 +12,7 @@ import { NotificationService } from '../../shared/services/notification.service'
 import { type Organization } from './organization.model';
 import { OrganizationService } from './organization.service';
 import { OrganizationFormDialogComponent } from './organization-form-dialog.component';
+import { OrganizationSubscriptionsDialogComponent } from './organization-subscriptions-dialog.component';
 
 const STATUS_LABELS: Record<Organization['status'], string> = {
   active: 'Ativa',
@@ -80,6 +81,10 @@ export class OrganizationsPageComponent implements OnInit {
     // :organizationId route param carries the organization's slug (matches
     // backend route-model binding, which resolves Organization by slug).
     this.router.navigate(['/organizations', organization.slug, 'dashboard']);
+  }
+
+  openSubscriptions(organization: Organization): void {
+    this.dialog.open(OrganizationSubscriptionsDialogComponent, { width: '900px', data: { organization } });
   }
 
   openCreate(): void {

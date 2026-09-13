@@ -1,4 +1,4 @@
-import { Component, computed, inject, type OnInit, signal } from '@angular/core';
+import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,25 +29,13 @@ export class MenuRoutesPageComponent implements OnInit {
   readonly pageSize = signal(10);
   private searchTerm = '';
 
-  private readonly titleById = computed(() => {
-    const map = new Map<string, string>();
-    for (const route of this.menuRoutes()) {
-      map.set(route.id, route.title);
-    }
-    return map;
-  });
-
   readonly columns: GridColumn<MenuRoute>[] = [
     { key: 'is_active', label: 'Ativo', valueFn: (row) => (row.is_active ? 'Sim' : 'Não') },
     { key: 'title', label: 'Título', sortable: true },
     { key: 'slug', label: 'Rota', sortable: true, valueFn: (row) => row.slug ?? '—', monospace: true },
     { key: 'category', label: 'Categoria', sortable: true },
     { key: 'icon', label: 'Ícone', type: 'icon', valueFn: (row) => row.icon ?? '' },
-    {
-      key: 'parent',
-      label: 'Item pai',
-      valueFn: (row) => (row.parent_id ? (this.titleById().get(row.parent_id) ?? '—') : '—'),
-    },
+    { key: 'parent', label: 'Item pai', valueFn: (row) => row.parent?.title ?? '—' },
     { key: 'sort_order', label: 'Ordem', sortable: true },
   ];
 

@@ -41,6 +41,7 @@ Route::prefix('admin')->group(function () {
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
+        Route::get('organizations/{organization}/subscriptions', [OrganizationController::class, 'subscriptions']);
 
         // Admin-to-tenant access: super admins entering a specific
         // organization's schema. Scaffold group — real tenant business

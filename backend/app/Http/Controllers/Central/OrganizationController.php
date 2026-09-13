@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Central\StoreOrganizationRequest;
 use App\Http\Requests\Central\UpdateOrganizationRequest;
 use App\Http\Resources\Central\OrganizationResource;
+use App\Http\Resources\Central\SubscriptionResource;
 use App\Models\Central\Organization;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -32,7 +33,9 @@ class OrganizationController extends Controller
                 $q->where('name', 'ilike', "%{$search}%")
                   ->orWhere('legal_name', 'ilike', "%{$search}%")
                   ->orWhere('slug', 'ilike', "%{$search}%")
-                  ->orWhere('cnpj', 'ilike', "%{$search}%");
+                  ->orWhere('cnpj', 'ilike', "%{$search}%")
+                  ->orWhereHas('plan', fn ($q) => $q->where('name', 'ilike', "%{$search}%"))
+                  ->orWhereHas('ownerAdmin', fn ($q) => $q->where('name', 'ilike', "%{$search}%"));
             }))
             ->orderByDesc('created_at')
             ->paginate($perPage);
@@ -147,6 +150,21 @@ class OrganizationController extends Controller
         $organization->update(['status' => OrganizationStatus::Active]);
 
         return new OrganizationResource($organization->fresh());
+    }
+
+    /**
+     * Lista paginada das assinaturas de uma organização.
+     */
+    public function subscriptions(Request $request, Organization $organization): AnonymousResourceCollection
+    {
+        $perPage = min((int) $request->query('per_page', 15), 100);
+
+        $subscriptions = $organization->subscriptions()
+            ->with('plan')
+            ->orderByDesc('created_at')
+            ->paginate($perPage);
+
+        return SubscriptionResource::collection($subscriptions);
     }
 
     /**
