@@ -3,7 +3,7 @@
     <app-text-field label="Nome da família" formControlName="name" />
     <app-text-field label="Responsável" formControlName="leader" />
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <app-number-field label="Nº de membros" [min]="1" formControlName="members" />
       <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
     </div>

@@ -1,11 +1,11 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <app-modal [modalTitle]="isEdit ? 'Editar organização' : 'Nova organização'" (closed)="cancel()">
-    <mat-tab-group class="min-w-105" mat-stretch-tabs="false">
+    <mat-tab-group class="min-w-0 md:min-w-105" mat-stretch-tabs="false">
       <mat-tab label="Geral">
         <div class="flex flex-col gap-4 pt-4">
           <div class="box-form border-b border-b-outline-variant">
             <h3 class="box-form-title">Identificação</h3>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <app-text-field label="Nome" [maxLength]="150" formControlName="name" />
               <app-text-field
                 label="Slug"
@@ -21,7 +21,7 @@
 
             <app-text-field label="Razão social" [maxLength]="150" formControlName="legal_name" />
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
               <app-date-field label="Data de fundação" formControlName="founded_at" />
             </div>
@@ -40,7 +40,7 @@
             <h3 class="box-form-title">Canais de contato</h3>
             <app-email-field label="E-mail" formControlName="email" />
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <app-masked-field label="Telefone" mask="(00) 0000-0000||(00) 00000-0000" formControlName="phone" />
               <app-masked-field
                 label="WhatsApp"
@@ -58,7 +58,7 @@
           <div class="flex flex-col gap-4 pt-4">
             <div class="box-form">
               <h3 class="box-form-title">Primeiro usuário do tenant</h3>
-              <div formGroupName="first_user" class="grid grid-cols-2 gap-4">
+              <div formGroupName="first_user" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <app-text-field label="Nome" formControlName="name" />
                 <app-email-field label="E-mail" formControlName="email" />
                 <app-text-field
@@ -110,7 +110,7 @@
           </div>
           <div class="box-form border-b border-b-outline-variant">
             <h3 class="box-form-title">Localização</h3>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <app-autocomplete-field label="Idioma" [options]="languageOptions" formControlName="language" />
               <app-autocomplete-field label="Fuso horário" [options]="timezoneOptions" formControlName="timezone" />
             </div>
@@ -118,7 +118,7 @@
 
           <div class="box-form">
             <h3 class="box-form-title">Vínculos</h3>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <app-select-field label="Plano" [options]="planOptions" formControlName="plan_id" />
               <app-select-field
                 label="Administrador responsável"

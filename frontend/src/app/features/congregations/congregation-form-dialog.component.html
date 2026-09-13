@@ -2,7 +2,7 @@
   <app-modal [modalTitle]="isEdit ? 'Editar congregação' : 'Nova congregação'" (closed)="cancel()">
     <app-text-field label="Nome da congregação" formControlName="name" />
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <app-text-field label="Código" formControlName="code" />
       <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
     </div>
@@ -10,12 +10,12 @@
     <app-text-field label="Igreja vinculada" formControlName="church" />
     <app-text-field label="Líder responsável" formControlName="leader" />
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <app-text-field label="Cidade" formControlName="city" />
       <app-text-field label="UF" [maxLength]="2" formControlName="state" />
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <app-number-field label="Nº de membros" [min]="0" formControlName="members" />
       <app-text-field label="Telefone" formControlName="phone" />
     </div>

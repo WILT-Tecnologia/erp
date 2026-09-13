@@ -1,6 +1,6 @@
 <button mat-button [matMenuTriggerFor]="tenantMenu" class="flex! items-center! gap-1! max-w-[220px]">
   <mat-icon class="text-base! w-4! h-4!">{{ tenantContext.scope() === 'global' ? 'public' : 'apartment' }}</mat-icon>
-  <span class="truncate">
+  <span class="hidden truncate md:inline">
     {{ tenantContext.scope() === 'global' ? 'Todas as organizações' : tenantContext.organization()?.name }}
   </span>
   <mat-icon class="text-base! w-4! h-4!">arrow_drop_down</mat-icon>

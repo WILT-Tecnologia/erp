@@ -149,6 +149,15 @@
 }
 
 /*
+ * Mesma remoção do teto de 560px do Material, agora para o estado mobile
+ * do app-modal (90vw/99vw), já que em telas mobile largas (perto de 767px)
+ * 90vw pode ultrapassar 560px.
+ */
+.app-modal-mobile.cdk-overlay-pane {
+  max-width: none !important;
+}
+
+/*
  * Anima a expansão/redução do modal ao alternar o fullscreen. A classe só é
  * adicionada pelo Modal a partir da primeira alternância manual (nunca na
  * abertura inicial do diálogo), para não animar o tamanho inicial.

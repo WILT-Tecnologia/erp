@@ -5,7 +5,7 @@
 
       <app-text-field label="Título" formControlName="title" />
 
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <app-select-field label="Item pai" [options]="parentOptions" formControlName="parent_id" />
 
         <app-text-field label="Rota (slug)" placeholder="/dashboard/admins" formControlName="slug" />
@@ -20,7 +20,7 @@
         />
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <app-text-field label="Categoria" placeholder="Administração" formControlName="category" />
 
         <app-number-field label="Ordem" formControlName="sort_order" />

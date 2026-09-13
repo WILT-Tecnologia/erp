@@ -4,7 +4,7 @@
     <app-email-field label="E-mail" placeholder="email@igreja.org" formControlName="email" />
     <app-text-field label="Telefone" placeholder="(00) 00000-0000" formControlName="phone" />
 
-    <div class="flex gap-3">
+    <div class="flex flex-col gap-3 md:flex-row">
       <app-select-field class="flex-1" label="Cargo" [options]="roleOptions" formControlName="role" />
       <app-select-field class="flex-1" label="Status" [options]="statusOptions" formControlName="status" />
     </div>

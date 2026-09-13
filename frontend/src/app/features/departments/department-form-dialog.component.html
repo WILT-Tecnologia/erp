@@ -4,7 +4,7 @@
 
     <app-text-field label="Igreja" placeholder="Igreja Central" formControlName="church" />
 
-    <div class="flex gap-3">
+    <div class="flex flex-col gap-3 md:flex-row">
       <app-text-field class="flex-1" label="Líder" placeholder="Ana Beatriz" formControlName="leader" />
       <app-number-field class="w-32" label="Membros" [min]="0" formControlName="members" />
     </div>

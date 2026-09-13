@@ -7,17 +7,17 @@
 
     <app-text-field label="Descrição" placeholder="Ex: Dízimo culto domingo" formControlName="description" />
 
-    <div class="flex gap-3">
+    <div class="flex flex-col gap-3 md:flex-row">
       <app-number-field class="flex-1" label="Valor (R$)" [step]="0.01" formControlName="amount" />
       <app-date-field class="flex-1" label="Data" formControlName="date" />
     </div>
 
-    <div class="flex gap-3">
+    <div class="flex flex-col gap-3 md:flex-row">
       <app-select-field class="flex-1" label="Categoria" [options]="categoryOptions" formControlName="category" />
       <app-select-field class="flex-1" label="Conta" [options]="accountOptions" formControlName="account" />
     </div>
 
-    <div class="flex gap-3">
+    <div class="flex flex-col gap-3 md:flex-row">
       <app-select-field class="flex-1" label="Forma de pagamento" [options]="methodOptions" formControlName="method" />
       <app-select-field class="flex-1" label="Status" [options]="statusOptions" formControlName="status" />
     </div>
