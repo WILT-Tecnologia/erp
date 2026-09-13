@@ -2,6 +2,7 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
@@ -14,7 +15,7 @@ import { FamilyFormDialogComponent } from './family-form-dialog.component';
 @Component({
   selector: 'app-families-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule],
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
   templateUrl: './families-page.component.html',
 })
 export class FamiliesPageComponent implements OnInit {

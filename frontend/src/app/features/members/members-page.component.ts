@@ -2,6 +2,7 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
@@ -20,7 +21,7 @@ const STATUS_LABELS: Record<Member['status'], string> = {
 @Component({
   selector: 'app-members-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule],
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
   templateUrl: './members-page.component.html',
 })
 export class MembersPageComponent implements OnInit {

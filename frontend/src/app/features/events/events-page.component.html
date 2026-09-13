@@ -1,15 +1,4 @@
 <div class="flex flex-col gap-4">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-medium">Eventos</h1>
-      <p class="text-sm text-on-surface/60">Gerencie os eventos e atividades das igrejas</p>
-    </div>
-    <button mat-flat-button color="primary" (click)="openCreate()">
-      <mat-icon>add</mat-icon>
-      Novo evento
-    </button>
-  </div>
-
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <mat-card class="p-4">
       <div class="text-sm text-on-surface/60">Agendados / em andamento</div>
@@ -26,12 +15,18 @@
   </div>
 
   <app-data-grid [columns]="columns" [data]="events()" [loading]="loading()" persistKey="events">
+    <button gridToolbarActions mat-flat-button color="primary" class="w-full! md:w-auto! self-start!" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Novo evento
+    </button>
     <ng-template #rowActions let-row>
-      <button mat-icon-button (click)="openEdit(row)" matTooltip="Editar">
+      <button mat-menu-item (click)="openEdit(row)">
         <mat-icon>edit</mat-icon>
+        <span>Editar</span>
       </button>
-      <button mat-icon-button (click)="remove(row)" matTooltip="Excluir">
-        <mat-icon>delete</mat-icon>
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
       </button>
     </ng-template>
   </app-data-grid>

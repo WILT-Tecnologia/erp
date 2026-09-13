@@ -2,6 +2,7 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { type Admin } from '../../core/auth/admin.model';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -14,7 +15,7 @@ import { AdminFormDialogComponent } from './admin-form-dialog.component';
 @Component({
   selector: 'app-admins-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule],
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
   templateUrl: './admins-page.component.html',
 })
 export class AdminsPageComponent implements OnInit {

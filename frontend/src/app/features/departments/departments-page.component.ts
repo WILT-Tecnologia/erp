@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
@@ -15,7 +16,7 @@ import { DepartmentFormDialogComponent } from './department-form-dialog.componen
 @Component({
   selector: 'app-departments-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatCardModule, MatDialogModule, MatIconModule],
+  imports: [DataGridComponent, MatButtonModule, MatCardModule, MatDialogModule, MatIconModule, MatMenuModule],
   templateUrl: './departments-page.component.html',
 })
 export class DepartmentsPageComponent implements OnInit {

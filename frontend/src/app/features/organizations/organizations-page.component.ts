@@ -2,7 +2,7 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { Router } from '@angular/router';
 
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -23,7 +23,7 @@ const STATUS_LABELS: Record<Organization['status'], string> = {
 @Component({
   selector: 'app-organizations-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
   templateUrl: './organizations-page.component.html',
 })
 export class OrganizationsPageComponent implements OnInit {

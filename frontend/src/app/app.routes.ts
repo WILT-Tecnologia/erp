@@ -86,7 +86,7 @@ export const routes: Routes = [
           },
           {
             path: 'menu-routes',
-            title: 'Rotas de Menu',
+            title: 'Itens de menu',
             data: { icon: 'tune', module: 'admin.menu-routes' },
             loadComponent: () =>
               import('./features/menu-routes/menu-routes-page.component').then((m) => m.MenuRoutesPageComponent),

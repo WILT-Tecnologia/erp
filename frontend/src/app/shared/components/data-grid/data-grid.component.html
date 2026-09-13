@@ -1,4 +1,6 @@
 <div class="flex! flex-col! gap-4!">
+  <ng-content select="[gridToolbarActions]"></ng-content>
+
   <div class="flex! flex-col! md:flex-row! md:items-center! md:justify-between! gap-4!">
     <mat-form-field appearance="fill" class="w-full! md:max-w-sm!" subscriptSizing="dynamic">
       <div class="flex! items-center! gap-4! pl-2! w-full!">
@@ -42,8 +44,6 @@
         (page)="onPage($event)"
       ></mat-paginator>
     }
-
-    <ng-content select="[gridToolbarActions]"></ng-content>
   </div>
 
   @if (loading) {
@@ -86,10 +86,15 @@
             *matCellDef="let row"
             class="text-right! w-[1%]! whitespace-nowrap! opacity-100! md:opacity-0! md:transition-opacity! md:duration-150! md:group-hover:opacity-100! md:group-focus-within:opacity-100!"
           >
-            <ng-container
-              [ngTemplateOutlet]="rowActionsTemplate ?? null"
-              [ngTemplateOutletContext]="{ $implicit: row }"
-            ></ng-container>
+            <button mat-icon-button [matMenuTriggerFor]="rowActionsMenu" (click)="$event.stopPropagation()" aria-label="Mais ações">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #rowActionsMenu="matMenu">
+              <ng-container
+                [ngTemplateOutlet]="rowActionsTemplate ?? null"
+                [ngTemplateOutletContext]="{ $implicit: row }"
+              ></ng-container>
+            </mat-menu>
           </td>
         </ng-container>
       }

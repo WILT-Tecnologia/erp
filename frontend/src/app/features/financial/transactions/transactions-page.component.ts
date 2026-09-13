@@ -3,7 +3,7 @@ import { Component, inject, type OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DataGridComponent } from '../../../shared/components/data-grid/data-grid.component';
@@ -22,7 +22,7 @@ const STATUS_LABELS: Record<TransactionStatus, string> = {
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule],
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
   providers: [DatePipe],
   templateUrl: './transactions-page.component.html',
 })

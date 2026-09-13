@@ -6,7 +6,7 @@
     [style.width.px]="sidenavWidthPx()"
     class="sidebar! bg-surface! rounded! transition-[width,transform]! duration-300! ease-[cubic-bezier(0.25,0.8,0.25,1)]! max-w-[80vw]!"
   >
-    <app-sidebar [collapsed]="collapsed()" (linkClick)="closeMobileMenu()"></app-sidebar>
+    <app-sidebar [collapsed]="collapsed() && !isHandset()" (linkClick)="closeMobileMenu()"></app-sidebar>
   </mat-sidenav>
 
   <mat-sidenav-content
