@@ -82,4 +82,15 @@
       button-color: #ffffff,
     ));
   }
+
+  // No tema escuro, o outline-variant padrão gerado pelo mat.theme() (tom 30 da
+  // paleta neutral-variant, #41484d) contrasta demais contra a surface quase
+  // preta, deixando as bordas dos cards (app-card, app-stat-card, app-chart-card
+  // e o wrapper de conteúdo) muito destacadas. Aqui usamos um tom mais próximo
+  // da superfície (tom 20) só no dark, sem alterar o tema claro.
+  .dark {
+    @include mat.theme-overrides((
+      outline-variant: #2b3137,
+    ));
+  }
 }
