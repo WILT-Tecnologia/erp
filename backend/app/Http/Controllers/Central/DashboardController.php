@@ -53,12 +53,7 @@ class DashboardController extends Controller
 
         $pastDueAmount = (float) Subscription::pastDue()->sum('amount');
 
-        $growth = Organization::query()
-            ->selectRaw("to_char(created_at, 'YYYY-MM') as month, count(*) as total")
-            ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+        $growth = $this->buildOrganizationGrowth();
 
         return response()->json([
             'admins_count' => Admin::count(),
@@ -99,8 +94,7 @@ class DashboardController extends Controller
 
         $trend = [];
 
-        for ($i = 5; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i)->format('Y-m');
+        foreach ($this->lastSixMonths() as $month) {
             $trend[] = [
                 'month' => $month,
                 'revenue' => (float) ($revenueByMonth[$month] ?? 0),
@@ -109,6 +103,42 @@ class DashboardController extends Controller
         }
 
         return $trend;
+    }
+
+    /**
+     * Série mensal (últimos 6 meses) de organizações cadastradas, com
+     * zero-fill nos meses sem cadastro para manter o mesmo eixo temporal
+     * do gráfico de Receita x Churn.
+     */
+    private function buildOrganizationGrowth(): array
+    {
+        $countByMonth = Organization::query()
+            ->selectRaw("to_char(created_at, 'YYYY-MM') as month, count(*) as total")
+            ->where('created_at', '>=', Carbon::now()->subMonths(6)->startOfMonth())
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        $growth = [];
+
+        foreach ($this->lastSixMonths() as $month) {
+            $growth[] = [
+                'month' => $month,
+                'total' => (int) ($countByMonth[$month] ?? 0),
+            ];
+        }
+
+        return $growth;
+    }
+
+    /**
+     * Os últimos 6 meses (incluindo o atual), no formato 'Y-m', em ordem
+     * cronológica.
+     */
+    private function lastSixMonths(): array
+    {
+        return collect(range(5, 0))
+            ->map(fn (int $i) => Carbon::now()->subMonths($i)->format('Y-m'))
+            ->all();
     }
 
     /**
