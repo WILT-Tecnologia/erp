@@ -1,0 +1,36 @@
+<app-modal [modalTitle]="'Domínios de ' + data.organization.name" width="900px" (closed)="close()">
+  <app-data-grid [columns]="columns" [data]="domains()" [loading]="loading()" emptyMessage="Nenhum domínio encontrado.">
+    <button
+      gridToolbarActions
+      mat-flat-button
+      color="primary"
+      class="w-full! md:w-auto! self-start!"
+      (click)="openCreate()"
+    >
+      <mat-icon>add</mat-icon>
+      Novo domínio
+    </button>
+    <ng-template #rowActions let-row>
+      <button mat-menu-item (click)="openEdit(row)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      @if (!row.is_verified) {
+        <button mat-menu-item (click)="verify(row)">
+          <mat-icon>verified</mat-icon>
+          <span>Verificar</span>
+        </button>
+      }
+      @if (!row.is_primary) {
+        <button mat-menu-item (click)="makePrimary(row)">
+          <mat-icon>star</mat-icon>
+          <span>Tornar primário</span>
+        </button>
+      }
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</app-modal>

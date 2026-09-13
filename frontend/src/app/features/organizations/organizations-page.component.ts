@@ -11,6 +11,7 @@ import { type GridColumn, type GridPage } from '../../shared/components/data-gri
 import { NotificationService } from '../../shared/services/notification.service';
 import { type Organization } from './organization.model';
 import { OrganizationService } from './organization.service';
+import { OrganizationDomainsDialogComponent } from './organization-domains-dialog.component';
 import { OrganizationFormDialogComponent } from './organization-form-dialog.component';
 import { OrganizationSubscriptionsDialogComponent } from './organization-subscriptions-dialog.component';
 
@@ -85,6 +86,10 @@ export class OrganizationsPageComponent implements OnInit {
 
   openSubscriptions(organization: Organization): void {
     this.dialog.open(OrganizationSubscriptionsDialogComponent, { width: '900px', data: { organization } });
+  }
+
+  openDomains(organization: Organization): void {
+    this.dialog.open(OrganizationDomainsDialogComponent, { width: '900px', data: { organization } });
   }
 
   openCreate(): void {

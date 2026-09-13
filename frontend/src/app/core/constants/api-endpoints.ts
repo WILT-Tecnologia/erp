@@ -24,6 +24,11 @@ export const API_ENDPOINTS = {
     force: (id: string | number) => `/admin/organizations/${id}/force`,
     subscriptions: (id: string | number) => `/admin/organizations/${id}/subscriptions`,
     tenantContext: (slug: string) => `/admin/organizations/${slug}/tenant-context`,
+    domains: (id: string | number) => `/admin/organizations/${id}/domains`,
+    domain: (id: string | number, domainId: string) => `/admin/organizations/${id}/domains/${domainId}`,
+    verifyDomain: (id: string | number, domainId: string) => `/admin/organizations/${id}/domains/${domainId}/verify`,
+    makeDomainPrimary: (id: string | number, domainId: string) =>
+      `/admin/organizations/${id}/domains/${domainId}/make-primary`,
   },
   plans: '/admin/plans',
   permissionDefinitions: '/admin/permission-definitions',

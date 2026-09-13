@@ -11,7 +11,13 @@
     (searchChange)="onSearch($event)"
     persistKey="organizations"
   >
-    <button gridToolbarActions mat-flat-button color="primary" class="w-full! md:w-auto! self-start!" (click)="openCreate()">
+    <button
+      gridToolbarActions
+      mat-flat-button
+      color="primary"
+      class="w-full! md:w-auto! self-start!"
+      (click)="openCreate()"
+    >
       <mat-icon>add</mat-icon>
       Nova organização
     </button>
@@ -23,6 +29,10 @@
       <button mat-menu-item (click)="openSubscriptions(row)">
         <mat-icon>receipt_long</mat-icon>
         <span>Ver assinaturas</span>
+      </button>
+      <button mat-menu-item (click)="openDomains(row)">
+        <mat-icon>dns</mat-icon>
+        <span>Ver domínios</span>
       </button>
       <button mat-menu-item (click)="openEdit(row)">
         <mat-icon>edit</mat-icon>

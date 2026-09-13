@@ -2,6 +2,8 @@ import { type AbstractControl, type ValidationErrors } from '@angular/forms';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+export const DOMAIN_PATTERN = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/i;
+
 export const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,32}$/;
 export const PASSWORD_HINT =
   'Mínimo de 8 e máximo de 32 caracteres, com letra maiúscula, minúscula, número e caractere especial.';
