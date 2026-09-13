@@ -9,7 +9,7 @@ return [
     'tenant_model' => \App\Models\Central\Organization::class,
     'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
 
-    'domain_model' => Domain::class,
+    'domain_model' => \App\Models\Central\Domain::class,
 
     /**
      * Base domain used to build each organization's default tenant domain

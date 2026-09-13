@@ -6,6 +6,7 @@ use App\Http\Controllers\Central\ContactActivityController;
 use App\Http\Controllers\Central\ContactController;
 use App\Http\Controllers\Central\ContactTaskController;
 use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\DomainController;
 use App\Http\Controllers\Central\MenuRouteController;
 use App\Http\Controllers\Central\OrganizationController;
 use App\Http\Controllers\Central\PermissionDefinitionController;
@@ -41,6 +42,13 @@ Route::prefix('admin')->group(function () {
         Route::post('organizations/{organization}/suspend', [OrganizationController::class, 'suspend']);
         Route::post('organizations/{organization}/activate', [OrganizationController::class, 'activate']);
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
+
+        Route::prefix('organizations/{organization:slug}')->group(function () {
+            Route::apiResource('domains', DomainController::class);
+            Route::post('domains/{domain}/verify', [DomainController::class, 'verify']);
+            Route::post('domains/{domain}/make-primary', [DomainController::class, 'makePrimary']);
+        });
+
         Route::get('organizations/{organization}/subscriptions', [OrganizationController::class, 'subscriptions']);
 
         // Admin-to-tenant access: super admins entering a specific
