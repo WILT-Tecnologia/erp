@@ -4,13 +4,16 @@ import { MatCardModule } from '@angular/material/card';
 import { type ChartConfiguration } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
+import { CardComponent } from '../../shared/components/card/card.component';
+import { ChartCardComponent } from '../../shared/components/chart-card/chart-card.component';
+import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import { type DashboardStats } from './dashboard.model';
 import { DashboardService } from './dashboard.service';
 
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
-  imports: [CommonModule, MatCardModule, BaseChartDirective],
+  imports: [CommonModule, MatCardModule, BaseChartDirective, StatCardComponent, ChartCardComponent, CardComponent],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {
