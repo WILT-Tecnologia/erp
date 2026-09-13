@@ -26,6 +26,8 @@ export const API_ENDPOINTS = {
     tenantContext: (slug: string) => `/admin/organizations/${slug}/tenant-context`,
     domains: (id: string | number) => `/admin/organizations/${id}/domains`,
     domain: (id: string | number, domainId: string) => `/admin/organizations/${id}/domains/${domainId}`,
+    checkDomain: (id: string | number, domainName: string) =>
+      `/admin/organizations/${id}/domains/check-domain/${encodeURIComponent(domainName)}`,
     verifyDomain: (id: string | number, domainId: string) => `/admin/organizations/${id}/domains/${domainId}/verify`,
     makeDomainPrimary: (id: string | number, domainId: string) =>
       `/admin/organizations/${id}/domains/${domainId}/make-primary`,

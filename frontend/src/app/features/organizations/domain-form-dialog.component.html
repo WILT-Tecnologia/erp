@@ -6,8 +6,26 @@
         placeholder="minhaigreja.com.br"
         [maxLength]="255"
         [errorMessages]="domainErrorMessages"
+        [suffixIcon]="domainSuffixIcon()"
+        [suffixClass]="domainSuffixClass()"
+        [suffixTooltip]="domainSuffixTooltip()"
         formControlName="domain"
       />
+
+      <button
+        mat-stroked-button
+        type="button"
+        class="self-start!"
+        [disabled]="checkingDomain()"
+        (click)="validateDomain()"
+      >
+        @if (checkingDomain()) {
+          <mat-spinner diameter="18" class="mr-2! inline-block!" />
+        } @else {
+          <mat-icon>fact_check</mat-icon>
+        }
+        Validar domínio
+      </button>
 
       <mat-checkbox formControlName="is_primary">Definir como domínio primário</mat-checkbox>
     </div>

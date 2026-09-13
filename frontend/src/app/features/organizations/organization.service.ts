@@ -140,4 +140,10 @@ export class OrganizationService {
       )
       .pipe(map((response) => response.data));
   }
+
+  checkDomainAvailable(organizationSlug: string, domain: string): Observable<{ valid: boolean; available: boolean }> {
+    return this.http.get<{ valid: boolean; available: boolean }>(
+      `${environment.apiUrl}${API_ENDPOINTS.organizations.checkDomain(organizationSlug, domain)}`,
+    );
+  }
 }

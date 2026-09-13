@@ -7,6 +7,14 @@ export interface GridColumn<T = unknown> {
   maxWidth?: string;
   /** 'icon' renderiza o valor dentro de um <mat-icon> em vez de texto puro. */
   type?: 'text' | 'icon';
+  /** Classe aplicada ao <mat-icon> quando type === 'icon'. */
+  iconClass?: string;
+  /**
+   * Cor aplicada via [style.color] ao <mat-icon> quando type === 'icon'.
+   * Usa estilo inline (em vez de classe) porque o tema do Angular Material
+   * sobrescreve classes de cor do Tailwind em <mat-icon>.
+   */
+  iconColor?: string;
   /** Renderiza a célula com fonte monoespaçada (JetBrains Mono). */
   monospace?: boolean;
 }

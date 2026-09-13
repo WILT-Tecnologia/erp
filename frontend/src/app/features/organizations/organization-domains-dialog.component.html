@@ -1,4 +1,4 @@
-<app-modal [modalTitle]="'Domínios de ' + data.organization.name" width="900px" (closed)="close()">
+<app-modal [modalTitle]="'Domínios de ' + data.organization.name" (closed)="close()">
   <app-data-grid [columns]="columns" [data]="domains()" [loading]="loading()" emptyMessage="Nenhum domínio encontrado.">
     <button
       gridToolbarActions

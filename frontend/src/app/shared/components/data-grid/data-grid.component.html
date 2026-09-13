@@ -19,7 +19,7 @@
               padding: 3px;
             "
           >
-            <mat-icon style="font-size: 18px; width: 18px; height: 18px;">close</mat-icon>
+            <mat-icon style="font-size: 18px; width: 18px; height: 18px">close</mat-icon>
           </button>
         }
       </div>
@@ -70,7 +70,9 @@
             [class.font-mono]="column.monospace"
           >
             @if (column.type === 'icon' && valueFor(row, column)) {
-              <mat-icon>{{ valueFor(row, column) }}</mat-icon>
+              <mat-icon [class]="column.iconClass" [style.color]="column.iconColor">{{
+                valueFor(row, column)
+              }}</mat-icon>
             } @else {
               {{ valueFor(row, column) || '—' }}
             }
@@ -86,7 +88,12 @@
             *matCellDef="let row"
             class="text-right! w-[1%]! whitespace-nowrap! opacity-100! md:opacity-0! md:transition-opacity! md:duration-150! md:group-hover:opacity-100! md:group-focus-within:opacity-100!"
           >
-            <button mat-icon-button [matMenuTriggerFor]="rowActionsMenu" (click)="$event.stopPropagation()" aria-label="Mais ações">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="rowActionsMenu"
+              (click)="$event.stopPropagation()"
+              aria-label="Mais ações"
+            >
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #rowActionsMenu="matMenu">

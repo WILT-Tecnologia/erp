@@ -41,7 +41,13 @@ export class OrganizationDomainsDialogComponent implements OnInit {
 
   readonly columns: GridColumn<Domain>[] = [
     { key: 'domain', label: 'Domínio', monospace: true },
-    { key: 'is_primary', label: 'Primário', valueFn: (row) => (row.is_primary ? 'Sim' : 'Não') },
+    {
+      key: 'is_primary',
+      label: 'Primário',
+      type: 'icon',
+      iconColor: '#f59e0b',
+      valueFn: (row) => (row.is_primary ? 'star' : ''),
+    },
     { key: 'is_verified', label: 'Verificado', valueFn: (row) => (row.is_verified ? 'Sim' : 'Não') },
     { key: 'verified_at', label: 'Verificado em', valueFn: (row) => formatDate(row.verified_at) },
     { key: 'created_at', label: 'Criado em', valueFn: (row) => formatDate(row.created_at ?? null) },
@@ -63,7 +69,10 @@ export class OrganizationDomainsDialogComponent implements OnInit {
   }
 
   openCreate(): void {
-    const ref = this.dialog.open(DomainFormDialogComponent, { width: '480px', data: {} });
+    const ref = this.dialog.open(DomainFormDialogComponent, {
+      width: '480px',
+      data: { organization: this.data.organization },
+    });
     ref.afterClosed().subscribe((value) => {
       if (!value) return;
       this.organizationService.createDomain(this.data.organization.slug, value).subscribe({
@@ -77,7 +86,10 @@ export class OrganizationDomainsDialogComponent implements OnInit {
   }
 
   openEdit(domain: Domain): void {
-    const ref = this.dialog.open(DomainFormDialogComponent, { width: '480px', data: { domain } });
+    const ref = this.dialog.open(DomainFormDialogComponent, {
+      width: '480px',
+      data: { organization: this.data.organization, domain },
+    });
     ref.afterClosed().subscribe((value) => {
       if (!value) return;
       this.organizationService.updateDomain(this.data.organization.slug, domain.id, value).subscribe({
