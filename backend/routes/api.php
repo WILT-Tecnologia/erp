@@ -44,6 +44,7 @@ Route::prefix('admin')->group(function () {
         Route::delete('organizations/{organization}/force', [OrganizationController::class, 'forceDelete']);
 
         Route::prefix('organizations/{organization:slug}')->group(function () {
+            Route::get('domains/check-domain/{domainName}', [DomainController::class, 'checkDomain']);
             Route::apiResource('domains', DomainController::class);
             Route::post('domains/{domain}/verify', [DomainController::class, 'verify']);
             Route::post('domains/{domain}/make-primary', [DomainController::class, 'makePrimary']);
