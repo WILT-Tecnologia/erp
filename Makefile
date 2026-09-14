@@ -3,13 +3,14 @@
 BACKEND_SERVICES := db redis app nginx pgadmin
 FRONTEND_SERVICES := frontend
 
-.PHONY: help up up-backend up-frontend down down-backend down-frontend stop logs logs-backend logs-frontend ps build seed seed-class
+.PHONY: help up up-backend up-frontend down down-backend down-frontend stop logs logs-backend logs-frontend ps build seed seed-class migrate-tenants
 
 help: ## Lista os comandos disponíveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-up: ## Sobe backend + frontend juntos (comando único)
-	docker compose up -d
+up: ## Sobe backend + frontend juntos (comando único) e acompanha os logs
+	docker compose up -d --build
+	docker compose logs -f --tail=100
 
 up-backend: ## Sobe somente o backend (db, redis, app, nginx, pgadmin)
 	docker compose up -d $(BACKEND_SERVICES)
@@ -51,3 +52,6 @@ seed: ## Roda todos os seeders do backend (DatabaseSeeder)
 
 seed-class: ## Roda um seeder específico (uso: make seed-class class=Central/AdminSeeder)
 	docker compose exec app php artisan db:seed --class=Database\\Seeders\\$(subst /,\\,$(class)) --force
+
+migrate-tenants: ## Roda as migrações pendentes em todos os tenants
+	docker compose exec app php artisan tenants:migrate --force

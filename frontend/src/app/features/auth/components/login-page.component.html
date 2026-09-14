@@ -1,0 +1,60 @@
+<div class="flex items-center justify-center min-h-screen bg-surface-variant/70 px-4">
+  <mat-card class="w-full max-w-2xl p-8 sm:p-10" appearance="outlined">
+    <div class="flex flex-col items-center text-center gap-3 mb-2">
+      <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary">
+        <mat-icon class="w-7! h-7! text-3xl!">apps</mat-icon>
+      </div>
+      <div>
+        <h1 class="text-2xl font-semibold text-on-surface">ERP Sistema</h1>
+        <p class="text-sm text-on-surface/60 mt-1">
+          @if (isTenantHost) {
+            Acesse sua organização
+          } @else {
+            Acesse o painel administrativo com sua conta de administrador
+          }
+        </p>
+      </div>
+    </div>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-5 mt-6">
+        <app-email-field
+          label="E-mail"
+          placeholder="jhondoe@empresa.com"
+          formControlName="email"
+          [errorMessages]="{ required: () => 'Informe seu e-mail.' }"
+          [disabled]="submitting()"
+        />
+
+        <app-text-field
+          label="Senha"
+          [type]="hidePassword() ? 'password' : 'text'"
+          placeholder="•••••••••••••••"
+          formControlName="password"
+          [disabled]="submitting()"
+          [hint]="passwordHint"
+          [errorMessages]="{ required: () => 'Informe sua senha.', pattern: () => passwordHint }"
+        >
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+            (click)="hidePassword.set(!hidePassword())"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        </app-text-field>
+
+        <button mat-flat-button color="primary" type="submit" [disabled]="submitting()" class="mt-2! h-11! text-base!">
+          <div class="flex justify-center items-center gap-2">
+            @if (submitting()) {
+              <mat-spinner diameter="15" class="inline-block"></mat-spinner>
+            }
+            Acessar
+          </div>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

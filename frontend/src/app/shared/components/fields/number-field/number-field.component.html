@@ -1,0 +1,22 @@
+<mat-form-field class="w-full!" [appearance]="appearance()" [floatLabel]="floatLabel()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    matInput
+    type="number"
+    [formControl]="innerControl"
+    [placeholder]="placeholder()"
+    [min]="min() ?? null"
+    [max]="max() ?? null"
+    [step]="step()"
+    [required]="isRequired"
+    (blur)="onTouched()"
+  />
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

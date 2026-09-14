@@ -14,6 +14,28 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class DomainController extends Controller
 {
+    /**
+     * Verifica se um domínio é válido e está disponível (globalmente único).
+     */
+    public function checkDomain(Organization $organization, string $domainName): JsonResponse
+    {
+        $normalized = strtolower(trim($domainName));
+
+        $validated = validator([
+            'domain' => $normalized,
+        ], [
+            'domain' => ['required', 'string', 'max:255', 'regex:/^([a-z0-9]([a-z0-9\-]*[a-z0-9])?\.)+[a-z]{2,}$/i'],
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['valid' => false, 'available' => false]);
+        }
+
+        $available = ! Domain::where('domain', $normalized)->exists();
+
+        return response()->json(['valid' => true, 'available' => $available]);
+    }
+
     public function index(Organization $organization): AnonymousResourceCollection
     {
         $domains = $organization->domains()
@@ -61,7 +83,7 @@ class DomainController extends Controller
         $domain->delete();
 
         if ($wasPrimary) {
-            $next = $organization->domains()->orderBy('createad_at')->first();
+            $next = $organization->domains()->orderBy('created_at')->first();
             $next?->update(['is_primary' => true]);
         }
 
@@ -74,7 +96,7 @@ class DomainController extends Controller
      */
     public function verify(Organization $organization, Domain $domain): DomainResource
     {
-        abort_if($domain->tenan_id !== $organization->id, 404);
+        abort_if($domain->tenant_id !== $organization->id, 404);
 
         $domain->update([
             'is_verified' => true,

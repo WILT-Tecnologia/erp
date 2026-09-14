@@ -1,0 +1,35 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar igreja' : 'Nova igreja'" (closed)="cancel()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-field label="Nome" formControlName="name" />
+      <app-text-field label="Código" formControlName="code" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-field label="Cidade" formControlName="city" />
+      <app-text-field label="UF" [maxLength]="2" formControlName="state" />
+    </div>
+
+    <app-text-field label="Pastor responsável" formControlName="pastor" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-text-field label="Telefone" formControlName="phone" />
+      <app-email-field label="E-mail" formControlName="email" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-number-field label="Membros" [min]="0" formControlName="members" />
+      <app-number-field label="Congregações" [min]="0" formControlName="congregations" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-date-field label="Fundação" formControlName="founded_at" />
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+    </div>
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

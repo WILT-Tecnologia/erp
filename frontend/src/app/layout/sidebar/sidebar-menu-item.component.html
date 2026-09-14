@@ -1,0 +1,93 @@
+@if (disabled()) {
+  <mat-list-item
+    class="w-full! text-on-surface/90! opacity-40! cursor-not-allowed!"
+    matTooltip="Selecione uma organização para acessar"
+    matTooltipPosition="right"
+    [class]="isActive() ? 'bg-primary/10! text-primary!' : ''"
+  >
+    <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+    @if (!collapsed()) {
+      <span matListItemTitle class="truncate!">{{ item().title }}</span>
+    }
+  </mat-list-item>
+} @else if (hasChildren()) {
+  @if (collapsed()) {
+    <button
+      mat-list-item
+      [matMenuTriggerFor]="childMenu"
+      class="relative! flex! items-center! w-full! text-on-surface/90! hover:bg-surface-container-high! rounded! hover:rounded!"
+      [matTooltip]="item().title"
+      [class]="isActive() ? 'bg-primary/10! text-primary!' : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+      <mat-icon class="absolute! leading-none! text-on-surface/50!"> chevron_right </mat-icon>
+    </button>
+
+    <mat-menu #childMenu="matMenu">
+      @for (child of item().children; track child.title) {
+        <app-sidebar-flyout-item
+          [item]="child"
+          [basePath]="basePath()"
+          [organizationId]="organizationId()"
+          (linkClick)="linkClick.emit()"
+        />
+      }
+    </mat-menu>
+  } @else {
+    <button
+      mat-list-item
+      type="button"
+      class="w-full! rounded! hover:rounded!"
+      [class]="isActive() ? 'bg-primary/10! text-primary!' : ''"
+      (click)="toggle($event)"
+    >
+      <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+      <span matListItemTitle class="flex! justify-items-start! items-start!">{{ item().title }}</span>
+      <mat-icon
+        matListItemMeta
+        class="transition-transform! duration-300!"
+        style="font-family: 'Material Icons'"
+        [class.rotate-180]="expanded()"
+      >
+        expand_more
+      </mat-icon>
+    </button>
+
+    <div
+      class="grid! min-h-0! transition-[grid-template-rows]! duration-300! ease-in-out! rounded hover:rounded!"
+      [style.grid-template-rows]="expanded() ? '1fr' : '0fr'"
+    >
+      <div class="min-h-0! overflow-hidden!">
+        <mat-nav-list
+          class="flex! flex-col! w-full! pl-4! bg-black/5! rounded! border-l-4! border-solid! border-primary/50! hover:rounded!"
+        >
+          @for (child of item().children; track child.title) {
+            <app-sidebar-menu-item
+              [item]="child"
+              [basePath]="basePath()"
+              [organizationId]="organizationId()"
+              [collapsed]="false"
+              (linkClick)="linkClick.emit()"
+            />
+          }
+        </mat-nav-list>
+      </div>
+    </div>
+  }
+} @else {
+  <a
+    mat-list-item
+    [routerLink]="link()"
+    routerLinkActive="bg-primary/20! text-primary! border-dashed! border! border-primary! rounded! hover:rounded!"
+    class="w-full!"
+    [matTooltip]="collapsed() ? item().title : ''"
+    matTooltipPosition="right"
+    (click)="linkClick.emit()"
+  >
+    <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+    @if (!collapsed()) {
+      <span matListItemTitle>{{ item().title }}</span>
+    }
+  </a>
+}

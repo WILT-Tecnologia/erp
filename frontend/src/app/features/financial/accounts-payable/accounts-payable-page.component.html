@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-4">
+  <app-data-grid
+    [columns]="columns"
+    [data]="transactions()"
+    [loading]="loading()"
+    persistKey="financial-accounts-payable"
+  >
+    <button gridToolbarActions mat-flat-button color="primary" class="w-full! md:w-auto! self-start!" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Nova conta a pagar
+    </button>
+    <ng-template #rowActions let-row>
+      <button mat-menu-item (click)="openEdit(row)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>

@@ -1,0 +1,9 @@
+<app-modal [modalTitle]="'Assinaturas de ' + data.organization.name" width="900px" (closed)="close()">
+  <app-data-grid
+    [columns]="columns"
+    [data]="subscriptions()"
+    [loading]="loading()"
+    [showActionsColumn]="false"
+    emptyMessage="Nenhuma assinatura encontrada."
+  />
+</app-modal>

@@ -1,0 +1,33 @@
+<div class="flex flex-col gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Total de usuários</div>
+      <div class="text-2xl font-semibold">{{ users().length }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Usuários ativos</div>
+      <div class="text-2xl font-semibold">{{ activeCount() }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Usuários suspensos</div>
+      <div class="text-2xl font-semibold">{{ suspendedCount() }}</div>
+    </mat-card>
+  </div>
+
+  <app-data-grid [columns]="columns" [data]="users()" [loading]="loading()" persistKey="tenant-users">
+    <button gridToolbarActions mat-flat-button color="primary" class="w-full! md:w-auto! self-start!" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Novo usuário
+    </button>
+    <ng-template #rowActions let-row>
+      <button mat-menu-item (click)="openEdit(row)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>

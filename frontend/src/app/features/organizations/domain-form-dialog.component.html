@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar domínio' : 'Novo domínio'" width="480px" (closed)="cancel()">
+    <div class="flex flex-col gap-4 pt-4">
+      <app-text-field
+        label="Domínio"
+        placeholder="minhaigreja.com.br"
+        [maxLength]="255"
+        [errorMessages]="domainErrorMessages"
+        [suffixIcon]="domainSuffixIcon()"
+        [suffixClass]="domainSuffixClass()"
+        [suffixTooltip]="domainSuffixTooltip()"
+        formControlName="domain"
+      />
+
+      <button
+        mat-stroked-button
+        type="button"
+        class="self-start!"
+        [disabled]="checkingDomain()"
+        (click)="validateDomain()"
+      >
+        @if (checkingDomain()) {
+          <mat-spinner diameter="18" class="mr-2! inline-block!" />
+        } @else {
+          <mat-icon>fact_check</mat-icon>
+        }
+        Validar domínio
+      </button>
+
+      <mat-checkbox formControlName="is_primary">Definir como domínio primário</mat-checkbox>
+    </div>
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

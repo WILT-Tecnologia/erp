@@ -1,0 +1,41 @@
+<div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-medium">Dashboard</h1>
+
+  @if (stats(); as s) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <app-stat-card
+        label="Organizações"
+        [value]="s.organizations_count"
+        [subtitle]="s.active_organizations_count + ' ativas'"
+      />
+      <app-stat-card label="Admins" [value]="s.admins_count" />
+      <app-stat-card label="Receita do mês" [value]="s.revenue_month | currency: 'BRL'" />
+      <app-stat-card label="Saldo do mês" [value]="s.balance_month | currency: 'BRL'" />
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <app-chart-card title="Crescimento de organizações">
+        <canvas baseChart type="line" [data]="growthChartData"></canvas>
+      </app-chart-card>
+      <app-chart-card title="Receita x Churn">
+        <canvas baseChart type="bar" [data]="revenueChartData"></canvas>
+      </app-chart-card>
+    </div>
+
+    <app-card>
+      <h2 class="mb-4 font-medium">Atividades recentes</h2>
+      <ul class="flex flex-col gap-2">
+        @for (activity of s.recent_activities; track activity.id) {
+          <li class="text-sm flex justify-between border-b border-outline/50 pb-2">
+            <span>{{ activity.text }}</span>
+            <span class="text-on-surface/50">{{ activity.created_at | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+          </li>
+        } @empty {
+          <li class="text-sm text-on-surface/50">Nenhuma atividade recente.</li>
+        }
+      </ul>
+    </app-card>
+  } @else if (!loading()) {
+    <p class="text-on-surface/60">Não foi possível carregar as estatísticas.</p>
+  }
+</div>

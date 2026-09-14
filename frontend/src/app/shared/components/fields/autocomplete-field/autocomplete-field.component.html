@@ -1,0 +1,24 @@
+<mat-form-field class="w-full!" [appearance]="appearance()" [floatLabel]="floatLabel()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    matInput
+    [formControl]="searchControl"
+    [matAutocomplete]="auto"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    (blur)="onTouched()"
+  />
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="handleOptionSelected($event)">
+    @for (option of filteredOptions(); track option.value) {
+      <mat-option [value]="option.value">{{ option.label }}</mat-option>
+    }
+  </mat-autocomplete>
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

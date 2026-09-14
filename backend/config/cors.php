@@ -21,7 +21,12 @@ return [
 
     'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:3000')),
 
-    'allowed_origins_patterns' => [],
+    // Permite qualquer subdomínio de organização (ex.: igreja-central.localhost:4200)
+    // sob o domínio base configurado em TENANT_BASE_DOMAIN, usado para identificar
+    // o tenant automaticamente via InitializeTenancyByDomain.
+    'allowed_origins_patterns' => [
+        '#^https?://[a-z0-9-]+\.' . preg_quote(env('TENANT_BASE_DOMAIN', 'localhost'), '#') . '(:\d+)?$#',
+    ],
 
     'allowed_headers' => ['*'],
 

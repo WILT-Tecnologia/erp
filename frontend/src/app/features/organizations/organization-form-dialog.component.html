@@ -1,0 +1,139 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar organização' : 'Nova organização'" (closed)="cancel()">
+    <mat-tab-group class="min-w-0 md:min-w-105" mat-stretch-tabs="false">
+      <mat-tab label="Geral">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Identificação</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-text-field label="Nome" [maxLength]="150" formControlName="name" />
+              <app-text-field
+                label="Slug"
+                placeholder="igreja-central"
+                hint="Apenas letras minúsculas, números e hífen."
+                [errorMessages]="slugErrorMessages"
+                formControlName="slug"
+                [suffixIcon]="slugSuffixIcon()"
+                [suffixClass]="slugSuffixClass()"
+                [suffixTooltip]="slugSuffixTooltip()"
+              />
+            </div>
+
+            <app-text-field label="Razão social" [maxLength]="150" formControlName="legal_name" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-masked-field label="CNPJ" mask="00.000.000/0000-00" formControlName="cnpj" />
+              <app-date-field label="Data de fundação" formControlName="founded_at" />
+            </div>
+          </div>
+
+          <div class="box-form">
+            <h3 class="box-form-title">Sobre a organização</h3>
+            <app-description-field label="Descrição" [rows]="3" [maxLength]="255" formControlName="description" />
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Contato">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form">
+            <h3 class="box-form-title">Canais de contato</h3>
+            <app-email-field label="E-mail" formControlName="email" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-masked-field label="Telefone" mask="(00) 0000-0000||(00) 00000-0000" formControlName="phone" />
+              <app-masked-field
+                label="WhatsApp"
+                mask="(00) 0000-0000||(00) 00000-0000"
+                [errorMessages]="whatsappErrorMessages"
+                formControlName="whatsapp"
+              />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Acesso" [disabled]="isEdit">
+        @if (!isEdit) {
+          <div class="flex flex-col gap-4 pt-4">
+            <div class="box-form">
+              <h3 class="box-form-title">Primeiro usuário do tenant</h3>
+              <div formGroupName="first_user" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <app-text-field label="Nome" formControlName="name" />
+                <app-email-field label="E-mail" formControlName="email" />
+                <app-text-field
+                  label="Senha"
+                  [type]="hidePassword() ? 'password' : 'text'"
+                  formControlName="password"
+                  [hint]="passwordHint"
+                  [errorMessages]="{ pattern: () => passwordHint }"
+                >
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                    [attr.aria-label]="hidePassword() ? 'Mostrar senha' : 'Ocultar senha'"
+                    (click)="hidePassword.set(!hidePassword())"
+                  >
+                    <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                </app-text-field>
+                <app-text-field
+                  label="Confirmar senha"
+                  [type]="hidePasswordConfirmation() ? 'password' : 'text'"
+                  [errorMessages]="passwordConfirmationErrorMessages"
+                  formControlName="password_confirmation"
+                >
+                  <button
+                    mat-icon-button
+                    matSuffix
+                    type="button"
+                    [attr.aria-label]="hidePasswordConfirmation() ? 'Mostrar senha' : 'Ocultar senha'"
+                    (click)="hidePasswordConfirmation.set(!hidePasswordConfirmation())"
+                  >
+                    <mat-icon>{{ hidePasswordConfirmation() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                  </button>
+                </app-text-field>
+              </div>
+            </div>
+          </div>
+        }
+      </mat-tab>
+
+      <mat-tab label="Configurações">
+        <div class="flex flex-col gap-4 pt-4">
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Situação</h3>
+            <div class="grid grid-cols-1 gap-4">
+              <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+            </div>
+          </div>
+          <div class="box-form border-b border-b-outline-variant">
+            <h3 class="box-form-title">Localização</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-autocomplete-field label="Idioma" [options]="languageOptions" formControlName="language" />
+              <app-autocomplete-field label="Fuso horário" [options]="timezoneOptions" formControlName="timezone" />
+            </div>
+          </div>
+
+          <div class="box-form">
+            <h3 class="box-form-title">Vínculos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <app-select-field label="Plano" [options]="planOptions" formControlName="plan_id" />
+              <app-select-field
+                label="Administrador responsável"
+                [options]="adminOptions"
+                formControlName="owner_admin_id"
+              />
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

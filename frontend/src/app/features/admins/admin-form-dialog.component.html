@@ -1,0 +1,23 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar administrador' : 'Novo administrador'" (closed)="cancel()">
+    <app-text-field label="Nome" formControlName="name" />
+    <app-email-field label="E-mail" formControlName="email" />
+    <app-text-field
+      [label]="isEdit ? 'Nova senha (opcional)' : 'Senha'"
+      type="password"
+      formControlName="password"
+      [hint]="passwordHint"
+      [errorMessages]="{ pattern: () => passwordHint }"
+    />
+    <app-text-field
+      label="Confirmar senha"
+      type="password"
+      formControlName="password_confirmation"
+      [errorMessages]="{ mismatch: () => 'As senhas não coincidem.' }"
+    />
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

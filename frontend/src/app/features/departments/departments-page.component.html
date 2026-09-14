@@ -1,0 +1,33 @@
+<div class="flex flex-col gap-4">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Total de departamentos</div>
+      <div class="text-2xl font-semibold">{{ departments().length }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Departamentos ativos</div>
+      <div class="text-2xl font-semibold">{{ activeCount() }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Membros envolvidos</div>
+      <div class="text-2xl font-semibold">{{ totalMembers() }}</div>
+    </mat-card>
+  </div>
+
+  <app-data-grid [columns]="columns" [data]="departments()" [loading]="loading()" persistKey="departments">
+    <button gridToolbarActions mat-flat-button color="primary" class="w-full! md:w-auto! self-start!" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Novo departamento
+    </button>
+    <ng-template #rowActions let-row>
+      <button mat-menu-item (click)="openEdit(row)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>

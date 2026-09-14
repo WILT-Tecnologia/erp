@@ -1,29 +1,32 @@
 <?php
 
-// declare(strict_types=1);
+declare(strict_types=1);
 
-// use Illuminate\Support\Facades\Route;
-// use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-// use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Controllers\Tenant\AuthController;
+use App\Http\Controllers\Tenant\MenuRouteController;
+use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 /*
 |--------------------------------------------------------------------------
 | Tenant Routes
 |--------------------------------------------------------------------------
 |
-// | Here you can register the tenant routes for your application.
-| These routes are loaded by the TenantRouteServiceProvider.
-|
-| Feel free to customize them however you want. Good luck!
+| Estas rotas são carregadas com o middleware "api" e prefixo "api/tenant"
+| (ver bootstrap/app.php). A identificação do tenant é feita pelo domínio
+| da requisição (InitializeTenancyByDomain), que resolve a organization
+| cujo domínio (tabela domains) bate com o Host da requisição e inicializa
+| a conexão com o schema/DB correspondente antes de qualquer query — sem
+| exigir que o cliente informe o tenant explicitamente.
 |
 */
 
-// Route::middleware([
-//     'web',
-//     InitializeTenancyByDomain::class,
-//     PreventAccessFromCentralDomains::class,
-// ])->group(function () {
-//     Route::get('/', function () {
-//         return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-//     });
-// });
+Route::middleware([InitializeTenancyByDomain::class])->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+
+    Route::middleware('auth:api-tenant')->group(function () {
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('menu-routes/tree', [MenuRouteController::class, 'tree']);
+    });
+});

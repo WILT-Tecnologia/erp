@@ -1,0 +1,67 @@
+<div class="flex flex-col gap-4">
+  <div>
+    <h1 class="text-2xl font-medium">Dashboard Financeiro</h1>
+    <p class="text-sm text-on-surface/60">Visão geral de receitas, despesas e contas da organização</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Receitas do mês</div>
+      <div class="text-2xl font-semibold">{{ totalReceitas() | currency: 'BRL' }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Despesas do mês</div>
+      <div class="text-2xl font-semibold">{{ totalDespesas() | currency: 'BRL' }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">Saldo</div>
+      <div class="text-2xl font-semibold">{{ saldo() | currency: 'BRL' }}</div>
+    </mat-card>
+    <mat-card class="p-4">
+      <div class="text-sm text-on-surface/60">A receber / pagar</div>
+      <div class="text-2xl font-semibold">{{ pendente() | currency: 'BRL' }}</div>
+    </mat-card>
+  </div>
+
+  <mat-card class="p-4">
+    <h2 class="mb-4 font-medium">Receita x Despesa — 2026</h2>
+    <canvas baseChart type="bar" [data]="trendChartData"></canvas>
+  </mat-card>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <mat-card class="p-4 lg:col-span-2">
+      <h2 class="mb-3 font-medium">Últimas transações</h2>
+      <ul class="flex flex-col gap-2">
+        @for (t of recentTransactions(); track t.id) {
+          <li class="flex items-center justify-between border-b border-outline/50 pb-2 text-sm">
+            <div>
+              <div class="font-medium">{{ t.description }}</div>
+              <div class="text-xs text-on-surface/60">{{ t.category }} · {{ t.date | date: 'dd/MM/yyyy' }}</div>
+            </div>
+            <div class="text-right">
+              <div class="font-semibold" [class.text-error]="t.type === 'despesa'">
+                {{ t.type === 'receita' ? '+ ' : '- ' }}{{ t.amount | currency: 'BRL' }}
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </mat-card>
+
+    <mat-card class="p-4">
+      <h2 class="mb-3 font-medium">Contas bancárias</h2>
+      <div class="flex flex-col gap-2">
+        @for (a of accounts(); track a.id) {
+          <div class="rounded-md border border-outline/50 p-3">
+            <div class="text-sm font-medium">{{ a.name }}</div>
+            <div class="text-lg font-semibold">{{ a.balance | currency: 'BRL' }}</div>
+          </div>
+        }
+      </div>
+      <div class="mt-3 rounded-md bg-primary/10 p-3">
+        <div class="text-xs text-primary">Total consolidado</div>
+        <div class="text-lg font-semibold text-primary">{{ totalAccounts() | currency: 'BRL' }}</div>
+      </div>
+    </mat-card>
+  </div>
+</div>

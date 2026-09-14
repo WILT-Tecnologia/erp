@@ -12,6 +12,12 @@ return [
     'domain_model' => \App\Models\Central\Domain::class,
 
     /**
+     * Base domain used to build each organization's default tenant domain
+     * (`{slug}.{base_domain}`) when one isn't explicitly provided.
+     */
+    'base_domain' => env('TENANT_BASE_DOMAIN', 'localhost'),
+
+    /**
      * The list of domains hosting your central app.
      *
      * Only relevant if you're using the domain or subdomain identification middleware.
@@ -46,7 +52,7 @@ return [
             'sqlite' => Stancl\Tenancy\TenantDatabaseManagers\SQLiteDatabaseManager::class,
             // 'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
             // 'mariadb' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
-            'pgsql' => Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLSchemaManager::class,
+            'pgsql' => \App\Tenancy\PostgreSQLSchemaManager::class,
         ],
     ],
 
@@ -166,11 +172,11 @@ return [
      * Parameters used by the tenants:seed command.
      */
     'seeder_parameters' => [
-        '--class' => 'DatabaseSeeder', // root seeder class
+        '--class' => 'Database\\Seeders\\Tenant\\DatabaseSeeder', // root seeder class
         // '--force' => true, // This needs to be true to seed tenant databases in production
     ],
 
     'identification_middleware' => [
-        \App\Http\Middleware\InitializeTenancyByHeader::class,
+        \Stancl\Tenancy\Middleware\InitializeTenancyByDomain::class,
     ],
 ];

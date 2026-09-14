@@ -9,12 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Admin extends Authenticatable
 {
     use HasApiTokens;
     use HasFactory;
     use HasUuids;
+    use LogsActivity;
     use Notifiable;
     use SoftDeletes;
 
@@ -30,6 +33,7 @@ class Admin extends Authenticatable
         'locale',
         'timezone',
         'status',
+        'is_super_admin',
         'settings',
     ];
 
@@ -46,12 +50,22 @@ class Admin extends Authenticatable
             'password' => 'hashed',
             'settings' => 'array',
             'status' => AdminStatus::class,
+            'is_super_admin' => 'boolean',
         ];
     }
 
     protected static function newFactory(): \Database\Factories\Central\AdminFactory
     {
         return \Database\Factories\Central\AdminFactory::new();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'status', 'is_super_admin'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('admin');
     }
 
     public function ownedOrganizations(): HasMany

@@ -1,0 +1,122 @@
+import { Component, inject, type OnInit, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { DataGridComponent } from '../../shared/components/data-grid/data-grid.component';
+import { type GridColumn, type GridPage } from '../../shared/components/data-grid/data-grid.types';
+import { NotificationService } from '../../shared/services/notification.service';
+import { type MenuRoute } from './menu-route.model';
+import { MenuRouteService } from './menu-route.service';
+import { MenuRouteFormDialogComponent } from './menu-route-form-dialog.component';
+
+@Component({
+  selector: 'app-menu-routes-page',
+  standalone: true,
+  imports: [DataGridComponent, MatButtonModule, MatDialogModule, MatIconModule, MatMenuModule],
+  templateUrl: './menu-routes-page.component.html',
+})
+export class MenuRoutesPageComponent implements OnInit {
+  private readonly menuRouteService = inject(MenuRouteService);
+  private readonly dialog = inject(MatDialog);
+  private readonly notification = inject(NotificationService);
+
+  readonly menuRoutes = signal<MenuRoute[]>([]);
+  readonly loading = signal(false);
+  readonly totalCount = signal(0);
+  readonly pageIndex = signal(0);
+  readonly pageSize = signal(10);
+  private searchTerm = '';
+
+  readonly columns: GridColumn<MenuRoute>[] = [
+    { key: 'is_active', label: 'Ativo', valueFn: (row) => (row.is_active ? 'Sim' : 'Não') },
+    { key: 'title', label: 'Título', sortable: true },
+    { key: 'slug', label: 'Rota', sortable: true, valueFn: (row) => row.slug ?? '—', monospace: true },
+    { key: 'category', label: 'Categoria', sortable: true },
+    { key: 'icon', label: 'Ícone', type: 'icon', valueFn: (row) => row.icon ?? '' },
+    { key: 'parent', label: 'Item pai', valueFn: (row) => row.parent?.title ?? '—' },
+    { key: 'sort_order', label: 'Ordem', sortable: true },
+  ];
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
+    this.loading.set(true);
+    this.menuRouteService
+      .list({ page: this.pageIndex() + 1, perPage: this.pageSize(), search: this.searchTerm || undefined })
+      .subscribe({
+        next: (response) => {
+          this.menuRoutes.set(response.data);
+          this.totalCount.set(response.meta?.total ?? response.data.length);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
+  }
+
+  onPage(event: GridPage): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.load();
+  }
+
+  onSearch(term: string): void {
+    this.searchTerm = term;
+    this.pageIndex.set(0);
+    this.load();
+  }
+
+  openCreate(): void {
+    const ref = this.dialog.open(MenuRouteFormDialogComponent, {
+      width: '480px',
+      data: { menuRoutes: this.menuRoutes() },
+    });
+    ref.afterClosed().subscribe((value) => {
+      if (!value) return;
+      this.menuRouteService.create(value).subscribe({
+        next: () => {
+          this.notification.success('Item de menu criado com sucesso.');
+          this.load();
+        },
+        error: () => this.notification.error('Erro ao criar item de menu.'),
+      });
+    });
+  }
+
+  openEdit(menuRoute: MenuRoute): void {
+    const ref = this.dialog.open(MenuRouteFormDialogComponent, {
+      width: '480px',
+      data: { menuRoute, menuRoutes: this.menuRoutes() },
+    });
+    ref.afterClosed().subscribe((value) => {
+      if (!value) return;
+      this.menuRouteService.update(menuRoute.id, value).subscribe({
+        next: () => {
+          this.notification.success('Item de menu atualizado com sucesso.');
+          this.load();
+        },
+        error: () => this.notification.error('Erro ao atualizar item de menu.'),
+      });
+    });
+  }
+
+  remove(menuRoute: MenuRoute): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: { title: 'Excluir item de menu', message: `Deseja excluir "${menuRoute.title}"?` },
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) return;
+      this.menuRouteService.delete(menuRoute.id).subscribe({
+        next: () => {
+          this.notification.success('Item de menu excluído.');
+          this.load();
+        },
+        error: () => this.notification.error('Erro ao excluir item de menu.'),
+      });
+    });
+  }
+}

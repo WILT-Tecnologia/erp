@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
@@ -28,7 +27,7 @@ class TenancyServiceProvider extends ServiceProvider
                 JobPipeline::make([
                     Jobs\CreateDatabase::class,
                     Jobs\MigrateDatabase::class,
-                    // Jobs\SeedDatabase::class,
+                    Jobs\SeedDatabase::class,
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
@@ -70,11 +69,7 @@ class TenancyServiceProvider extends ServiceProvider
             // Tenancy events
             Events\InitializingTenancy::class => [],
             Events\TenancyInitialized::class => [
-                JobPipeline::make([
-                    \Stancl\Tenancy\Bootstrappers\DatabaseTenancyBootstrapper::class,
-                ])->send(fn (\Stancl\Tenancy\Events\TenancyInitialized $event) => $event->tenancy)
-                  ->shouldBeQueued(false)
-                  ->toListener(),
+                BootstrapTenancy::class,
                 function () {
                     app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
                 },
@@ -108,7 +103,6 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
-        $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
     }
@@ -124,16 +118,6 @@ class TenancyServiceProvider extends ServiceProvider
                 Event::listen($event, $listener);
             }
         }
-    }
-
-    protected function mapRoutes()
-    {
-        $this->app->booted(function () {
-            if (file_exists(base_path('routes/tenant.php'))) {
-                Route::namespace(static::$controllerNamespace)
-                    ->group(base_path('routes/tenant.php'));
-            }
-        });
     }
 
     protected function makeTenancyMiddlewareHighestPriority()

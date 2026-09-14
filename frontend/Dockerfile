@@ -1,32 +1,24 @@
-FROM node:20-alpine AS base
+# syntax=docker/dockerfile:1
 
-FROM base AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
-COPY package-lock.json package.json ./
-RUN npm install --ignore-scripts
+COPY frontend/package*.json ./
+COPY docker/frontend/entrypoint.dev.sh /usr/local/bin/entrypoint.dev.sh
+RUN chmod +x /usr/local/bin/entrypoint.dev.sh
+RUN npm install
+ENTRYPOINT ["entrypoint.dev.sh"]
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+FROM deps AS dev
+EXPOSE 4200
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "4200", "--poll", "1000", "--allowed-hosts"]
+
+FROM deps AS build
+COPY frontend/ .
 RUN npm run build
 
-FROM base AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
-EXPOSE 3000
-
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-CMD ["node", "server.js"]
+COPY --from=build /app/dist/frontend ./dist/frontend
+EXPOSE 4000
+CMD ["node", "dist/frontend/server/server.mjs"]

@@ -1,0 +1,55 @@
+<div class="flex flex-col gap-4">
+  <app-data-grid
+    [columns]="columns"
+    [data]="organizations()"
+    [loading]="loading()"
+    [serverSide]="true"
+    [totalCount]="totalCount()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    (page)="onPage($event)"
+    (searchChange)="onSearch($event)"
+    persistKey="organizations"
+  >
+    <button
+      gridToolbarActions
+      mat-flat-button
+      color="primary"
+      class="w-full! md:w-auto! self-start!"
+      (click)="openCreate()"
+    >
+      <mat-icon>add</mat-icon>
+      Nova organização
+    </button>
+    <ng-template #rowActions let-row>
+      <button mat-menu-item (click)="openDashboard(row)">
+        <mat-icon>dashboard</mat-icon>
+        <span>Acessar</span>
+      </button>
+      <button mat-menu-item (click)="openSubscriptions(row)">
+        <mat-icon>receipt_long</mat-icon>
+        <span>Assinaturas</span>
+      </button>
+      <button mat-menu-item (click)="openDomains(row)">
+        <mat-icon>dns</mat-icon>
+        <span>Domínios</span>
+      </button>
+      <button mat-menu-item (click)="openEdit(row)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      <button mat-menu-item (click)="toggleStatus(row)">
+        <mat-icon>{{ row.status === 'suspended' ? 'play_arrow' : 'pause' }}</mat-icon>
+        <span>{{ row.status === 'suspended' ? 'Reativar' : 'Suspender' }}</span>
+      </button>
+      <button mat-menu-item (click)="remove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete</mat-icon>
+        <span>Excluir</span>
+      </button>
+      <button mat-menu-item (click)="forceRemove(row)" class="text-error!" [style.color]="'var(--mat-sys-error)'">
+        <mat-icon [style.color]="'var(--mat-sys-error)'">delete_forever</mat-icon>
+        <span>Excluir permanentemente</span>
+      </button>
+    </ng-template>
+  </app-data-grid>
+</div>

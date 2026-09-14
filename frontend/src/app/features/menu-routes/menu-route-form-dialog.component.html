@@ -1,0 +1,35 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar item de menu' : 'Novo item de menu'" (closed)="cancel()">
+    <div class="flex flex-col gap-4">
+      <app-switch-field label="Ativo" formControlName="is_active" />
+
+      <app-text-field label="Título" formControlName="title" />
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <app-select-field label="Item pai" [options]="parentOptions" formControlName="parent_id" />
+
+        <app-text-field label="Rota (slug)" placeholder="/dashboard/admins" formControlName="slug" />
+
+        <app-text-field
+          label="Ícone"
+          placeholder="Selecionar ícone"
+          formControlName="icon"
+          [readOnly]="true"
+          [suffixIcon]="form.value.icon || 'help_outline'"
+          (click)="openIconPicker()"
+        />
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <app-text-field label="Categoria" placeholder="Administração" formControlName="category" />
+
+        <app-number-field label="Ordem" formControlName="sort_order" />
+      </div>
+    </div>
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

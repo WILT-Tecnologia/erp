@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar evento' : 'Novo evento'" (closed)="cancel()">
+    <app-text-field label="Título" placeholder="Culto de Celebração" formControlName="title" />
+
+    <div class="flex flex-col gap-3 md:flex-row">
+      <app-text-field class="flex-1" label="Igreja" placeholder="Igreja Central" formControlName="church" />
+      <app-select-field class="flex-1" label="Categoria" [options]="categoryOptions" formControlName="category" />
+    </div>
+
+    <div class="flex flex-col gap-3 md:flex-row">
+      <app-date-field class="flex-1" label="Data" formControlName="date" />
+      <app-text-field class="flex-1" label="Local" placeholder="Templo Central" formControlName="location" />
+    </div>
+
+    <div class="flex flex-col gap-3 md:flex-row">
+      <app-number-field class="flex-1" label="Inscritos" [min]="0" formControlName="participants" />
+      <app-number-field class="flex-1" label="Capacidade" [min]="1" formControlName="capacity" />
+    </div>
+
+    <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

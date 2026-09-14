@@ -26,6 +26,7 @@ class StoreAdminRequest extends FormRequest
             'locale' => ['nullable', 'string', 'max:10'],
             'timezone' => ['nullable', 'string', 'max:60'],
             'status' => ['nullable', Rule::enum(AdminStatus::class)],
+            'is_super_admin' => ['sometimes', 'boolean'],
             'settings' => ['nullable', 'array'],
         ];
     }

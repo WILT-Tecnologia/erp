@@ -50,10 +50,15 @@ class AuthController extends Controller
 
     /**
      * Retorna o admin autenticado.
+     *
+     * Envolve a resource em `response()->json()` (em vez de devolvê-la
+     * direto do controller) para não acionar o auto-wrap padrão do Laravel
+     * em `{"data": {...}}` — o frontend espera o mesmo formato não
+     * envelopado que `login()` já devolve em `admin`.
      */
-    public function me(Request $request): AdminResource
+    public function me(Request $request): JsonResponse
     {
-        return new AdminResource($request->user());
+        return response()->json(new AdminResource($request->user()));
     }
 
     /**

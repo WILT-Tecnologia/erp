@@ -9,10 +9,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Central\StoreOrganizationRequest;
 use App\Http\Requests\Central\UpdateOrganizationRequest;
 use App\Http\Resources\Central\OrganizationResource;
+use App\Http\Resources\Central\SubscriptionResource;
 use App\Models\Central\Organization;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\Rules\Password;
 
 class OrganizationController extends Controller
 {
@@ -31,12 +33,36 @@ class OrganizationController extends Controller
                 $q->where('name', 'ilike', "%{$search}%")
                   ->orWhere('legal_name', 'ilike', "%{$search}%")
                   ->orWhere('slug', 'ilike', "%{$search}%")
-                  ->orWhere('cnpj', 'ilike', "%{$search}%");
+                  ->orWhere('cnpj', 'ilike', "%{$search}%")
+                  ->orWhereHas('plan', fn ($q) => $q->where('name', 'ilike', "%{$search}%"))
+                  ->orWhereHas('ownerAdmin', fn ($q) => $q->where('name', 'ilike', "%{$search}%"));
             }))
             ->orderByDesc('created_at')
             ->paginate($perPage);
 
         return OrganizationResource::collection($organizations);
+    }
+
+    /**
+     * Verifica se um slug já está em uso.
+     * Considera também organizações soft-deleted, espelhando a
+     * regra unique:organizations,slug do StoreOrganizationRequest.
+     */
+    public function checkSlug(string $slug): JsonResponse
+    {
+        $validated = validator([
+            'slug' => $slug,
+        ], [
+            'slug' => ['required', 'string', 'alpha_dash', 'max:255'],
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json(['available' => false]);
+        }
+
+        $available = ! Organization::where('slug', $slug)->exists();
+
+        return response()->json(['available' => $available]);
     }
 
     /**
@@ -46,17 +72,7 @@ class OrganizationController extends Controller
         StoreOrganizationRequest $request,
         CreateOrganizationAction $action,
     ): JsonResponse {
-        $data = $request->validated();
-
-        // Domínio é gerenciado pela tabela domains do stancl, separado
-        $domain = $data['domain'] ?? null;
-        unset($data['domain']);
-
-        $organization = $action->execute($data);
-
-        if ($domain) {
-            $organization->domains()->create(['domain' => $domain]);
-        }
+        $organization = $action->execute($request->validated());
 
         return (new OrganizationResource(
             $organization->load(['plan', 'ownerAdmin', 'domains'])
@@ -90,11 +106,27 @@ class OrganizationController extends Controller
     /**
      * Soft delete: suspende e marca como deletada.
      * O schema permanece no banco para auditoria.
+     *
+     * Bloqueado se houver congregações ou assinaturas ativas/em atraso
+     * vinculadas — o admin precisa resolver essas dependências antes.
      */
     public function destroy(
         Organization $organization,
         DeleteOrganizationAction $action,
     ): JsonResponse {
+        $congregations = $organization->congregations()->get(['congregations.id', 'congregations.name']);
+        $subscriptions = $organization->subscriptions()
+            ->whereIn('status', ['active', 'past_due', 'trialing'])
+            ->get(['subscriptions.id', 'subscriptions.status']);
+
+        if ($congregations->isNotEmpty() || $subscriptions->isNotEmpty()) {
+            return response()->json([
+                'message' => 'Esta organização possui congregações ou assinaturas vinculadas e não pode ser removida.',
+                'congregations' => $congregations,
+                'subscriptions' => $subscriptions,
+            ], 422);
+        }
+
         $action->softDelete($organization);
 
         return response()->json(null, 204);
@@ -121,6 +153,21 @@ class OrganizationController extends Controller
     }
 
     /**
+     * Lista paginada das assinaturas de uma organização.
+     */
+    public function subscriptions(Request $request, Organization $organization): AnonymousResourceCollection
+    {
+        $perPage = min((int) $request->query('per_page', 15), 100);
+
+        $subscriptions = $organization->subscriptions()
+            ->with('plan')
+            ->orderByDesc('created_at')
+            ->paginate($perPage);
+
+        return SubscriptionResource::collection($subscriptions);
+    }
+
+    /**
      * Drop definitivo: remove o schema do Postgres.
      * Endpoint perigoso — exige confirmação explícita.
      */
@@ -129,9 +176,21 @@ class OrganizationController extends Controller
         Organization $organization,
         DeleteOrganizationAction $action,
     ): JsonResponse {
-        $request->validate([
-            'confirmation' => ['required', 'string', 'in:' . $organization->slug],
+        $validator = validator($request->all(), [
+            'password' => ['required', 'string', 'current_password:api-admin', Password::defaults()],
+        ], [
+            'password.required' => 'Informe sua senha.',
+            'password.current_password' => 'Senha incorreta.',
+            'password.min' => 'A senha deve ter entre 8 e 32 caracteres.',
+            'password.max' => 'A senha deve ter entre 8 e 32 caracteres.',
+            'password.mixed' => 'A senha deve conter letras maiúsculas e minúsculas.',
+            'password.numbers' => 'A senha deve conter pelo menos um número.',
+            'password.symbols' => 'A senha deve conter pelo menos um caractere especial.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->first()], 422);
+        }
 
         $action->forceDelete($organization);
 

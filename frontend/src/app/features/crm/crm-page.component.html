@@ -1,0 +1,73 @@
+<div class="flex flex-col gap-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-3xl font-bold tracking-tight">Pipeline CRM</h1>
+      <p class="mt-1 text-on-surface-variant">{{ contacts().length }} contatos no pipeline</p>
+    </div>
+    <button mat-flat-button color="primary" [disabled]="!organizationId()" (click)="openNew()">
+      <mat-icon>add</mat-icon>
+      Novo contato
+    </button>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="flex items-center gap-3 rounded-lg border border-outline-variant p-4">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <mat-icon class="text-primary">group</mat-icon>
+      </div>
+      <div>
+        <div class="text-lg font-bold">{{ contacts().length }}</div>
+        <div class="text-xs text-on-surface-variant">Total no pipeline</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 rounded-lg border border-outline-variant p-4">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <mat-icon class="text-primary">flag</mat-icon>
+      </div>
+      <div>
+        <div class="text-lg font-bold">{{ convertidos() }}</div>
+        <div class="text-xs text-on-surface-variant">Convertidos</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 rounded-lg border border-outline-variant p-4">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <mat-icon class="text-primary">trending_up</mat-icon>
+      </div>
+      <div>
+        <div class="text-lg font-bold">{{ emProposta() }}</div>
+        <div class="text-xs text-on-surface-variant">Em proposta</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 rounded-lg border border-outline-variant p-4">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <mat-icon class="text-primary">payments</mat-icon>
+      </div>
+      <div>
+        <div class="text-lg font-bold">R$ {{ totalProposta().toLocaleString('pt-BR') }}</div>
+        <div class="text-xs text-on-surface-variant">Valor em proposta</div>
+      </div>
+    </div>
+  </div>
+
+  <mat-form-field appearance="outline" class="max-w-sm!">
+    <mat-icon matPrefix class="mr-1! text-on-surface-variant!">search</mat-icon>
+    <input matInput [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Buscar leads..." />
+  </mat-form-field>
+
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <mat-spinner diameter="32" />
+    </div>
+  } @else if (!organizationId()) {
+    <p class="py-12 text-center text-sm text-on-surface-variant">
+      Nenhuma organização disponível para exibir o pipeline.
+    </p>
+  } @else {
+    <app-kanban-board
+      [contacts]="filteredContacts()"
+      (cardClick)="openDetail($event)"
+      (stageChange)="onStageChange($event)"
+      (addNew)="openNew()"
+    />
+  }
+</div>

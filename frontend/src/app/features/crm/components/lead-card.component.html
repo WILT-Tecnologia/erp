@@ -1,0 +1,37 @@
+<button
+  type="button"
+  (click)="onClick()"
+  class="w-full rounded-lg border border-outline-variant bg-surface p-3.5 text-left transition-colors hover:border-primary hover:shadow-sm"
+>
+  <div class="mb-2 text-sm font-semibold leading-tight text-on-surface">
+    {{ contact().name }}
+  </div>
+  <div class="mb-2 text-xs text-on-surface-variant">
+    {{ contact().assignee || '—' }}
+  </div>
+
+  @if (contact().tags.length > 0) {
+    <div class="mb-2 flex flex-wrap gap-1">
+      @for (tag of contact().tags; track tag) {
+        <span class="rounded-full bg-surface-container px-1.5 py-0.5 text-[10px] font-medium text-on-surface-variant">
+          {{ tag }}
+        </span>
+      }
+    </div>
+  }
+
+  <div class="mt-2 flex items-center justify-between gap-2">
+    @if (contact().value > 0) {
+      <span class="text-sm font-bold text-secondary">
+        R$ {{ formatCurrency(contact().value) }}
+      </span>
+    } @else {
+      <span class="truncate text-xs text-on-surface-variant">
+        {{ contact().email || '—' }}
+      </span>
+    }
+    <span class="shrink-0 pl-2 text-[11px] text-on-surface-variant/70">
+      {{ formatDate(contact().updated_at) }}
+    </span>
+  </div>
+</button>

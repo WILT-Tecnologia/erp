@@ -1,0 +1,38 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar membro' : 'Novo membro'" (closed)="cancel()">
+    <app-text-field label="Nome completo" formControlName="name" />
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput type="email" formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Telefone</mat-label>
+      <input matInput formControlName="phone" mask="(00) 00000-0000" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Igreja</mat-label>
+      <input matInput formControlName="church" />
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Departamento</mat-label>
+        <input matInput formControlName="department" />
+      </mat-form-field>
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data de ingresso</mat-label>
+      <input matInput type="date" formControlName="joined_at" />
+    </mat-form-field>
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

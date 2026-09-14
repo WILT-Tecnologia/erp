@@ -1,0 +1,86 @@
+<div class="flex flex-col gap-4">
+  <div>
+    <h1 class="text-2xl font-medium">Configurações</h1>
+    <p class="mt-1 text-on-surface/60">Gerencie sua conta e as preferências do sistema.</p>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Perfil">
+      <div class="flex flex-col gap-6 p-4">
+        <div class="flex items-center gap-4">
+          <div
+            class="flex size-16 items-center justify-center rounded-full bg-primary text-lg font-bold text-on-primary"
+          >
+            {{ initials() }}
+          </div>
+          <div>
+            <div class="text-lg font-medium">{{ displayName() }}</div>
+            <div class="text-on-surface/60">{{ displayEmail() }}</div>
+          </div>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()" class="flex max-w-md flex-col gap-4">
+          <h2 class="text-lg font-medium">Alterar senha</h2>
+          <app-text-field
+            label="Nova senha"
+            type="password"
+            formControlName="newPassword"
+            [hint]="passwordHint"
+            [errorMessages]="{ pattern: () => passwordHint }"
+          />
+          <app-text-field label="Confirmar senha" type="password" formControlName="confirmPassword" />
+          <div>
+            <button mat-flat-button color="primary" type="submit">Atualizar senha</button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Notificações">
+      <div class="flex max-w-md flex-col gap-4 p-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium">Notificações por e-mail</div>
+            <div class="text-sm text-on-surface/60">Receber alertas importantes por e-mail.</div>
+          </div>
+          <mat-slide-toggle
+            [checked]="emailNotifications()"
+            (change)="toggleEmailNotifications($event)"
+          ></mat-slide-toggle>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="font-medium">Notificações no navegador</div>
+            <div class="text-sm text-on-surface/60">Exibir notificações push no navegador.</div>
+          </div>
+          <mat-slide-toggle
+            [checked]="browserNotifications()"
+            (change)="toggleBrowserNotifications($event)"
+          ></mat-slide-toggle>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Preferências">
+      <div class="flex max-w-md flex-col gap-4 p-4">
+        <mat-form-field appearance="outline">
+          <mat-label>Tema</mat-label>
+          <mat-select [value]="theme()" (selectionChange)="setTheme($event.value)">
+            <mat-option value="light">Claro</mat-option>
+            <mat-option value="dark">Escuro</mat-option>
+            <mat-option value="system">Sistema</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Idioma</mat-label>
+          <mat-select [value]="language()" (selectionChange)="setLanguage($event.value)">
+            <mat-option value="pt-BR">Português (Brasil)</mat-option>
+            <mat-option value="en-US">English</mat-option>
+            <mat-option value="es-ES">Español</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

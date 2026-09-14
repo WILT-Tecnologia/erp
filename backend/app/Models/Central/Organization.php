@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Override;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
@@ -21,6 +23,7 @@ class Organization extends BaseTenant implements TenantWithDatabase
     use HasDomains;
     use HasFactory;
     use HasUuids;
+    use LogsActivity;
     use SoftDeletes;
 
     protected $table = 'organizations';
@@ -104,11 +107,27 @@ class Organization extends BaseTenant implements TenantWithDatabase
         return $this->hasMany(Subscription::class);
      }
 
+     public function congregations(): HasMany
+     {
+        return $this->hasMany(Congregation::class);
+     }
+
      /* ---------- Scopes ---------- */
 
      public function scopeActive($query)
      {
         return $query->where('status', OrganizationStatus::Active);
+     }
+
+     /* ---------- Audit log ---------- */
+
+     public function getActivitylogOptions(): LogOptions
+     {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'slug', 'status', 'plan_id', 'owner_admin_id'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('organization');
      }
 
      /* ---------- Route binding por slug ---------- */

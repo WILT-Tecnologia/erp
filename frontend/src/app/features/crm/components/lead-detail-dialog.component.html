@@ -1,0 +1,176 @@
+<app-modal (closed)="close()">
+  <div modal-header class="flex flex-wrap items-center gap-2">
+    <span
+      class="rounded-full px-2 py-0.5 text-xs font-semibold text-white"
+      [style.background-color]="currentStage().colorVar"
+    >
+      {{ currentStage().label }}
+    </span>
+    @if (contact().value > 0) {
+      <span class="text-sm font-bold text-secondary">
+        R$ {{ formatCurrency(contact().value) }}
+      </span>
+    }
+    <span class="block w-full text-xl font-semibold">{{ contact().name }}</span>
+    <span class="block w-full text-sm font-normal text-on-surface-variant">
+      Responsável: {{ contact().assignee || '—' }}
+    </span>
+  </div>
+
+  <mat-tab-group class="min-w-0 md:min-w-[420px]">
+    <mat-tab label="Informações">
+      <div class="flex flex-col gap-4 pt-4">
+        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div class="rounded-lg border border-outline-variant bg-surface-container p-3">
+            <div class="mb-1 flex items-center gap-1.5 text-xs text-on-surface-variant">
+              <mat-icon class="h-3.5! w-3.5! text-sm!">mail</mat-icon>
+              E-mail
+            </div>
+            <div class="truncate text-sm font-medium">{{ contact().email || '—' }}</div>
+          </div>
+          <div class="rounded-lg border border-outline-variant bg-surface-container p-3">
+            <div class="mb-1 flex items-center gap-1.5 text-xs text-on-surface-variant">
+              <mat-icon class="h-3.5! w-3.5! text-sm!">call</mat-icon>
+              Telefone
+            </div>
+            <div class="text-sm font-medium">{{ contact().phone || '—' }}</div>
+          </div>
+        </div>
+
+        @if (contact().tags.length > 0) {
+          <div>
+            <div class="mb-2 text-xs font-semibold uppercase tracking-wide text-on-surface-variant">Tags</div>
+            <div class="flex flex-wrap gap-1.5">
+              @for (tag of contact().tags; track tag) {
+                <span class="flex items-center gap-1 rounded-full border border-outline-variant px-2 py-0.5 text-xs">
+                  <mat-icon class="h-3! w-3! text-xs!">sell</mat-icon>
+                  {{ tag }}
+                </span>
+              }
+            </div>
+          </div>
+        }
+
+        <div>
+          <div class="mb-2 text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
+            Atualizar estágio
+          </div>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-select [value]="contact().status" (selectionChange)="changeStage($event.value)">
+              @for (stage of stages; track stage.id) {
+                <mat-option [value]="stage.id">{{ stage.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div>
+          <div class="mb-2 text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
+            Anotações
+          </div>
+          <mat-form-field appearance="outline" class="w-full">
+            <textarea
+              matInput
+              rows="4"
+              [ngModel]="note()"
+              (ngModelChange)="note.set($event)"
+              placeholder="Adicione uma nota sobre este contato..."
+            ></textarea>
+          </mat-form-field>
+          <button mat-flat-button color="primary" [disabled]="saving()" (click)="saveNote()">Salvar nota</button>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Atividades">
+      <div class="flex flex-col gap-4 pt-4">
+        <div class="flex gap-2">
+          <mat-form-field appearance="outline" class="flex-1">
+            <input
+              matInput
+              placeholder="Registrar uma atividade..."
+              [ngModel]="newActivityText()"
+              (ngModelChange)="newActivityText.set($event)"
+              (keydown.enter)="addActivity()"
+            />
+          </mat-form-field>
+          <button mat-icon-button [disabled]="!newActivityText().trim()" (click)="addActivity()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        @if (contact().activities.length === 0) {
+          <p class="py-6 text-center text-sm text-on-surface-variant">Nenhuma atividade registrada ainda.</p>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (activity of contact().activities; track activity.id) {
+              <div class="flex gap-3">
+                <div class="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <mat-icon class="h-3.5! w-3.5! text-sm! text-primary">forum</mat-icon>
+                </div>
+                <div>
+                  <div class="text-sm">{{ activity.text }}</div>
+                  <div class="mt-0.5 text-xs text-on-surface-variant">
+                    {{ formatDateTime(activity.occurred_at) }}
+                    @if (activity.user) {
+                      · {{ activity.user }}
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Tarefas">
+      <div class="flex flex-col gap-4 pt-4">
+        <div class="flex gap-2">
+          <mat-form-field appearance="outline" class="flex-1">
+            <input
+              matInput
+              placeholder="Nova tarefa..."
+              [ngModel]="newTaskLabel()"
+              (ngModelChange)="newTaskLabel.set($event)"
+              (keydown.enter)="addTask()"
+            />
+          </mat-form-field>
+          <button mat-icon-button [disabled]="!newTaskLabel().trim()" (click)="addTask()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        @if (contact().tasks.length === 0) {
+          <p class="py-6 text-center text-sm text-on-surface-variant">Nenhuma tarefa pendente.</p>
+        } @else {
+          <div class="flex flex-col gap-2">
+            @for (task of contact().tasks; track task.id) {
+              <button
+                type="button"
+                (click)="toggleTask(task)"
+                class="flex w-full items-center gap-3 rounded-lg border border-outline-variant bg-surface-container p-3 text-left"
+              >
+                @if (task.done) {
+                  <mat-icon class="text-secondary">check_box</mat-icon>
+                } @else {
+                  <mat-icon class="text-on-surface-variant">check_box_outline_blank</mat-icon>
+                }
+                <div class="flex-1 text-sm" [class.line-through]="task.done" [class.text-on-surface-variant]="task.done">
+                  {{ task.label }}
+                </div>
+                @if (task.due_date) {
+                  <div class="text-xs text-on-surface-variant">{{ formatDate(task.due_date) }}</div>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div modal-footer class="flex gap-2">
+    <button mat-button (click)="close()">Fechar</button>
+  </div>
+</app-modal>

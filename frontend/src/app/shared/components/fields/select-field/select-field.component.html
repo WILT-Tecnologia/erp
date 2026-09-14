@@ -1,0 +1,23 @@
+<mat-form-field class="w-full!" [appearance]="appearance()" [floatLabel]="floatLabel()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <mat-select
+    [formControl]="innerControl"
+    [multiple]="multiple()"
+    [compareWith]="compareWith()"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    (blur)="onTouched()"
+  >
+    @for (option of options(); track option.value) {
+      <mat-option [value]="option.value">{{ option.label }}</mat-option>
+    }
+  </mat-select>
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

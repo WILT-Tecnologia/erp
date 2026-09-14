@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
             \Database\Seeders\Central\PlanSeeder::class,
             \Database\Seeders\Central\OrganizationSeeder::class,
             \Database\Seeders\Central\DomainSeeder::class,
+            \Database\Seeders\Central\MenuRouteSeeder::class,
+            \Database\Seeders\Central\CongregationSeeder::class,
+            \Database\Seeders\Central\SubscriptionSeeder::class,
+            \Database\Seeders\Central\ContactSeeder::class,
         ]);
     }
 }

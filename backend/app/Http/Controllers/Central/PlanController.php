@@ -66,12 +66,17 @@ class PlanController extends Controller
     /**
      * Soft delete de um plano.
      *
-     * ⚠️ Bloqueado se houver subscriptions vinculadas (validação será adicionada
-     * na Fase 1.5 quando a tabela subscriptions existir).
+     * Bloqueado se houver organizações vinculadas a este plano.
      */
     public function destroy(Plan $plan): JsonResponse
     {
-        // TODO: na Fase 1.5, validar se há subscriptions ativas vinculadas
+        if ($plan->organizations()->exists()) {
+            return response()->json([
+                'message' => 'Este plano está vinculado a uma ou mais organizações e não pode ser removido.',
+                'organizations' => $plan->organizations()->get(['organizations.id', 'organizations.name']),
+            ], 422);
+        }
+
         $plan->delete();
 
         return response()->json(null, 204);

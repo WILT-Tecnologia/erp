@@ -1,0 +1,175 @@
+/* You can add global styles to this file, and also import other style files */
+
+/*
+ * Establishes cascade layer order explicitly: the `angular-material` layer
+ * (declared in material-theme.scss, which loads before this file) must sort
+ * before Tailwind's own layers so its unlayered-by-default global reset
+ * (`*:not(mat-icon) { margin: 0; padding: 0; ... }`) doesn't win over
+ * Tailwind utilities regardless of specificity — unlayered rules always beat
+ * layered ones for normal-priority declarations, so both sides need a layer.
+ */
+@layer angular-material, theme, base, components, utilities;
+
+@import 'tailwindcss';
+
+/*
+ * Class-based dark variant: ThemeService toggles `.dark` on <html>, so
+ * `dark:` utilities react to the app's theme setting instead of only the
+ * OS-level `prefers-color-scheme` media query.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Bridge Angular Material's system CSS variables (--mat-sys-*, set by
+ * @include mat.theme() in material-theme.scss) into Tailwind v4 theme
+ * tokens, so utility classes and Material components share one palette.
+ */
+@theme {
+  --color-primary: var(--mat-sys-primary);
+  --color-on-primary: var(--mat-sys-on-primary);
+  --color-primary-container: var(--mat-sys-primary-container);
+  --color-on-primary-container: var(--mat-sys-on-primary-container);
+  --color-inverse-primary: var(--mat-sys-inverse-primary);
+  --color-primary-fixed: var(--mat-sys-primary-fixed);
+  --color-primary-fixed-dim: var(--mat-sys-primary-fixed-dim);
+  --color-on-primary-fixed: var(--mat-sys-on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--mat-sys-on-primary-fixed-variant);
+
+  --color-secondary: var(--mat-sys-secondary);
+  --color-on-secondary: var(--mat-sys-on-secondary);
+  --color-secondary-container: var(--mat-sys-secondary-container);
+  --color-on-secondary-container: var(--mat-sys-on-secondary-container);
+  --color-secondary-fixed: var(--mat-sys-secondary-fixed);
+  --color-secondary-fixed-dim: var(--mat-sys-secondary-fixed-dim);
+  --color-on-secondary-fixed: var(--mat-sys-on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--mat-sys-on-secondary-fixed-variant);
+
+  --color-tertiary: var(--mat-sys-tertiary);
+  --color-on-tertiary: var(--mat-sys-on-tertiary);
+  --color-tertiary-container: var(--mat-sys-tertiary-container);
+  --color-on-tertiary-container: var(--mat-sys-on-tertiary-container);
+  --color-tertiary-fixed: var(--mat-sys-tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--mat-sys-tertiary-fixed-dim);
+  --color-on-tertiary-fixed: var(--mat-sys-on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--mat-sys-on-tertiary-fixed-variant);
+
+  --color-error: var(--mat-sys-error);
+  --color-on-error: var(--mat-sys-on-error);
+  --color-error-container: var(--mat-sys-error-container);
+  --color-on-error-container: var(--mat-sys-on-error-container);
+
+  --color-background: var(--mat-sys-background);
+  --color-on-background: var(--mat-sys-on-background);
+
+  --color-surface: var(--mat-sys-surface);
+  --color-on-surface: var(--mat-sys-on-surface);
+  --color-surface-dim: var(--mat-sys-surface-dim);
+  --color-surface-bright: var(--mat-sys-surface-bright);
+  --color-surface-tint: var(--mat-sys-surface-tint);
+  --color-surface-variant: var(--mat-sys-surface-variant);
+  --color-on-surface-variant: var(--mat-sys-on-surface-variant);
+  --color-surface-container-lowest: var(--mat-sys-surface-container-lowest);
+  --color-surface-container-low: var(--mat-sys-surface-container-low);
+  --color-surface-container: var(--mat-sys-surface-container);
+  --color-surface-container-high: var(--mat-sys-surface-container-high);
+  --color-surface-container-highest: var(--mat-sys-surface-container-highest);
+  --color-inverse-surface: var(--mat-sys-inverse-surface);
+  --color-inverse-on-surface: var(--mat-sys-inverse-on-surface);
+
+  --color-outline: var(--mat-sys-outline);
+  --color-outline-variant: var(--mat-sys-outline-variant);
+  --color-shadow: var(--mat-sys-shadow);
+  --color-scrim: var(--mat-sys-scrim);
+
+  --font-sans: var(--mat-sys-body-medium-font, Poppins, Roboto, sans-serif);
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@utility sidebar {
+  box-shadow:
+    0 2px 10px -1px light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)),
+    0 0 6px 2px light-dark(rgba(196, 196, 196, 1), rgba(0, 0, 0, 0.6));
+}
+
+@layer components {
+  .box-form {
+    @apply flex flex-col gap-4 p-4;
+  }
+
+  .box-form-title {
+    @apply text-base mb-5 font-semibold text-on-surface-variant;
+  }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-outline) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--mat-sys-outline);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mat-sys-on-surface-variant);
+}
+
+/*
+ * Evita que a surface do Material vire um segundo container de scroll,
+ * competindo com o overflow interno do app-modal (que já controla o
+ * scroll apenas na área de conteúdo, mantendo header/footer fixos).
+ */
+.mat-mdc-dialog-container,
+.mat-mdc-dialog-inner-container,
+.mat-mdc-dialog-surface {
+  min-height: 0;
+}
+
+.mat-mdc-dialog-surface {
+  overflow: hidden !important;
+}
+
+/*
+ * Remove o limite padrão de 560px do Material (--mat-dialog-container-max-width)
+ * apenas quando o app-modal está em fullscreen, permitindo que updateSize('95vw', ...)
+ * realmente tenha efeito na largura.
+ */
+.app-modal-fullscreen.cdk-overlay-pane {
+  max-width: none !important;
+}
+
+/*
+ * Mesma remoção do teto de 560px do Material, agora para o estado mobile
+ * do app-modal (90vw/99vw), já que em telas mobile largas (perto de 767px)
+ * 90vw pode ultrapassar 560px.
+ */
+.app-modal-mobile.cdk-overlay-pane {
+  max-width: none !important;
+}
+
+/*
+ * Anima a expansão/redução do modal ao alternar o fullscreen. A classe só é
+ * adicionada pelo Modal a partir da primeira alternância manual (nunca na
+ * abertura inicial do diálogo), para não animar o tamanho inicial.
+ */
+.app-modal-animated.cdk-overlay-pane {
+  transition:
+    width 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal-animated.cdk-overlay-pane {
+    transition: none;
+  }
+}

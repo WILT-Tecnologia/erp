@@ -1,0 +1,16 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal modalTitle="Novo Lead / Contato" (closed)="cancel()">
+    <app-text-field label="Nome / Empresa" placeholder="Ex: Família Silva" formControlName="name" />
+    <app-email-field label="E-mail" placeholder="email@exemplo.com" formControlName="email" />
+    <app-text-field label="Telefone" placeholder="(00) 00000-0000" formControlName="phone" />
+    <app-select-field label="Estágio inicial" [options]="stageOptions" formControlName="status" />
+    <app-select-field label="Responsável" [options]="assigneeOptions" formControlName="assignee" />
+    <app-number-field label="Valor potencial (R$)" [min]="0" formControlName="value" />
+    <app-text-field label="Tags (separadas por vírgula)" placeholder="Ex: Família, Jovem, Evangelização" formControlName="tags" />
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Criar Lead</button>
+    </div>
+  </app-modal>
+</form>

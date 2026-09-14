@@ -37,7 +37,15 @@ class AdminController extends Controller
      */
     public function store(StoreAdminRequest $request): AdminResource
     {
-        $admin = Admin::create($request->validated());
+        $data = $request->validated();
+
+        abort_if(
+            array_key_exists('is_super_admin', $data) && ! $request->user()->is_super_admin,
+            403,
+            'Apenas super administradores podem conceder este privilégio.'
+        );
+
+        $admin = Admin::create($data);
 
         return new AdminResource($admin);
     }
@@ -55,7 +63,15 @@ class AdminController extends Controller
      */
     public function update(UpdateAdminRequest $request, Admin $admin): AdminResource
     {
-        $admin->update($request->validated());
+        $data = $request->validated();
+
+        abort_if(
+            array_key_exists('is_super_admin', $data) && ! $request->user()->is_super_admin,
+            403,
+            'Apenas super administradores podem conceder este privilégio.'
+        );
+
+        $admin->update($data);
 
         return new AdminResource($admin->fresh());
     }

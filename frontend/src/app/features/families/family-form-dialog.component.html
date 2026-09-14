@@ -1,0 +1,19 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <app-modal [modalTitle]="isEdit ? 'Editar família' : 'Nova família'" (closed)="cancel()">
+    <app-text-field label="Nome da família" formControlName="name" />
+    <app-text-field label="Responsável" formControlName="leader" />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-number-field label="Nº de membros" [min]="1" formControlName="members" />
+      <app-select-field label="Status" [options]="statusOptions" formControlName="status" />
+    </div>
+
+    <app-text-field label="Igreja" formControlName="church" />
+    <app-text-field label="Endereço" formControlName="address" />
+
+    <div modal-footer class="flex gap-2">
+      <button mat-button color="warn" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit">Salvar</button>
+    </div>
+  </app-modal>
+</form>

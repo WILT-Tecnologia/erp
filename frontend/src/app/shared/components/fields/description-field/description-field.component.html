@@ -1,0 +1,33 @@
+<mat-form-field class="w-full!" [appearance]="appearance()" [floatLabel]="floatLabel()">
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  @if (autosize()) {
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      [cdkAutosizeMinRows]="rows()"
+      [formControl]="innerControl"
+      [placeholder]="placeholder()"
+      [attr.maxlength]="maxLength() ?? null"
+      [required]="isRequired"
+      (blur)="onTouched()"
+    ></textarea>
+  } @else {
+    <textarea
+      matInput
+      [rows]="rows()"
+      [formControl]="innerControl"
+      [placeholder]="placeholder()"
+      [attr.maxlength]="maxLength() ?? null"
+      [required]="isRequired"
+      (blur)="onTouched()"
+    ></textarea>
+  }
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

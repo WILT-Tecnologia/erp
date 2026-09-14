@@ -1,0 +1,46 @@
+<div cdkDropListGroup class="flex gap-3 overflow-x-auto pb-4">
+  @for (stage of stages; track stage.id) {
+    <div class="w-64 shrink-0">
+      <div
+        class="mb-2.5 flex items-center justify-between rounded-lg px-3.5 py-2.5"
+        [style.background-color]="'color-mix(in srgb, ' + stage.colorVar + ' 12%, transparent)'"
+      >
+        <div class="flex items-center gap-2">
+          <span class="size-2 rounded-full" [style.background-color]="stage.colorVar"></span>
+          <span class="text-sm font-semibold" [style.color]="stage.colorVar">{{ stage.label }}</span>
+        </div>
+        <span
+          class="rounded-full px-1.5 py-0.5 text-xs font-bold"
+          [style.background-color]="'color-mix(in srgb, ' + stage.colorVar + ' 20%, transparent)'"
+          [style.color]="stage.colorVar"
+        >
+          {{ count(stage.id) }}
+        </span>
+      </div>
+
+      <div
+        [id]="listId(stage.id)"
+        cdkDropList
+        [cdkDropListData]="columns()[stage.id]"
+        [cdkDropListConnectedTo]="listIds()"
+        (cdkDropListDropped)="drop($event, stage.id)"
+        class="flex min-h-16 flex-1 flex-col gap-2 rounded-lg p-1 transition-colors"
+      >
+        @for (contact of columns()[stage.id]; track contact.id) {
+          <div cdkDrag [cdkDragData]="contact">
+            <app-lead-card [contact]="contact" (cardClick)="onCardClick($event)" />
+          </div>
+        }
+
+        <button
+          type="button"
+          (click)="addNew.emit()"
+          class="flex items-center gap-2 rounded-lg border border-dashed border-outline-variant p-2.5 text-sm text-on-surface-variant transition-colors hover:border-primary hover:text-primary"
+        >
+          <mat-icon class="h-4! w-4! text-base!">add</mat-icon>
+          Adicionar
+        </button>
+      </div>
+    </div>
+  }
+</div>

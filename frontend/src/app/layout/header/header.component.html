@@ -1,0 +1,54 @@
+<mat-toolbar class="relative! z-10! bg-surface! sidebar! gap-4! px-4! h-16! shrink-0!">
+  @if (showMenuButton()) {
+    <button mat-icon-button (click)="menuToggle.emit()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  } @else {
+    <button
+      mat-icon-button
+      (click)="collapseToggle.emit()"
+      [matTooltip]="collapsed() ? 'Expandir menu' : 'Recolher menu'"
+    >
+      <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+  }
+
+  <nav class="flex! items-center! gap-1! text-sm! flex-1! min-w-0! overflow-hidden!">
+    @for (crumb of breadcrumbService.breadcrumbs(); track $index; let last = $last) {
+      @if (!last && crumb.link) {
+        <a [routerLink]="crumb.link" class="text-on-surface/60! hover:text-on-surface! truncate!">{{ crumb.label }}</a>
+        <mat-icon class="text-base! text-on-surface/40">chevron_right</mat-icon>
+      } @else {
+        <span class="text-on-surface! font-medium! truncate!">{{ crumb.label }}</span>
+      }
+    }
+  </nav>
+
+  @if (authService.admin()?.is_super_admin) {
+    <app-tenant-selector></app-tenant-selector>
+  }
+
+  <button
+    mat-icon-button
+    (click)="toggleTheme()"
+    [matTooltip]="themeService.resolvedScheme() === 'dark' ? 'Escuro' : 'Claro'"
+  >
+    <mat-icon>{{ themeService.resolvedScheme() === 'dark' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+  </button>
+
+  <button mat-icon-button [matMenuTriggerFor]="userMenu">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+
+  <mat-menu #userMenu="matMenu">
+    <div class="px-4 py-2">
+      <div class="text-sm font-medium text-on-surface">{{ principalName() }}</div>
+      <div class="text-xs text-on-surface/60">{{ principalEmail() }}</div>
+    </div>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon class="text-error!" [style.color]="'var(--mat-sys-error)'">logout</mat-icon>
+      <span class="text-error!" [style.color]="'var(--mat-sys-error)'">Sair</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

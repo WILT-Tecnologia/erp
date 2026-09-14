@@ -1,0 +1,28 @@
+<mat-form-field
+  [appearance]="appearance()"
+  [floatLabel]="floatLabel()"
+  class="w-full!"
+  [class.has-projected-prefix]="hasIconPrefix()"
+  [class.has-projected-suffix]="hasIconSuffix()"
+>
+  @if (label()) {
+    <mat-label>{{ label() }}</mat-label>
+  }
+  <ng-content select="[matPrefix]"></ng-content>
+  <input
+    matInput
+    type="email"
+    [formControl]="innerControl"
+    [placeholder]="placeholder()"
+    [required]="isRequired"
+    autocomplete="email"
+    (blur)="onTouched()"
+  />
+  <ng-content select="[matSuffix]"></ng-content>
+  @if (hint() && !shouldShowError) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+  @if (shouldShowError) {
+    <mat-error>{{ errorMessage }}</mat-error>
+  }
+</mat-form-field>

@@ -1,0 +1,96 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use './styles_theme-colors.scss' as palette;
+
+@layer angular-material {
+  *:not(mat-icon) {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  main {
+    @include mat.system-classes();
+    @include mat.theme(
+      (
+        color: (
+          theme-type: color-scheme,
+          primary: palette.$primary-palette,
+          tertiary: palette.$tertiary-palette,
+        ),
+
+        typography: Poppins,
+        density: 0,
+      )
+    );
+    font-size: 1rem;
+    color: light-dark(#1a1a1a, #ffffff);
+  }
+
+  // O input color="warn" dos botões/ícones Material só adiciona a classe
+  // .mat-warn; sozinha ela não pinta nada porque a arquitetura M3 do
+  // mat.theme() não gera CSS de cor para essa classe (isso só acontecia com a
+  // API de tema legada). Aqui mapeamos .mat-warn para os tokens de erro do
+  // sistema (--mat-sys-error/--mat-sys-on-error), que o tema já gera.
+  .mat-warn.mat-mdc-button-base {
+    --mat-button-filled-container-color: var(--mat-sys-error);
+    --mat-button-filled-label-text-color: var(--mat-sys-on-error);
+    --mat-button-filled-state-layer-color: var(--mat-sys-on-error);
+    --mat-button-protected-container-color: var(--mat-sys-error);
+    --mat-button-protected-label-text-color: var(--mat-sys-on-error);
+    --mat-button-protected-state-layer-color: var(--mat-sys-on-error);
+    --mat-button-tonal-container-color: var(--mat-sys-error-container);
+    --mat-button-tonal-label-text-color: var(--mat-sys-on-error-container);
+    --mat-button-tonal-state-layer-color: var(--mat-sys-on-error-container);
+    --mat-button-outlined-label-text-color: var(--mat-sys-error);
+    --mat-button-outlined-outline-color: var(--mat-sys-error);
+    --mat-button-outlined-state-layer-color: var(--mat-sys-error);
+    --mat-button-text-label-text-color: var(--mat-sys-error);
+    --mat-button-text-state-layer-color: var(--mat-sys-error);
+    --mat-icon-button-icon-color: var(--mat-sys-error);
+    --mat-icon-button-state-layer-color: var(--mat-sys-error);
+  }
+
+  .snackbar-success {
+    @include mat.snack-bar-overrides((
+      container-color: #16a34a,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
+
+  .snackbar-error {
+    @include mat.snack-bar-overrides((
+      container-color: #dc2626,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
+
+  .snackbar-warning {
+    @include mat.snack-bar-overrides((
+      container-color: #ca8a04,
+      supporting-text-color: #ffffff,
+      button-color: #ffffff,
+    ));
+  }
+
+  // No tema escuro, o outline-variant padrão gerado pelo mat.theme() (tom 30 da
+  // paleta neutral-variant, #41484d) contrasta demais contra a surface quase
+  // preta, deixando as bordas dos cards (app-card, app-stat-card, app-chart-card
+  // e o wrapper de conteúdo) muito destacadas. Aqui usamos um tom mais próximo
+  // da superfície (tom 20) só no dark, sem alterar o tema claro.
+  .dark {
+    @include mat.theme-overrides((
+      outline-variant: #2b3137,
+    ));
+  }
+}

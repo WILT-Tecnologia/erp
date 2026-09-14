@@ -1,0 +1,94 @@
+<nav class="flex! flex-col! h-full! w-full! bg-surface!">
+  <div
+    class="h-25! flex! items-center! gap-2! p-4! font-medium! text-lg! whitespace-nowrap! overflow-hidden! shrink-0!"
+  >
+    @if (!collapsed()) {
+      <span>ERP Sistema</span>
+    } @else {
+      <mat-icon>apps</mat-icon>
+    }
+  </div>
+
+  <div class="flex-1! min-h-0! overflow-y-auto! overflow-x-hidden!">
+    @if (collapsed()) {
+      <mat-nav-list class="flex! flex-col! w-full! py-2!">
+        @for (entry of collapsedEntries(); track entry.section.key) {
+          <app-sidebar-menu-item
+            [item]="entry.item"
+            [basePath]="entry.section.basePath"
+            [organizationId]="organizationId()"
+            [collapsed]="true"
+            (linkClick)="linkClick.emit()"
+          />
+        }
+      </mat-nav-list>
+    } @else {
+      @for (section of sections(); track section.key) {
+        @if (section.bare) {
+          @if (section.items.length > 0) {
+            <mat-divider></mat-divider>
+          }
+          <mat-nav-list
+            class="flex! flex-col! w-full! px-2.5! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium! gap-2!"
+          >
+            @for (item of section.items; track item.title) {
+              <app-sidebar-menu-item
+                [item]="item"
+                [basePath]="section.basePath"
+                [organizationId]="organizationId()"
+                [collapsed]="false"
+                (linkClick)="linkClick.emit()"
+              />
+            }
+          </mat-nav-list>
+        } @else if (sectionDisabled(section)) {
+          <div
+            class="flex! items-center! gap-2! w-full! px-2.5! py-2.5! text-xs! uppercase! tracking-wide! text-on-surface/60! font-medium! opacity-40! cursor-not-allowed!"
+            matTooltip="Selecione uma organização para acessar"
+            matTooltipPosition="right"
+          >
+            <mat-icon class="text-base! w-4! h-4! shrink-0">{{ section.icon }}</mat-icon>
+            <span class="flex-1 text-left truncate">{{ section.label }}</span>
+          </div>
+        } @else {
+          <div class="w-full">
+            <button
+              mat-button
+              type="button"
+              class="flex items-center gap-2 w-full! justify-start! px-4! py-2.5! text-xs uppercase tracking-wide text-on-surface/60 font-medium hover:text-on-surface"
+              (click)="toggleSection(section.key)"
+            >
+              <mat-icon class="text-base! w-4! h-4! shrink-0">{{ section.icon }}</mat-icon>
+              <span class="flex-1 text-left truncate">{{ section.label }}</span>
+              <mat-icon
+                class="text-base! w-4! h-4! shrink-0 transition-transform duration-300"
+                [class.rotate-180]="!isSectionOpen(section.key)"
+              >
+                expand_more
+              </mat-icon>
+            </button>
+
+            <div
+              class="grid min-h-0 transition-[grid-template-rows] duration-300 ease-in-out"
+              [style.grid-template-rows]="isSectionOpen(section.key) ? '1fr' : '0fr'"
+            >
+              <div class="min-h-0 overflow-hidden">
+                <mat-nav-list class="flex! flex-col! w-full! pb-4 duration-300! ease-in-out!">
+                  @for (item of section.items; track item.title) {
+                    <app-sidebar-menu-item
+                      [item]="item"
+                      [basePath]="section.basePath"
+                      [organizationId]="organizationId()"
+                      [collapsed]="false"
+                      (linkClick)="linkClick.emit()"
+                    />
+                  }
+                </mat-nav-list>
+              </div>
+            </div>
+          </div>
+        }
+      }
+    }
+  </div>
+</nav>
